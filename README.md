@@ -1,8 +1,6 @@
 ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
 
-StatePrinter
-=============
-
+# 1. StatePrinter
 
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
 
@@ -12,7 +10,7 @@ The StatePrinter is a free, highly configurable, thread safe utility that can tu
 
 
 
-### Simple usage
+### 1.1 Simple usage
 
 
 To dump an object graph all you need to do is first to create an object graph
@@ -70,7 +68,7 @@ yields
 notice the `-> 0` this is a pointer back to an already printed object. Notice that references are only added to the output if needed. This amongst alot of other details are configurable.
 
 
-### Generic ToString() usage
+### 1.2 Generic ToString() usage
 
 If you are anything like me, there is nothing worse than having to edit all sorts of bizare methods on a class whenever you add a field to a class. For that reason I always find myself not wanting to maintain the `ToString()` method. With the stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
 
@@ -108,16 +106,17 @@ we get
 
 
 
-## Configuration
+# 2 Configuration
 
-Now, this is the fun part. Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts
+Now, this is the fun part. Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts each of which represents a sub-process of the state printer. Since the configuration is made through code, we'll just as well explain the interfaces.
 
 * `IFieldHarvester` deals with how/which fields are harvested from types. E.g. only public fields are printed.
 * `IValueConverter` handles Which types are converted into "simple values". Eg. the decimal type contains a lot of internal stuff, and usually we only want to get the numeric value printed. Or maybe you annotate enum values preser those values printed.
 * `IOutputFormatter` deals with turning tokens (internal representation of the object state) into a string form. 
  
 
-### FILO configuration - First In, Last Out
+
+## 2.1 FILO configuration - First In, Last Out
 
 The stateprinter has a configuration object that for the most cases be initialized with default behaviour. Don't worry about what they are, since you can easily re-configure the before use. This is due to the FILO principle. The StatePrinter retrieved configuration items in the reverse order they are added and stops when the first match has been found. The defaults are thus a cusion, a nice set of fall-back values.
 
@@ -154,7 +153,7 @@ which really means
 Once the StatePrinter has been initialized you should not change the configuration. A shallow clone of the configuration is made in the constructor to prevent you from shooting youself in the foot.
 
 
-### Simple changes
+## 2.2 Simple changes
 
 The `Configuration` class should be rather self-documenting. We can change the public fields and properties like setting the indentation characters.
 
@@ -165,7 +164,7 @@ The `Configuration` class should be rather self-documenting. We can change the p
 
 
 
-### FieldHarvesting
+## 2.3 Field harvesting
 
 The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester` and `PublicFieldsHarvester`. By default we harvest all fields, but you can use whatever implementation you want.
 
@@ -175,7 +174,7 @@ The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester`
     var printer = new StatePrinter(cfg);
 
 
-Field harvesting is simpler than what you expect. While you may never need to write one yourself, let's walk through the PublicFieldsHarvester for the fun of it. The harvester basically works by harvesting all fields and filtering away those it does not want. We want all public fields, and all private fields if they are the backing fields of public fields.
+Field harvesting is simpler than you'd expect. While you may never need to write one yourself, let's walk through the PublicFieldsHarvester for the fun of it. The harvester basically works by harvesting all fields and filtering away those it does not want. We want all public fields, and all private fields if they are the backing fields of public fields.
 
 	  public class AllFieldsHarvester : IFieldHarvester
 	  {
@@ -200,7 +199,8 @@ Notice that in `CanHandleType` we are free to setup any restriction. For example
 	    }
 
 
-### Simple value printing
+
+## 2.4 Simple value printing
 
 After we have harvested the fields of the object graph, we may desire to turn a complex object into a simple value. That is one that doesn't hold any nested structure. You'd be surprised of the amount of "garbage" values we would print if we revealed the whole state of the string or decimal instances. If you have any interest in such fields, feel free to supply your own implementation.
 
@@ -230,7 +230,7 @@ then we add it to the configuration before usage
 Due to the FILO principle (First In Last Out) our valueconverter is consulted before the standard implementation.
 
 
-### Output formatting
+## 2.5 Output formatting
 
 the `IOutputFormatter` only contains a single method
 
@@ -250,8 +250,9 @@ It turns tokens into a "format". Much like traditional compiler design, a token 
 So at this point in the process we need not worry about recursion, field traversal or the like. We focus on the formatting, turning the tokens into a XML-like, JSON-like, LISP-like S-Expressions or whatever you wish. In the current implementation we make two passes on the input to track which objects are referred to by later object. Those we wish to augment with a reference.
 
 
+
+
+
 Have fun!
 
 Kasper B. Graversen
-
-
