@@ -1,6 +1,6 @@
-![](https://raw.github.com/kbilsted/ObjectPrinter/master/ObjectPrinter/gfx/objectprinter.png)
+![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
 
-ObjectPrinter
+StatePrinter
 =============
 
 
