@@ -8,6 +8,7 @@ The StatePrinter is a free, highly configurable, thread safe utility that can tu
 * It becomes much easier to write unit tests against object-graphs. 
 * It is part of the back-end engine of the very nice ApprovalTests framework.
 
+It is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
 
 
 ### 1.1 Simple usage
