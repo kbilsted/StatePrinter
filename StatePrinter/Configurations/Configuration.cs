@@ -36,7 +36,7 @@ namespace StatePrinter.Configurations
     /// <summary>
     /// Specifies how indentation is done. 
     /// </summary>
-    public readonly string IndentIncrement = "    ";
+    public string IndentIncrement = "    ";
     
     public Configuration(IEnumerable<IFieldHarvester> fieldHarvesters, 
       IEnumerable<IValueConverter> valueConverters, 

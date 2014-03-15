@@ -30,9 +30,9 @@ namespace StatePrinter.IntegrationTests
     [Test]
     public void TestToStringMethod()
     {
-      var a = new AClassWithTosTring();
+      var a = new AClassWithToString();
       string expected = 
-@" = <AClassWithTosTring>
+@" = <AClassWithToString>
 {
     B = ""hello""
     C = <Int32[]>
@@ -48,7 +48,7 @@ namespace StatePrinter.IntegrationTests
   }
 
 
-  class AClassWithTosTring
+  class AClassWithToString
   {
     string B = "hello";
     int[] C = {5,4,3,2,1};
