@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>StatePrinter</id>
+    <version>$version$</version>
+    <description>
+     An open source utility to turn object graphs into strings.
+    </description>
+    <language>en-US</language>
+    <authors>Kasper B. Graversen</authors>
+    <projectUrl>https://github.com/kbilsted/StatePrinter</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png</iconUrl>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>

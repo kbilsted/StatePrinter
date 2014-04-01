@@ -37,12 +37,6 @@ x64/
 *.vssscc
 .builds
 
-# Visual C++ cache files
-ipch/
-*.aps
-*.ncb
-*.opensdf
-*.sdf
 
 # Visual Studio profiler
 *.psess
@@ -80,6 +74,7 @@ publish
 
 # NuGet Packages Directory
 packages
+nuget_packages/
 
 # Windows Azure Build Output
 csx

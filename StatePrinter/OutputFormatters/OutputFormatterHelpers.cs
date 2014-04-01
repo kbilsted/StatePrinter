@@ -31,8 +31,9 @@ namespace StatePrinter.OutputFormatters
       if (!type.IsGenericType) 
         return type.Name;
       
-      string typename = type.Name.Split('`')[0];
-      string generictypes = string.Join(", ", type.GetGenericArguments().Select(x => MakeReadable(x)));
+      var typename = type.Name.Split('`')[0];
+      var genericName = type.GetGenericArguments().Select(x => MakeReadable(x)).ToArray();
+      string generictypes = string.Join(", ", genericName);
 
       return String.Format("{0}<{1}>", typename, generictypes);
     }
