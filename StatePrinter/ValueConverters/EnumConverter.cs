@@ -18,7 +18,6 @@
 // under the License.
 
 using System;
-using StatePrinter.Configurations;
 
 namespace StatePrinter.ValueConverters
 {

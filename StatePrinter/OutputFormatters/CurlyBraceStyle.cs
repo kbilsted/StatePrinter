@@ -31,7 +31,7 @@ namespace StatePrinter.OutputFormatters
   /// In order to reduce clutter in the output, only reference that are referred to by later
   /// outputted objects will have a referencenumber attached to them.
   /// </summary>
-  class CurlyBraceStyle : IOutputFormatter
+  public class CurlyBraceStyle : IOutputFormatter
   {
     /// <summary>
     /// Specifies how indentation is done. 
@@ -48,7 +48,7 @@ namespace StatePrinter.OutputFormatters
     /// In order to reduce clutter in the output, only show reference in the output if the object 
     /// is referred to from other objects using a back-reference.
     /// </summary>
-    internal List<Token> FilterUnusedReferences(List<Token> tokens)
+    public List<Token> FilterUnusedReferences(List<Token> tokens)
     {
       var backreferences = tokens
         .Where(x => x.Tokenkind == TokenType.SeenBeforeWithReference)

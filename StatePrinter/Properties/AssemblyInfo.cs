@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("StatePrinter")]
-[assembly: AssemblyDescription("An open source utility to turn object graphs into strings")]
+[assembly: AssemblyDescription("An open source utility to turn object graphs into strings.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Acme")]
+[assembly: AssemblyCompany("Kasper B. Graversen, Inc.")]
 [assembly: AssemblyProduct("StatePrinter")]
 [assembly: AssemblyCopyright("Kasper B. Graversen")]
 [assembly: AssemblyTrademark("")]
