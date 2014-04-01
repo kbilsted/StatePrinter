@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StatePrinter")]
-[assembly: AssemblyDescription("An open source utility to turn object graphs into strings.")]
+[assembly: AssemblyTitle("StatePrinter.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Kasper B. Graversen, Inc.")]
-[assembly: AssemblyProduct("StatePrinter")]
-[assembly: AssemblyCopyright("Kasper B. Graversen")]
+[assembly: AssemblyCompany("Hewlett-Packard")]
+[assembly: AssemblyProduct("StatePrinter.Tests")]
+[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ba9aa723-9df7-414b-93a6-c1a6c8c57b2d")]
+[assembly: Guid("c1cd611d-2fe0-4f10-9202-72161591749a")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]     // NEVER CHANGE THIS
-[assembly: AssemblyFileVersion("1.0.0.0")] // Bump this at every release
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
