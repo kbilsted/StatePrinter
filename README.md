@@ -118,7 +118,7 @@ we get
 
 
 
-# 2 Configuration
+# 2. Configuration
 
 Now, this is the fun part. Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts each of which represents a sub-process of the state printer. Since the configuration is made through code, we'll just as well explain the interfaces.
 
@@ -283,7 +283,7 @@ public class Token : IEquatable<Token>
 So at this point in the process we need not worry about recursion, field traversal or the like. We focus on the formatting, turning the tokens into a XML-like, JSON-like, LISP-like S-Expressions or whatever you wish. In the current implementation we make two passes on the input to track which objects are referred to by later object. Those we wish to augment with a reference.
 
 
-# 4 License
+# 3. License
 
 StatePrinter is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
 
