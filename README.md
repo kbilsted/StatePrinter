@@ -92,7 +92,7 @@ class AClassWithToString
   static readonly StatePrinter printer = new StatePrinter();
   public override string ToString()
   {
-    return printer.PrintObject(this, "");
+    return printer.PrintObject(this);
   }
 }
 ```
