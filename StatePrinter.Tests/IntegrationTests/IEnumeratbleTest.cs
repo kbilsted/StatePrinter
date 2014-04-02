@@ -28,14 +28,31 @@ namespace StatePrinter.Tests.IntegrationTests
     readonly StatePrinter printer = new StatePrinter();
 
     [Test]
-    public void StringArray()
+    public void EmptyIntArray()
+    {
+      Assert.AreEqual("ROOT = <Int32[]>\r\n", printer.PrintObject(new int[0]));
+    }
+
+    [Test]
+    public void IntArray()
     {
       Assert.AreEqual(
 @"ROOT = <Int32[]>
 ROOT[0] = 1
 ROOT[1] = 2
 ROOT[2] = 3
-", printer.PrintObject(new int[]{1,2,3}));
+", printer.PrintObject(new int[] { 1, 2, 3 }));
+    }
+
+    [Test]
+    public void StringArrayWithNulls()
+    {
+      Assert.AreEqual(
+@"ROOT = <String[]>
+ROOT[0] = """"
+ROOT[1] = null
+ROOT[2] = ""42""
+", printer.PrintObject(new [] { "", null, "42" }));
     }
 
 
