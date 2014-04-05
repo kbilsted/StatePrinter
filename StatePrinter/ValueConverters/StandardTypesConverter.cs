@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using System.Globalization;
 
 namespace StatePrinter.ValueConverters
 {
@@ -28,6 +29,13 @@ namespace StatePrinter.ValueConverters
   /// </summary>
   public class StandardTypesConverter : IValueConverter
   {
+    readonly CultureInfo culture;
+
+    public StandardTypesConverter(CultureInfo culture)
+    {
+      this.culture = culture;
+    }
+
     public bool CanHandleType(Type t)
     {
       // Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
@@ -42,6 +50,13 @@ namespace StatePrinter.ValueConverters
 
     public string Convert(object source)
     {
+      if (source is float)
+        return ((float)source).ToString(culture);
+      if (source is double)
+        return ((double)source).ToString(culture);
+      if (source is decimal)
+        return ((decimal)source).ToString(culture);
+
       return source.ToString();
     }
   }

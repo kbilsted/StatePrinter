@@ -32,13 +32,13 @@ namespace StatePrinter.Tests.Configurations
     {
       var config = new Configuration();
      
-      var handler1 = new StandardTypesConverter();
+      var handler1 = new EnumConverter();
       config.Add(handler1);
       Assert.AreEqual(1, config.SimplePrinters.Count);
       Assert.AreEqual(0, config.FieldHarvesters.Count);
       Assert.AreEqual(handler1, config.SimplePrinters.First());
 
-      var handler2 = new StandardTypesConverter();
+      var handler2 = new EnumConverter(); 
       config.Add(handler2);
       Assert.AreEqual(2, config.SimplePrinters.Count);
       Assert.AreEqual(0, config.FieldHarvesters.Count);
@@ -49,7 +49,7 @@ namespace StatePrinter.Tests.Configurations
     public void TryFind()
     {
       var config = new Configuration();
-      config.Add(new StandardTypesConverter());
+      config.Add(new StandardTypesConverter(null));
       
       IValueConverter h;
       Assert.IsTrue(config.TryGetValueConverter(typeof(decimal), out h));

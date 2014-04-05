@@ -18,7 +18,9 @@
 // under the License.
 
 using System;
+using System.Globalization;
 using NUnit.Framework;
+using StatePrinter.Configurations;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
@@ -89,14 +91,14 @@ namespace StatePrinter.Tests.IntegrationTests
     public void DateTime()
     {
       var dt = new DateTime(2010, 2, 3, 14, 15, 59);
-      Assert.AreEqual("ROOT = 03.02.2010 14:15:59\r\n", printer.PrintObject(dt));
+      Assert.AreEqual("ROOT = 03-02-2010 14:15:59\r\n", printer.PrintObject(dt));
     }
 
     [Test]
     public void DateTimeOffset()
     {
       var dt = new DateTimeOffset(2010, 2, 3, 14, 15, 59, TimeSpan.FromMinutes(1));
-      Assert.AreEqual("ROOT = 03.02.2010 14:15:59 +00:01\r\n", printer.PrintObject(dt));
+      Assert.AreEqual("ROOT = 03-02-2010 14:15:59 +00:01\r\n", printer.PrintObject(dt));
     }
 
     [Test]
@@ -109,6 +111,26 @@ namespace StatePrinter.Tests.IntegrationTests
     enum Suit
     {
       Spades = 1, Hearts = 2
+    }
+
+    [Test]
+    public void CultureDependentPrinting()
+    {
+      const decimal decimalNumber = 12345.343M;
+      var dateTime = new DateTime(2010, 2, 28, 22, 10, 59);
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration(new CultureInfo("en-US"));
+      var printer = new StatePrinter(cfg);
+
+      Assert.AreEqual("ROOT = 12345.343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("ROOT = 12345.34\r\n", printer.PrintObject((float)decimalNumber));
+      Assert.AreEqual("ROOT = 2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
+
+      cfg = ConfigurationHelper.GetStandardConfiguration(new CultureInfo("da-DK"));
+      printer = new StatePrinter(cfg);
+      Assert.AreEqual("ROOT = 12345,343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("ROOT = 12345,34\r\n", printer.PrintObject((float)decimalNumber));
+      Assert.AreEqual("ROOT = 28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
     }
   }
 }

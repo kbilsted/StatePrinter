@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using StatePrinter.FieldHarvesters;
 using StatePrinter.OutputFormatters;
@@ -37,16 +38,20 @@ namespace StatePrinter.Configurations
     /// Specifies how indentation is done. 
     /// </summary>
     public string IndentIncrement = "    ";
-    
+
+    public CultureInfo Culture = CultureInfo.CurrentCulture;
+
     public Configuration(IEnumerable<IFieldHarvester> fieldHarvesters, 
       IEnumerable<IValueConverter> valueConverters, 
       string indentIncrement, 
-      IOutputFormatter outputFormatter)
+      IOutputFormatter outputFormatter,
+      CultureInfo culture)
     {
       this.valueConverters = valueConverters.ToList();
       this.fieldHarvesters = fieldHarvesters.ToList();
       IndentIncrement = indentIncrement;
       OutputFormatter = outputFormatter;
+      Culture = culture;
     }
 
     public Configuration()
@@ -109,7 +114,7 @@ namespace StatePrinter.Configurations
 
     public object Clone()
     {
-      var res = new Configuration(fieldHarvesters, valueConverters, IndentIncrement, OutputFormatter);
+      var res = new Configuration(fieldHarvesters, valueConverters, IndentIncrement, OutputFormatter, Culture);
       return res;
     }
   }

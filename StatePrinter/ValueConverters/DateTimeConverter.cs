@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using System.Globalization;
 
 namespace StatePrinter.ValueConverters
 {
@@ -26,6 +27,13 @@ namespace StatePrinter.ValueConverters
   /// </summary>
   public class DateTimeConverter : IValueConverter
   {
+    readonly CultureInfo Culture;
+    
+    public DateTimeConverter(CultureInfo culture)
+    {
+      Culture = culture;
+    }
+
     public bool CanHandleType(Type t)
     {
       return t == typeof(DateTime) || t == typeof(DateTimeOffset);
@@ -34,10 +42,10 @@ namespace StatePrinter.ValueConverters
     public string Convert(object source)
     {
       if (source is DateTime)
-        return ((DateTime)source).ToString("dd.MM.yyyy HH:m:ss");
+        return ((DateTime)source).ToString(Culture);
       
       if (source is DateTimeOffset)
-        return ((DateTimeOffset)source).ToString("dd.MM.yyyy HH:m:ss zzz");
+        return ((DateTimeOffset)source).ToString(Culture);
 
       throw new Exception("We should never reach here");
     }
