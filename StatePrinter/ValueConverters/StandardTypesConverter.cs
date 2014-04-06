@@ -18,7 +18,7 @@
 // under the License.
 
 using System;
-using System.Globalization;
+using StatePrinter.Configurations;
 
 namespace StatePrinter.ValueConverters
 {
@@ -29,11 +29,11 @@ namespace StatePrinter.ValueConverters
   /// </summary>
   public class StandardTypesConverter : IValueConverter
   {
-    readonly CultureInfo culture;
+    readonly Configuration configuration;
 
-    public StandardTypesConverter(CultureInfo culture)
-    {
-      this.culture = culture;
+    public StandardTypesConverter(Configuration configuration)
+    { 
+      this.configuration = configuration;
     }
 
     public bool CanHandleType(Type t)
@@ -51,11 +51,11 @@ namespace StatePrinter.ValueConverters
     public string Convert(object source)
     {
       if (source is float)
-        return ((float)source).ToString(culture);
+        return ((float)source).ToString(configuration.Culture);
       if (source is double)
-        return ((double)source).ToString(culture);
+        return ((double)source).ToString(configuration.Culture);
       if (source is decimal)
-        return ((decimal)source).ToString(culture);
+        return ((decimal)source).ToString(configuration.Culture);
 
       return source.ToString();
     }

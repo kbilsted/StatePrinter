@@ -17,26 +17,12 @@ namespace StatePrinter.Configurations
     /// </summary>
     public static Configuration GetStandardConfiguration()
     {
-      return GetStandardConfiguration(CultureInfo.CurrentCulture);
-    } 
-
-    /// <summary>
-    /// Return a configuration which covers most usages.
-    /// The configuration returned can be further remolded by adding additional handlers. 
-    /// 
-    /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
-    /// </summary>
-    public static Configuration GetStandardConfiguration(CultureInfo culture)
-    {
-      var cfg = new Configuration
-                {
-                  Culture = culture
-                };
+      var cfg = new Configuration();
 
       // valueconverters
-      cfg.Add(new StandardTypesConverter(cfg.Culture));
+      cfg.Add(new StandardTypesConverter(cfg));
       cfg.Add(new StringConverter());
-      cfg.Add(new DateTimeConverter(cfg.Culture));
+      cfg.Add(new DateTimeConverter(cfg));
       cfg.Add(new EnumConverter());
       
       // harvesters

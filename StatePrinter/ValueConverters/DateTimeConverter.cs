@@ -19,6 +19,7 @@
 
 using System;
 using System.Globalization;
+using StatePrinter.Configurations;
 
 namespace StatePrinter.ValueConverters
 {
@@ -27,11 +28,11 @@ namespace StatePrinter.ValueConverters
   /// </summary>
   public class DateTimeConverter : IValueConverter
   {
-    readonly CultureInfo Culture;
+    readonly Configuration configuration;
     
-    public DateTimeConverter(CultureInfo culture)
+    public DateTimeConverter(Configuration configuration)
     {
-      Culture = culture;
+      this.configuration = configuration;
     }
 
     public bool CanHandleType(Type t)
@@ -42,10 +43,10 @@ namespace StatePrinter.ValueConverters
     public string Convert(object source)
     {
       if (source is DateTime)
-        return ((DateTime)source).ToString(Culture);
+        return ((DateTime)source).ToString(configuration.Culture);
       
       if (source is DateTimeOffset)
-        return ((DateTimeOffset)source).ToString(Culture);
+        return ((DateTimeOffset)source).ToString(configuration.Culture);
 
       throw new Exception("We should never reach here");
     }

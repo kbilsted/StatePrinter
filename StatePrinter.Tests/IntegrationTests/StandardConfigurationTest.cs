@@ -119,14 +119,15 @@ namespace StatePrinter.Tests.IntegrationTests
       const decimal decimalNumber = 12345.343M;
       var dateTime = new DateTime(2010, 2, 28, 22, 10, 59);
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration(new CultureInfo("en-US"));
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.Culture = new CultureInfo("en-US");
       var printer = new StatePrinter(cfg);
 
       Assert.AreEqual("ROOT = 12345.343\r\n", printer.PrintObject(decimalNumber));
       Assert.AreEqual("ROOT = 12345.34\r\n", printer.PrintObject((float)decimalNumber));
       Assert.AreEqual("ROOT = 2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
 
-      cfg = ConfigurationHelper.GetStandardConfiguration(new CultureInfo("da-DK"));
+      cfg.Culture = new CultureInfo("da-DK");
       printer = new StatePrinter(cfg);
       Assert.AreEqual("ROOT = 12345,343\r\n", printer.PrintObject(decimalNumber));
       Assert.AreEqual("ROOT = 12345,34\r\n", printer.PrintObject((float)decimalNumber));

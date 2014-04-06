@@ -19,6 +19,8 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using StatePrinter.Configurations;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
@@ -52,6 +54,30 @@ namespace StatePrinter.Tests.IntegrationTests
       Assert.AreEqual(expected, printer.PrintObject(car));
     }
 
+    [Test]
+    public void ThreeLinkedGraph_xmlstyle()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+      car.Brand = "Toyota";
+
+      var expected =
+@"<ROOT type='Car'>
+    <StereoAmplifiers>null</StereoAmplifiers>
+    <steeringWheel type='SteeringWheel'>
+        <Size>3</Size>
+        <Grip type='FoamGrip'>
+            <Material>""Plastic""</Material>
+        </Grip>
+    </steeringWheel>
+    <Brand>""Toyota""</Brand>
+</ROOT>
+";
+      Assert.AreEqual(expected, printer.PrintObject(car));
+    }
+
 
     [Test]
     public void CyclicGraph()
@@ -75,6 +101,33 @@ namespace StatePrinter.Tests.IntegrationTests
         course =  -> 0
     }
 }
+";
+      Assert.AreEqual(expected, printer.PrintObject(course));
+    }
+
+
+    [Test]
+    public void CyclicGraph_xmlstyle()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+      var course = new Course();
+      course.Members.Add(new Student("Stan", course));
+      course.Members.Add(new Student("Richy", course));
+
+      var expected =
+@"<ROOT type='Course' ref='0'>
+    <Members type='List(Student)'>
+    <Members[0] type='Student'>
+        <name>""Stan""</name>
+        <course ref='0' />
+    </Members[0]>
+    <Members[1] type='Student'>
+        <name>""Richy""</name>
+        <course ref='0' />
+    </Members[1]>
+</ROOT>
 ";
       Assert.AreEqual(expected, printer.PrintObject(course));
     }

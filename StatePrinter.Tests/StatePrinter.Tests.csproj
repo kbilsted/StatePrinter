@@ -56,7 +56,7 @@
     <Compile Include="IntegrationTests\ObjectGraphsTest.cs" />
     <Compile Include="IntegrationTests\StandardConfigurationTest.cs" />
     <Compile Include="IntegrationTests\ToStringMethodTest.cs" />
-    <Compile Include="OutputFormatters\TokenPrinterTest.cs" />
+    <Compile Include="OutputFormatters\TokenFilterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
