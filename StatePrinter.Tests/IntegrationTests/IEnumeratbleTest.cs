@@ -30,17 +30,17 @@ namespace StatePrinter.Tests.IntegrationTests
     [Test]
     public void EmptyIntArray()
     {
-      Assert.AreEqual("ROOT = <Int32[]>\r\n", printer.PrintObject(new int[0]));
+      Assert.AreEqual("new Int32[]()\r\n", printer.PrintObject(new int[0]));
     }
 
     [Test]
     public void IntArray()
     {
       Assert.AreEqual(
-@"ROOT = <Int32[]>
-ROOT[0] = 1
-ROOT[1] = 2
-ROOT[2] = 3
+@"new Int32[]()
+[0] = 1
+[1] = 2
+[2] = 3
 ", printer.PrintObject(new int[] { 1, 2, 3 }));
     }
 
@@ -48,10 +48,10 @@ ROOT[2] = 3
     public void StringArrayWithNulls()
     {
       Assert.AreEqual(
-@"ROOT = <String[]>
-ROOT[0] = """"
-ROOT[1] = null
-ROOT[2] = ""42""
+@"new String[]()
+[0] = """"
+[1] = null
+[2] = ""42""
 ", printer.PrintObject(new [] { "", null, "42" }));
     }
 
@@ -68,16 +68,16 @@ ROOT[2] = ""42""
               };
 
       var expected =
-@"ROOT = <Dictionary<Person, Address>>
-ROOT[0] = <KeyValuePair<Person, Address>>
+@"new Dictionary<Person, Address>()
+[0] = new KeyValuePair<Person, Address>()
 {
-    key = <Person>
+    key = new Person()
     {
         Age = 37
         FirstName = ""Klaus""
         LastName = ""Meyer""
     }
-    value = <Address>
+    value = new Address()
     {
         Street = ""Fairway Dr.""
         StreetNumber = 50267

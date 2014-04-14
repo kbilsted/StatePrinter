@@ -19,8 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using StatePrinter.Introspection;
 
@@ -59,6 +57,20 @@ namespace StatePrinter.OutputFormatters
 
       foreach (var token in tokens)
       {
+        string fieldName = null;
+        if (token.Field != null)
+        {
+          fieldName = token.Field.Name
+                      + (token.Field.SimpleKeyInArrayOrDictionary != null
+                        ? ("[" + token.Field.SimpleKeyInArrayOrDictionary + "]")
+                        : "");
+        }
+
+        // fieldname is empty if the ROOT-element-name has not been supplied
+        string fieldnameAssign = string.IsNullOrEmpty(fieldName)
+          ? ""
+          : (fieldName + " = ");
+
         switch (token.Tokenkind)
         {
           case TokenType.StartScope:
@@ -71,24 +83,27 @@ namespace StatePrinter.OutputFormatters
             sb.AppendLine(indent + "}");
             break;
 
+          case TokenType.StartEnumeration:
+          case TokenType.EndEnumeration:
+            break;
+
           case TokenType.SimpleFieldValue:
-            sb.AppendFormat("{0}{1} = {2}", indent, token.FieldName, token.Value);
-            sb.AppendLine();
+            sb.AppendLine(string.Format("{0}{1}{2}", indent, fieldnameAssign, token.Value));
             break;
 
           case TokenType.SeenBeforeWithReference:
             var seenBeforeReference = " -> " + token.ReferenceNo.Number;
-            sb.AppendFormat("{0}{1} = {2}", indent, token.FieldName, seenBeforeReference);
-            sb.AppendLine();
+            sb.AppendLine(string.Format("{0}{1}{2}", indent, fieldnameAssign, seenBeforeReference));
             break;
 
           case TokenType.FieldnameWithTypeAndReference:
-            var optionReferenceInfo = token.ReferenceNo != null
-              ? string.Format(", ref: {0}", token.ReferenceNo.Number)
-              : "";
+            var optionReferenceInfo = token.ReferenceNo == null
+              ? ""
+              : string.Format(", ref: {0}", token.ReferenceNo.Number);
+
             var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType);
-            sb.AppendFormat("{0}{1} = <{2}>{3}", indent, token.FieldName, fieldType, optionReferenceInfo);
-            sb.AppendLine();
+
+            sb.AppendLine(string.Format("{0}{1}new {2}(){3}", indent, fieldnameAssign, fieldType, optionReferenceInfo));
             break;
 
           default:

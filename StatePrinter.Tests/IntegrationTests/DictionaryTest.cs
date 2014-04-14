@@ -34,7 +34,7 @@ namespace StatePrinter.Tests.IntegrationTests
     public void Dictionary_int_int()
     {
       var d = new Dictionary<int, int> {{1, 2}, {2, 4}, {3, 6}};
-      Assert.AreEqual("ROOT[1] = 2\r\nROOT[2] = 4\r\nROOT[3] = 6\r\n", printer.PrintObject(d));
+      Assert.AreEqual("[1] = 2\r\n[2] = 4\r\n[3] = 6\r\n", printer.PrintObject(d));
     }
 
     [Test]
@@ -43,18 +43,18 @@ namespace StatePrinter.Tests.IntegrationTests
       IDictionary d = new Hashtable() { { 1, 2 }, { 2, 4 }, { 3, 6 } };
       Console.WriteLine(printer.PrintObject(d));
       Assert.AreEqual(
-@"ROOT = <Hashtable>
-ROOT[0] = <DictionaryEntry>
+@"new Hashtable()
+[0] = new DictionaryEntry()
 {
     _key = 3
     _value = 6
 }
-ROOT[1] = <DictionaryEntry>
+[1] = new DictionaryEntry()
 {
     _key = 2
     _value = 4
 }
-ROOT[2] = <DictionaryEntry>
+[2] = new DictionaryEntry()
 {
     _key = 1
     _value = 2

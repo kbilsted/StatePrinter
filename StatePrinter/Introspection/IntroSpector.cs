@@ -35,7 +35,11 @@ namespace StatePrinter.Introspection
   {
     readonly Configuration Configuration;
 
+    /// <summary>
+    /// Each entry is assigned a reference number used for back-referencing
+    /// </summary>
     int referenceCounter = 0;
+
     readonly Dictionary<object, Reference> seenBefore = new Dictionary<object, Reference>();
     readonly List<Token> tokens = new List<Token>();
     
@@ -46,40 +50,40 @@ namespace StatePrinter.Introspection
 
     public List<Token> PrintObject(object objectToPrint, string rootname)
     {
-      Introspect(objectToPrint, rootname);
+      Introspect(objectToPrint, new Field(rootname));
       return tokens;
     }
 
 
-    void Introspect(object source, string fieldName)
+    void Introspect(object source, Field field)
     {
-      if (IntrospectNullValue(source, fieldName))
+      if (IntrospectNullValue(source, field))
         return;
 
       var sourceType = source.GetType();
 
-      if (IntrospectSimpleValue(source, fieldName, sourceType))
+      if (IntrospectSimpleValue(source, field, sourceType))
         return;
 
-      if (SeenObjectBefore(source, fieldName))
+      if (SeenObjectBefore(source, field))
         return;
 
       // handle a subset of dictionaries separately for terser printing
-      if (IntrospectDictionaryWithSimpleKey(source as IDictionary, fieldName, sourceType))
+      if (IntrospectDictionaryWithSimpleKey(source as IDictionary, field, sourceType))
         return;
 
-      if (IntrospectIEnumerable(source, fieldName))
+      if (IntrospectIEnumerable(source, field))
         return;
 
-      IntrospectComplexType(source, fieldName, sourceType);
+      IntrospectComplexType(source, field, sourceType);
     }
 
-    private bool SeenObjectBefore(object source, string fieldName)
+    private bool SeenObjectBefore(object source, Field field)
     {
       Reference reference;
       if(seenBefore.TryGetValue(source, out reference))
       {
-        tokens.Add(Token.SeenBefore(fieldName, reference));
+        tokens.Add(Token.SeenBefore(field, reference));
         return true;
       }
       else
@@ -89,7 +93,7 @@ namespace StatePrinter.Introspection
       }
     }
 
-    void IntrospectComplexType(object source, string fieldName, Type sourceType)
+    void IntrospectComplexType(object source, Field field, Type sourceType)
     {
       IFieldHarvester harvester;
       if (!Configuration.TryGetFieldHarvester(sourceType, out harvester))
@@ -98,43 +102,43 @@ namespace StatePrinter.Introspection
       Reference optionReferenceInfo = null;
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
-      tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, fieldName, null, optionReferenceInfo, sourceType));
+      tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, sourceType));
       tokens.Add(new Token(TokenType.StartScope));
 
       var fields = harvester.GetFields(sourceType);
       var helper = new HarvestHelper();
-      foreach (FieldInfo field in fields)
+      foreach (FieldInfo ffield in fields)
       {
-        var name = helper.SanitizeFieldName(field.Name);
+        var name = helper.SanitizeFieldName(ffield.Name);
 
-        Introspect(field.GetValue(source), name);
+        Introspect(ffield.GetValue(source), new Field(name));
       }
       tokens.Add(new Token(TokenType.EndScope));
     }
 
 
-    bool IntrospectSimpleValue(object source, string fieldName, Type sourceType)
+    bool IntrospectSimpleValue(object source, Field field, Type sourceType)
     {
       IValueConverter handler = null;
       if (!Configuration.TryGetValueConverter(sourceType, out handler))
         return false;
 
-      tokens.Add(new Token(TokenType.SimpleFieldValue, fieldName, handler.Convert(source)));
+      tokens.Add(new Token(TokenType.SimpleFieldValue, field, handler.Convert(source)));
       return true;
     }
 
 
-    bool IntrospectNullValue(object source, string fieldName)
+    bool IntrospectNullValue(object source, Field field)
     {
       if (source != null)
         return false;
 
-      tokens.Add(new Token(TokenType.SimpleFieldValue, fieldName, "null"));
+      tokens.Add(new Token(TokenType.SimpleFieldValue, field, "null"));
       return true;
     }
 
 
-    bool IntrospectDictionaryWithSimpleKey(IDictionary source, string fieldName, Type sourceType)
+    bool IntrospectDictionaryWithSimpleKey(IDictionary source, Field field, Type sourceType)
     {
       if (source == null)
         return false;
@@ -142,25 +146,29 @@ namespace StatePrinter.Introspection
       if(sourceType.GetGenericArguments().Length != 2)
         return false;
 
-      IValueConverter printer;
+      IValueConverter handler;
       var keyType = sourceType.GetGenericArguments().First();
-      var isKeyTypeSimple = Configuration.TryGetValueConverter(keyType, out printer);
+      var isKeyTypeSimple = Configuration.TryGetValueConverter(keyType, out handler);
 
       if (!isKeyTypeSimple)
         return false; // print as enumerable which is more verbose
+
+      tokens.Add(new Token(TokenType.StartEnumeration));
 
       var keys = source.Keys;
       foreach (var key in keys)
       {
         var valueValue = source[key];
-        var keyValue = printer.Convert(key);
-        var outputfieldName = string.Format("{0}[{1}]", fieldName, keyValue);
+        var keyValue = handler.Convert(key);
+        var outputfieldName = new Field(field.Name, keyValue);
         Introspect(valueValue, outputfieldName);
       }
+      tokens.Add(new Token(TokenType.EndEnumeration));
+
       return true;
     }
 
-    private bool IntrospectIEnumerable(object source, string fieldName)
+    private bool IntrospectIEnumerable(object source, Field field)
     {
       var enumerable = source as IEnumerable;
       if (enumerable == null)
@@ -169,15 +177,31 @@ namespace StatePrinter.Introspection
       Reference optionReferenceInfo = null;
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
-      tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, fieldName, null, optionReferenceInfo, source.GetType()));
+      tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
+      tokens.Add(new Token(TokenType.StartEnumeration));
 
       int i = 0;
       foreach (var x in enumerable)
       {
-        var outputFieldName = string.Format("{0}[{1}]", fieldName, i++);
+        var outputFieldName = new Field(field.Name, ""+ i++);
         Introspect(x, outputFieldName);
       }
+      tokens.Add(new Token(TokenType.EndEnumeration));
+
       return true;
+    }
+  }
+
+
+  public class Field
+  {
+    public readonly string Name;
+    public readonly string SimpleKeyInArrayOrDictionary;
+
+    public Field(string name, string simpleKeyInArrayOrDictionary = null)
+    {
+      Name = name;
+      SimpleKeyInArrayOrDictionary = simpleKeyInArrayOrDictionary;
     }
   }
 }

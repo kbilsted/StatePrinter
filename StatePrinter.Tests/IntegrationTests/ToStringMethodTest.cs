@@ -32,10 +32,10 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var a = new AClassWithToString();
       string expected = 
-@" = <AClassWithToString>
+@"new AClassWithToString()
 {
     B = ""hello""
-    C = <Int32[]>
+    C = new Int32[]()
     C[0] = 5
     C[1] = 4
     C[2] = 3
@@ -56,7 +56,7 @@ namespace StatePrinter.Tests.IntegrationTests
 
     public override string ToString()
     {
-      return printer.PrintObject(this, "");
+      return printer.PrintObject(this);
     }
   }
 }

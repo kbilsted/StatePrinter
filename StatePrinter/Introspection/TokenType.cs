@@ -21,7 +21,9 @@ namespace StatePrinter.Introspection
   public enum TokenType
   {
     StartScope, 
-    EndScope, 
+    EndScope,
+    StartEnumeration,
+    EndEnumeration,
     SeenBeforeWithReference, 
     SimpleFieldValue, 
     FieldnameWithTypeAndReference 

@@ -50,23 +50,19 @@ namespace StatePrinter.OutputFormatters
       return MakeString(processed);
     }
 
-    string MakeString(IEnumerable<Token> tokens)
+    string MakeString(List<Token> tokens)
     {
       var sb = new StringBuilder();
       string indent = "";
 
-      foreach (var token in tokens)
+      for (int i = 0; i < tokens.Count; i++)
       {
+        var token = tokens[i];
 
-        // fieldname is empty if the ROOT-element-name has not been supplied
-        string fieldnameColon = token.Field == null || string.IsNullOrEmpty(token.Field.Name)
-              ? ""
-              : ("\""+token.Field.Name + "\" : ");
-        
+        string fieldnameColon = null;
         switch (token.Tokenkind)
         {
-            
-        case TokenType.StartScope:
+          case TokenType.StartScope:
             sb.AppendLine(indent + "{");
             indent += IndentIncrement;
             break;
@@ -87,19 +83,38 @@ namespace StatePrinter.OutputFormatters
             break;
 
           case TokenType.SimpleFieldValue:
-            sb.AppendLine(string.Format("{0}{1}{2},", indent, fieldnameColon, token.Value));
-            break;
+          {
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            fieldnameColon = token.Field == null || string.IsNullOrEmpty(token.Field.Name)
+              ? ""
+              : ("\"" + token.Field.Name + "\" : ");
 
+            var optinalComma = OptinalComma(tokens, i);
+            sb.AppendLine(string.Format("{0}{1}{2}{3}", indent, fieldnameColon,
+              token.Value, optinalComma));
+            break;
+          }
           case TokenType.SeenBeforeWithReference:
+          {
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            fieldnameColon = token.Field == null || string.IsNullOrEmpty(token.Field.Name)
+              ? ""
+              : ("\"" + token.Field.Name + "\" : ");
+
             var seenBeforeReference = " -> " + token.ReferenceNo.Number;
             sb.AppendFormat("{0}{1}{2}", indent, fieldnameColon, seenBeforeReference);
             sb.AppendLine();
             break;
+          }
 
           case TokenType.FieldnameWithTypeAndReference:
             // if we are part of an idex, do not print the field name as it has alreadty been printed
             if (token.Field.SimpleKeyInArrayOrDictionary == null)
             {
+              // fieldname is empty if the ROOT-element-name has not been supplied
+              fieldnameColon = token.Field == null || string.IsNullOrEmpty(token.Field.Name)
+                ? ""
+                : ("\"" + token.Field.Name + "\" :");
               sb.AppendLine(string.Format("{0}{1}", indent, fieldnameColon));
             }
             break;
@@ -112,5 +127,19 @@ namespace StatePrinter.OutputFormatters
       return sb.ToString();
     }
 
+    private static string OptinalComma(List<Token> tokens, int i)
+    {
+      bool isLastToken = i == tokens.Count - 1;
+      if (isLastToken)
+        return "";
+
+      var nextToken = tokens[i + 1].Tokenkind;
+      bool isNextEndScope = nextToken == TokenType.EndScope 
+        || nextToken == TokenType.EndEnumeration;
+      if(isNextEndScope)
+        return "";
+      
+      return ",";
+    }
   }
 }

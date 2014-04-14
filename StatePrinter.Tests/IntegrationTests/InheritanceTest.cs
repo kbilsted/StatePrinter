@@ -50,7 +50,7 @@ namespace StatePrinter.Tests.IntegrationTests
       b.SameFieldInAB = "B part";
 
       Assert.AreEqual(
-@"ROOT = <B>
+@"new B()
 {
     SomeFieldOnlyInA = 1
     SameFieldInAB = ""A part""

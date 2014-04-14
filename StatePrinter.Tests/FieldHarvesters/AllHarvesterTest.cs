@@ -39,7 +39,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       CollectionAssert.AreEquivalent(new[] { "StereoAmplifiers", "steeringWheel", "Brand" }, fields);
 
       fields = harvester.GetFields(typeof (SteeringWheel)).Select(x => helper.SanitizeFieldName(x.Name)).ToArray();
-      CollectionAssert.AreEquivalent(new[] { "Size", "Grip", }, fields);
+      CollectionAssert.AreEquivalent(new[] { "Size", "Grip", "Weight" }, fields);
     }
 
     [Test]

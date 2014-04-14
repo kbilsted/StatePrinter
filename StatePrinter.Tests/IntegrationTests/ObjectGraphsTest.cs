@@ -37,18 +37,49 @@ namespace StatePrinter.Tests.IntegrationTests
       car.Brand = "Toyota";
 
       var expected =
-@"ROOT = <Car>
+@"new Car()
 {
     StereoAmplifiers = null
-    steeringWheel = <SteeringWheel>
+    steeringWheel = new SteeringWheel()
     {
         Size = 3
-        Grip = <FoamGrip>
+        Grip = new FoamGrip()
         {
             Material = ""Plastic""
         }
+        Weight = 525
     }
     Brand = ""Toyota""
+}
+";
+      Assert.AreEqual(expected, printer.PrintObject(car));
+    }
+
+
+    [Test]
+    public void ThreeLinkedGraph_json()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+
+      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+      car.Brand = "Toyota";
+
+      var expected =
+@"
+{
+    ""StereoAmplifiers"" : null,
+    ""steeringWheel"" :
+    {
+        ""Size"" : 3,
+        ""Grip"" :
+        {
+            ""Material"" : ""Plastic""
+        }
+        ""Weight"" : 525
+    }
+    ""Brand"" : ""Toyota""
 }
 ";
       Assert.AreEqual(expected, printer.PrintObject(car));
@@ -71,6 +102,7 @@ namespace StatePrinter.Tests.IntegrationTests
         <Grip type='FoamGrip'>
             <Material>""Plastic""</Material>
         </Grip>
+        <Weight>525</Weight>
     </steeringWheel>
     <Brand>""Toyota""</Brand>
 </ROOT>
@@ -87,19 +119,50 @@ namespace StatePrinter.Tests.IntegrationTests
       course.Members.Add(new Student("Richy", course));
 
       var expected =
-@"ROOT = <Course>, ref: 0
+@"new Course(), ref: 0
 {
-    Members = <List<Student>>
-    Members[0] = <Student>
+    Members = new List<Student>()
+    Members[0] = new Student()
     {
         name = ""Stan""
         course =  -> 0
     }
-    Members[1] = <Student>
+    Members[1] = new Student()
     {
         name = ""Richy""
         course =  -> 0
     }
+}
+";
+      Assert.AreEqual(expected, printer.PrintObject(course));
+    }
+
+
+    [Test]
+    public void CyclicGraph_Json()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+
+      var course = new Course();
+      course.Members.Add(new Student("Stan", course));
+      course.Members.Add(new Student("Richy", course));
+
+      var expected =
+@"
+{
+    ""Members"" :
+    [
+        {
+            ""name"" : ""Stan"",
+            ""course"" :  -> 0
+        }
+        {
+            ""name"" : ""Richy"",
+            ""course"" :  -> 0
+        }
+    ]
 }
 ";
       Assert.AreEqual(expected, printer.PrintObject(course));
@@ -119,14 +182,16 @@ namespace StatePrinter.Tests.IntegrationTests
       var expected =
 @"<ROOT type='Course' ref='0'>
     <Members type='List(Student)'>
-    <Members[0] type='Student'>
-        <name>""Stan""</name>
-        <course ref='0' />
-    </Members[0]>
-    <Members[1] type='Student'>
-        <name>""Richy""</name>
-        <course ref='0' />
-    </Members[1]>
+        <Enumeration>
+        <Members type='Student'>
+            <name>""Stan""</name>
+            <course ref='0' />
+        </Members>
+        <Members type='Student'>
+            <name>""Richy""</name>
+            <course ref='0' />
+        </Members>
+    </Enumeration>
 </ROOT>
 ";
       Assert.AreEqual(expected, printer.PrintObject(course));
@@ -154,6 +219,8 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       Grip = grip;
     }
+    internal int Weight = 525;
+
   }
 
   class FoamGrip

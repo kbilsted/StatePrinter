@@ -32,8 +32,8 @@ namespace StatePrinter.Tests.OutputFormatters
     {
       var nonCycleTokens = new List<Token>()
                            {
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldA", "value1", new Reference(1), typeof(string) ),
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldB", "value2", new Reference(2), typeof(string)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", new Reference(1), typeof(string) ),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(2), typeof(string)),
                            };
 
       var filter = new UnusedReferencesTokenFilter();
@@ -42,8 +42,8 @@ namespace StatePrinter.Tests.OutputFormatters
       // test
       var expected = new List<Token>()
                            {
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldA", "value1", null, typeof(string)),
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldB", "value2", null, typeof(string)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", null, typeof(string)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", null, typeof(string)),
                            };
 
       CollectionAssert.AreEqual(expected, newlist);
@@ -54,9 +54,9 @@ namespace StatePrinter.Tests.OutputFormatters
     {
       var nonCycleTokens = new List<Token>()
                            {
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldA", "value1", new Reference(0), typeof(string)),
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldB", "value2", new Reference(1), typeof(int)),
-                             Token.SeenBefore("FieldB", new Reference(1)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", new Reference(0), typeof(string)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(1), typeof(int)),
+                             Token.SeenBefore(new Field("FieldB"), new Reference(1)),
                            };
 
       var filter = new UnusedReferencesTokenFilter();
@@ -65,9 +65,9 @@ namespace StatePrinter.Tests.OutputFormatters
       // test
       var expected = new List<Token>()
                            {
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldA", "value1", null, typeof(string)),
-                             new Token(TokenType.FieldnameWithTypeAndReference, "fieldB", "value2", new Reference(0), typeof(int)),
-                             Token.SeenBefore("FieldB", new Reference(0)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", null, typeof(string)),
+                             new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(0), typeof(int)),
+                             Token.SeenBefore(new Field("FieldB"), new Reference(0)),
                            };
 
       CollectionAssert.AreEqual(expected, newlist);

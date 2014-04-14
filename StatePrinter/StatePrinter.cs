@@ -57,7 +57,7 @@ namespace StatePrinter
     /// </summary>
     /// <param name="objectToPrint">What to print.</param>
     /// <param name="rootname">The name of the root as it is printed.</param>
-    public string PrintObject(object objectToPrint, string rootname = "ROOT")
+    public string PrintObject(object objectToPrint, string rootname = null)
     {
       var introSpector = new IntroSpector(Configuration);
       var tokens = introSpector.PrintObject(objectToPrint, rootname);

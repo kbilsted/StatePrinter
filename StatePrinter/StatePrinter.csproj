@@ -62,6 +62,7 @@
     <Compile Include="Introspection\Reference.cs" />
     <Compile Include="Introspection\Token.cs" />
     <Compile Include="Introspection\TokenType.cs" />
+    <Compile Include="OutputFormatters\JsonStyle.cs" />
     <Compile Include="OutputFormatters\UnusedReferencesTokenFilter.cs" />
     <Compile Include="OutputFormatters\XmlStyle.cs" />
     <Compile Include="OutputFormatters\CurlyBraceStyle.cs" />

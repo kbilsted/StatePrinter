@@ -22,7 +22,7 @@ public class UnusedReferencesTokenFilter
     var result = tokens
       .Select(x => new Token(
         x.Tokenkind,
-        x.FieldName,
+        x.Field,
         x.Value,
         CreateNewReference(remappedReferences, x.ReferenceNo),
         x.FieldType))

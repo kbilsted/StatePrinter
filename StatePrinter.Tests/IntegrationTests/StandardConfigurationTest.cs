@@ -21,91 +21,133 @@ using System;
 using System.Globalization;
 using NUnit.Framework;
 using StatePrinter.Configurations;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
   [TestFixture]
   class StandardConfigurationTests
   {
-    readonly StatePrinter printer = new StatePrinter();
+    StatePrinter printer;
+
+    [SetUp]
+    public void Setup()
+    {
+      printer = new StatePrinter();
+    }
 
     [Test]
     public void NullContent()
     {
-      Assert.AreEqual("ROOT = null\r\n", printer.PrintObject(null));
+      Assert.AreEqual("null\r\n", printer.PrintObject(null));
     }
 
     [Test]
     public void String_empty()
     {
-      Assert.AreEqual("ROOT = \"\"\r\n", printer.PrintObject(""));
-      Assert.AreEqual("ROOT = \"Some string\"\r\n", printer.PrintObject("Some string"));
+      Assert.AreEqual("\"\"\r\n", printer.PrintObject(""));
+      Assert.AreEqual("\"Some string\"\r\n", printer.PrintObject("Some string"));
     }
 
+
+    [Test]
+    public void Bool_with_root()
+    {
+      Assert.AreEqual("Root = True\r\n", printer.PrintObject(true, "Root"));
+      Assert.AreEqual("Ref = False\r\n", printer.PrintObject(false, "Ref"));
+    }
+    
     [Test]
     public void Bool()
     {
-      Assert.AreEqual("ROOT = True\r\n", printer.PrintObject(true));
-      Assert.AreEqual("ROOT = False\r\n", printer.PrintObject(false));
+      Assert.AreEqual("True\r\n", printer.PrintObject(true));
+      Assert.AreEqual("False\r\n", printer.PrintObject(false));
     }
     
     [Test]
     public void Decimal()
     {
-      Assert.AreEqual("ROOT = -1\r\n", printer.PrintObject(-1M));
-      Assert.AreEqual("ROOT = 3,141592\r\n", printer.PrintObject(3.141592M));
-      Assert.AreEqual("ROOT = 1,27E+23\r\n", printer.PrintObject(1.27E23));
+      Assert.AreEqual("-1\r\n", printer.PrintObject(-1M));
+      Assert.AreEqual("3,141592\r\n", printer.PrintObject(3.141592M));
+      Assert.AreEqual("1,27E+23\r\n", printer.PrintObject(1.27E23));
     }
 
     [Test]
     public void Float()
     {
-      Assert.AreEqual("ROOT = -1\r\n", printer.PrintObject(-1f));
-      Assert.AreEqual("ROOT = 3,141592\r\n", printer.PrintObject(3.141592f));
-      Assert.AreEqual("ROOT = 1,27E+23\r\n", printer.PrintObject(1.27E23f));
+      Assert.AreEqual("-1\r\n", printer.PrintObject(-1f));
+      Assert.AreEqual("3,141592\r\n", printer.PrintObject(3.141592f));
+      Assert.AreEqual("1,27E+23\r\n", printer.PrintObject(1.27E23f));
     }
 
     [Test]
     public void Int()
     {
-      Assert.AreEqual("ROOT = -1\r\n", printer.PrintObject(-1f));
-      Assert.AreEqual("ROOT = 3\r\n", printer.PrintObject(3));
-      Assert.AreEqual("ROOT = 1E+23\r\n", printer.PrintObject(1E23));
+      Assert.AreEqual("-1\r\n", printer.PrintObject(-1f));
+      Assert.AreEqual("3\r\n", printer.PrintObject(3));
+      Assert.AreEqual("1E+23\r\n", printer.PrintObject(1E23));
     }
+
+
+    [Test]
+    public void Int_xml()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+      printer = new StatePrinter(cfg);
+
+      Assert.AreEqual("<ROOT>-1</ROOT>\r\n", printer.PrintObject(-1f));
+      Assert.AreEqual("<ROOT>3</ROOT>\r\n", printer.PrintObject(3));
+      Assert.AreEqual("<ROOT>1E+23</ROOT>\r\n", printer.PrintObject(1E23));
+    }
+
+
+    [Test]
+    public void Int_json()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      printer = new StatePrinter(cfg);
+
+      Assert.AreEqual("-1\r\n", printer.PrintObject(-1f));
+      Assert.AreEqual("3\r\n", printer.PrintObject(3));
+      Assert.AreEqual("1E+23\r\n", printer.PrintObject(1E23));
+    }
+
 
     [Test]
     public void Long()
     {
-      Assert.AreEqual("ROOT = -1\r\n", printer.PrintObject(-1L));
-      Assert.AreEqual("ROOT = 789328793\r\n", printer.PrintObject(789328793L));
-      Assert.AreEqual("ROOT = 789389398328793\r\n", printer.PrintObject(789389398328793)); // outside int -range
+      Assert.AreEqual("-1\r\n", printer.PrintObject(-1L));
+      Assert.AreEqual("789328793\r\n", printer.PrintObject(789328793L));
+      Assert.AreEqual("789389398328793\r\n", printer.PrintObject(789389398328793)); // outside int -range
     }
 
     [Test]
     public void GuidTest()
     {
-      Assert.AreEqual("ROOT = 00000000-0000-0000-0000-000000000000\r\n", printer.PrintObject(Guid.Empty));
+      Assert.AreEqual("00000000-0000-0000-0000-000000000000\r\n", printer.PrintObject(Guid.Empty));
     }
 
     [Test]
     public void DateTime()
     {
       var dt = new DateTime(2010, 2, 3, 14, 15, 59);
-      Assert.AreEqual("ROOT = 03-02-2010 14:15:59\r\n", printer.PrintObject(dt));
+      Assert.AreEqual("03-02-2010 14:15:59\r\n", printer.PrintObject(dt));
     }
 
     [Test]
     public void DateTimeOffset()
     {
       var dt = new DateTimeOffset(2010, 2, 3, 14, 15, 59, TimeSpan.FromMinutes(1));
-      Assert.AreEqual("ROOT = 03-02-2010 14:15:59 +00:01\r\n", printer.PrintObject(dt));
+      Assert.AreEqual("03-02-2010 14:15:59 +00:01\r\n", printer.PrintObject(dt));
     }
 
     [Test]
     public void Enum()
     {
-      Assert.AreEqual("ROOT = Hearts\r\n", printer.PrintObject(Suit.Hearts));
-      Assert.AreEqual("ROOT = Spades\r\n", printer.PrintObject(Suit.Spades));
+      Assert.AreEqual("Hearts\r\n", printer.PrintObject(Suit.Hearts));
+      Assert.AreEqual("Spades\r\n", printer.PrintObject(Suit.Spades));
     }
 
     enum Suit
@@ -123,15 +165,15 @@ namespace StatePrinter.Tests.IntegrationTests
       cfg.Culture = new CultureInfo("en-US");
       var printer = new StatePrinter(cfg);
 
-      Assert.AreEqual("ROOT = 12345.343\r\n", printer.PrintObject(decimalNumber));
-      Assert.AreEqual("ROOT = 12345.34\r\n", printer.PrintObject((float)decimalNumber));
-      Assert.AreEqual("ROOT = 2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
+      Assert.AreEqual("12345.343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("12345.34\r\n", printer.PrintObject((float)decimalNumber));
+      Assert.AreEqual("2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
 
       cfg.Culture = new CultureInfo("da-DK");
       printer = new StatePrinter(cfg);
-      Assert.AreEqual("ROOT = 12345,343\r\n", printer.PrintObject(decimalNumber));
-      Assert.AreEqual("ROOT = 12345,34\r\n", printer.PrintObject((float)decimalNumber));
-      Assert.AreEqual("ROOT = 28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
+      Assert.AreEqual("12345,343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("12345,34\r\n", printer.PrintObject((float)decimalNumber));
+      Assert.AreEqual("28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
     }
   }
 }
