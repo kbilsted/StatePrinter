@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -16,35 +16,33 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-using System;
+
 using System.Collections.Generic;
 using System.Reflection;
 using StatePrinter.FieldHarvesters;
 
-namespace StatePrinter.FieldHarvest
+namespace StatePrinter.Introspection
 {
   /// <summary>
-  /// Harvest all fields, public and private. 
-  /// 
-  /// We ignore the types from the following namespaces
-  /// <see cref="System.Reflection"/> 
-  /// <see cref="System.Runtime"/>
-  /// <see cref="System.Func"/>
+  /// For each type we print, we hold the reflected and the readable version of the fields
   /// </summary>
-  public class AllFieldsHarvester : IFieldHarvester
+  class ReflectionInfo
   {
-    public bool CanHandleType(Type type)
-    {
-      return true;
-    }
+    public readonly List<FieldInfo> RawReflectedFields;
+    public readonly List<Field> Fields;  
 
-    /// <summary>
-    ///   We ignore all properties as they, in the end, will only point to some computated state or other fields.
-    ///   Hence they do not provide information about the actual state of the object.
-    /// </summary>
-    public List<FieldInfo> GetFields(Type type)
+    public ReflectionInfo(List<FieldInfo> rawReflectedFields)
     {
-      return new HarvestHelper().GetFields(type);
+      Fields = new List<Field>(rawReflectedFields.Count);
+      RawReflectedFields = rawReflectedFields;
+
+      var helper = new HarvestHelper();
+
+      foreach (var field in rawReflectedFields)
+      {
+        var name = helper.SanitizeFieldName(field.Name);
+        Fields.Add(new Field(name));
+      }
     }
   }
 }

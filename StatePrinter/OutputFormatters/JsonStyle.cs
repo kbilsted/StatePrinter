@@ -19,16 +19,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using StatePrinter.Introspection;
 
 namespace StatePrinter.OutputFormatters
 {
   /// <summary>
-  /// Formatting the tokens to a curly-brace style representation.
+  /// Formatting the tokens to a JSON style representation.
   /// 
-  /// In order to reduce clutter in the output, only reference that are referred to by later
-  /// outputted objects will have a referencenumber attached to them.
+  /// In order to reduce clutter in the output, circular references are referenced by a
+  /// path starting from the root object.
   /// </summary>
   public class JsonStyle : IOutputFormatter
   {
@@ -45,12 +46,63 @@ namespace StatePrinter.OutputFormatters
     public string Print(List<Token> tokens)
     {
       var filter = new UnusedReferencesTokenFilter();
-      var processed = filter.FilterUnusedReferences(tokens);
+      var backreferences = filter.GetBackreferences(tokens);
+      Dictionary<Reference, string> ReferencePaths = CreatePathsFromReferences(tokens, backreferences);
 
-      return MakeString(processed);
+      return MakeString(tokens, ReferencePaths);
     }
 
-    string MakeString(List<Token> tokens)
+    Dictionary<Reference, string> CreatePathsFromReferences(List<Token> tokens, Reference[] backreferences)
+    {
+      var paths = new Dictionary<Reference, string>();
+      var path = new List<string>();
+      path.Add("root");
+
+      string last = null;
+
+      foreach (var token in tokens)
+      {
+        switch (token.Tokenkind)
+        {
+          case TokenType.StartScope:
+            if(last != null)
+              path.Add(last);
+            break;
+          
+          case TokenType.EndScope:
+            path.RemoveAt(path.Count-1);
+            break;
+          
+          case TokenType.FieldnameWithTypeAndReference:
+            if(token.Field.Name != null)
+              last = token.Field.Name 
+                + (token.Field.SimpleKeyInArrayOrDictionary == null 
+                ? "" 
+                : "["+token.Field.SimpleKeyInArrayOrDictionary+"]");
+            
+            if (token.ReferenceNo != null)
+            {
+              if(last == null)
+                paths[token.ReferenceNo] = string.Join(".", path.ToArray());
+              else
+                paths[token.ReferenceNo] = string.Join(".", path.Concat(new[] { last }).ToArray());
+            }
+             break;
+
+          case TokenType.StartEnumeration:
+          case TokenType.EndEnumeration:
+          case TokenType.SeenBeforeWithReference:
+          case TokenType.SimpleFieldValue:
+             break;
+          default:
+            throw new ArgumentOutOfRangeException();
+        }
+      }
+
+      return paths;
+    }
+
+    string MakeString(List<Token> tokens, Dictionary<Reference, string> referencePaths)
     {
       var sb = new StringBuilder();
       string indent = "";
@@ -79,7 +131,7 @@ namespace StatePrinter.OutputFormatters
 
           case TokenType.EndEnumeration:
             indent = indent.Substring(IndentIncrement.Length);
-            sb.AppendLine(indent + "]");
+            sb.AppendLine(string.Format("{0}]{1}", indent, OptionalComma(tokens, i)));
             break;
 
           case TokenType.SimpleFieldValue:
@@ -89,7 +141,7 @@ namespace StatePrinter.OutputFormatters
               ? ""
               : ("\"" + token.Field.Name + "\" : ");
 
-            var optinalComma = OptinalComma(tokens, i);
+            var optinalComma = OptionalComma(tokens, i);
             sb.AppendLine(string.Format("{0}{1}{2}{3}", indent, fieldnameColon,
               token.Value, optinalComma));
             break;
@@ -101,9 +153,8 @@ namespace StatePrinter.OutputFormatters
               ? ""
               : ("\"" + token.Field.Name + "\" : ");
 
-            var seenBeforeReference = " -> " + token.ReferenceNo.Number;
-            sb.AppendFormat("{0}{1}{2}", indent, fieldnameColon, seenBeforeReference);
-            sb.AppendLine();
+            var seenBeforeReference = " " + referencePaths[token.ReferenceNo];
+            sb.AppendLine(string.Format("{0}{1}{2}{3}", indent, fieldnameColon, seenBeforeReference, OptionalComma(tokens, i)));
             break;
           }
 
@@ -115,7 +166,19 @@ namespace StatePrinter.OutputFormatters
               fieldnameColon = token.Field == null || string.IsNullOrEmpty(token.Field.Name)
                 ? ""
                 : ("\"" + token.Field.Name + "\" :");
-              sb.AppendLine(string.Format("{0}{1}", indent, fieldnameColon));
+
+              // inline-print empty collections
+              string optionalValue = "";
+              bool isNextEmptyEnumeration = i + 2 < tokens.Count // TODO optimize by introducing a variable holding "count-2"
+                      && tokens[i+1].Tokenkind == TokenType.StartEnumeration 
+                      && tokens[i+2].Tokenkind == TokenType.EndEnumeration;
+              if (isNextEmptyEnumeration)
+              {
+                i += 2;
+                optionalValue = (fieldnameColon == "" ? "" : " ") + "[]";
+              }
+
+              sb.AppendLine(string.Format("{0}{1}{2}{3}", indent, fieldnameColon, optionalValue, OptionalComma(tokens,i)));
             }
             break;
 
@@ -127,18 +190,23 @@ namespace StatePrinter.OutputFormatters
       return sb.ToString();
     }
 
-    private static string OptinalComma(List<Token> tokens, int i)
+    /// <summary>
+    /// produces an extra "," if needed
+    /// </summary>
+    static string OptionalComma(List<Token> tokens, int i)
     {
       bool isLastToken = i == tokens.Count - 1;
       if (isLastToken)
         return "";
 
       var nextToken = tokens[i + 1].Tokenkind;
-      bool isNextEndScope = nextToken == TokenType.EndScope 
-        || nextToken == TokenType.EndEnumeration;
-      if(isNextEndScope)
+      bool isNextScope = nextToken == TokenType.EndScope
+                         || nextToken == TokenType.StartEnumeration
+                         || nextToken == TokenType.StartScope
+                         || nextToken == TokenType.EndEnumeration;
+      if (isNextScope)
         return "";
-      
+
       return ",";
     }
   }

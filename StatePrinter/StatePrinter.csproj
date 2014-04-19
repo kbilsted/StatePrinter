@@ -58,8 +58,10 @@
     <Compile Include="FieldHarvesters\HarvestHelper.cs" />
     <Compile Include="FieldHarvesters\IFieldHarvester.cs" />
     <Compile Include="FieldHarvesters\PublicFieldsHarvester .cs" />
+    <Compile Include="Introspection\HarvestInfoCache.cs" />
     <Compile Include="Introspection\IntroSpector.cs" />
     <Compile Include="Introspection\Reference.cs" />
+    <Compile Include="Introspection\ReflectionInfo.cs" />
     <Compile Include="Introspection\Token.cs" />
     <Compile Include="Introspection\TokenType.cs" />
     <Compile Include="OutputFormatters\JsonStyle.cs" />

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using StatePrinter.Configurations;
 
 namespace StatePrinter.FieldHarvesters
 {
@@ -36,14 +35,14 @@ namespace StatePrinter.FieldHarvesters
     ///   We ignore all properties as they, in the end, will only point to some computated state or other fields.
     ///   Hence they do not provide information about the actual state of the object.
     /// </summary>
-    public IEnumerable<FieldInfo> GetFields(Type type)
+    public List<FieldInfo> GetFields(Type type)
     {
       const BindingFlags flags = BindingFlags.Public
                             | BindingFlags.NonPublic
                             | BindingFlags.Instance
                             | BindingFlags.DeclaredOnly;
 
-      return GetFields(type, flags);
+      return GetFields(type, flags).ToList();
     }
 
     /// <summary>

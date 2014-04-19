@@ -17,6 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinter.Configurations;
@@ -27,8 +28,15 @@ namespace StatePrinter.Tests.IntegrationTests
   [TestFixture]
   class ObjectGraphsTest
   {
-    readonly StatePrinter printer = new StatePrinter();
+    StatePrinter printer;
 
+    [SetUp]
+    public void Setup()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+      printer = new StatePrinter(cfg);
+    }
 
     [Test]
     public void ThreeLinkedGraph()
@@ -82,6 +90,7 @@ namespace StatePrinter.Tests.IntegrationTests
     ""Brand"" : ""Toyota""
 }
 ";
+
       Assert.AreEqual(expected, printer.PrintObject(car));
     }
 
@@ -156,11 +165,11 @@ namespace StatePrinter.Tests.IntegrationTests
     [
         {
             ""name"" : ""Stan"",
-            ""course"" :  -> 0
+            ""course"" :  root
         }
         {
             ""name"" : ""Richy"",
-            ""course"" :  -> 0
+            ""course"" :  root
         }
     ]
 }
@@ -168,6 +177,141 @@ namespace StatePrinter.Tests.IntegrationTests
       Assert.AreEqual(expected, printer.PrintObject(course));
     }
 
+
+    [Test]
+    public void MegaCyclicGraph_Curlybrace()
+    {
+      var mother = MakeFamily();
+
+      var expected =
+        @"new Human(), ref: 0
+{
+    Name = ""Mom""
+    Mother = new Human()
+    {
+        Name = ""grandMom""
+        Mother = null
+        Children = new List<Human>()
+        Children[0] =  -> 0
+        Father = null
+    }
+    Children = new List<Human>()
+    Children[0] = new Human(), ref: 1
+    {
+        Name = ""son""
+        Mother =  -> 0
+        Children = new List<Human>()
+        Father = new Human(), ref: 2
+        {
+            Name = ""grandDad""
+            Mother = null
+            Children = new List<Human>()
+            Children[0] =  -> 0
+            Children[1] =  -> 1
+            Children[2] = new Human(), ref: 3
+            {
+                Name = ""daughter""
+                Mother =  -> 0
+                Children = new List<Human>()
+                Father =  -> 2
+            }
+            Father = null
+        }
+    }
+    Children[1] =  -> 3
+    Father =  -> 2
+}
+";
+      Console.WriteLine(printer.PrintObject(mother));
+      Assert.AreEqual(expected, printer.PrintObject(mother));
+    }
+
+
+    [Test]
+    public void MegaCyclicGraph_Json()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+
+
+      var mother = MakeFamily();
+
+      var expected =
+@"
+{
+    ""Name"" : ""Mom"",
+    ""Mother"" :
+    {
+        ""Name"" : ""grandMom"",
+        ""Mother"" : null,
+        ""Children"" :
+        [
+            ""Children"" :  root
+        ],
+        ""Father"" : null
+    }
+    ""Children"" :
+    [
+        {
+            ""Name"" : ""son"",
+            ""Mother"" :  root,
+            ""Children"" : [],
+            ""Father"" :
+            {
+                ""Name"" : ""grandDad"",
+                ""Mother"" : null,
+                ""Children"" :
+                [
+                    ""Children"" :  root,
+                    ""Children"" :  root.Children[0],
+                    {
+                        ""Name"" : ""daughter"",
+                        ""Mother"" :  root,
+                        ""Children"" : [],
+                        ""Father"" :  root.Children[0].Father
+                    }
+                ],
+                ""Father"" : null
+            }
+        }
+        ""Children"" :  root.Children[0].Father.Children[2]
+    ],
+    ""Father"" :  root.Children[0].Father
+}
+";
+      Assert.AreEqual(expected, printer.PrintObject(mother));
+    }
+
+
+    /// <summary>
+    ///   grandMom <---+ +---> grandDad
+    ///                | |     ^      ^
+    ///                | |     |      | 
+    ///                | |     |      |
+    ///                Mom<--- son    |
+    ///                  ^            |    
+    ///                  |            |    
+    ///                  +--------- daughter
+    /// </summary>
+    Human MakeFamily()
+    {
+      var grandDad = new Human("grandDad");
+      var grandMom = new Human("grandMom");
+
+      var mother = new Human("Mom", grandDad, grandMom);
+      grandDad.Children.Add(mother);
+      grandMom.Children.Add(mother);
+
+      var son = new Human("son", grandDad, mother);
+      grandDad.Children.Add(son);
+      mother.Children.Add(son);
+
+      var daughter = new Human("daughter", grandDad, mother);
+      grandDad.Children.Add(daughter);
+      mother.Children.Add(daughter);
+      return mother;
+    }
 
     [Test]
     public void CyclicGraph_xmlstyle()
@@ -252,6 +396,26 @@ namespace StatePrinter.Tests.IntegrationTests
     internal string name;
     private Course course;
   }
+#endregion
+
+
+#region even more cyclic job
+
+  class Human
+  {
+    readonly public string Name;
+    readonly public Human Mother;
+    readonly public List<Human> Children = new List<Human>();
+    readonly public Human Father;
+
+    public Human(string name, Human father = null, Human mother = null)
+    {
+      Name = name;
+      Father = father;
+      Mother = mother;
+    }
+  }
+
 #endregion
 
 }

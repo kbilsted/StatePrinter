@@ -21,13 +21,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using StatePrinter.Configurations;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
   [TestFixture]
   class DictionaryTest
   {
-    readonly StatePrinter printer = new StatePrinter();
+    StatePrinter printer;
+
+    [SetUp]
+    public void Setup()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+      printer = new StatePrinter(cfg);
+    }
 
 
     [Test]

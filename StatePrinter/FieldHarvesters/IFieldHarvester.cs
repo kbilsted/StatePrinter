@@ -29,6 +29,6 @@ namespace StatePrinter.FieldHarvesters
   public interface IFieldHarvester
   {
     bool CanHandleType(Type type);
-    IEnumerable<FieldInfo> GetFields(Type type);
+    List<FieldInfo> GetFields(Type type);
   }
 }

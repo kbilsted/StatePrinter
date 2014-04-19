@@ -35,6 +35,7 @@ namespace StatePrinter
   public class StatePrinter
   {
     readonly Configuration Configuration;
+    static readonly HarvestInfoCache harvestCache = new HarvestInfoCache();
 
     public StatePrinter(Configuration configuration)
     {
@@ -59,7 +60,7 @@ namespace StatePrinter
     /// <param name="rootname">The name of the root as it is printed.</param>
     public string PrintObject(object objectToPrint, string rootname = null)
     {
-      var introSpector = new IntroSpector(Configuration);
+      var introSpector = new IntroSpector(Configuration, harvestCache);
       var tokens = introSpector.PrintObject(objectToPrint, rootname);
       
       var formatter = Configuration.OutputFormatter;

@@ -21,7 +21,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using StatePrinter.Configurations;
 using StatePrinter.FieldHarvesters;
 using StatePrinter.ValueConverters;
@@ -34,6 +33,7 @@ namespace StatePrinter.Introspection
   class IntroSpector 
   {
     readonly Configuration Configuration;
+    readonly HarvestInfoCache harvestCache;
 
     /// <summary>
     /// Each entry is assigned a reference number used for back-referencing
@@ -42,10 +42,11 @@ namespace StatePrinter.Introspection
 
     readonly Dictionary<object, Reference> seenBefore = new Dictionary<object, Reference>();
     readonly List<Token> tokens = new List<Token>();
-    
-    public IntroSpector(Configuration configuration)
+
+    public IntroSpector(Configuration configuration, HarvestInfoCache harvestCache)
     {
       Configuration = configuration;
+      this.harvestCache = harvestCache;
     }
 
     public List<Token> PrintObject(object objectToPrint, string rootname)
@@ -95,27 +96,39 @@ namespace StatePrinter.Introspection
 
     void IntrospectComplexType(object source, Field field, Type sourceType)
     {
-      IFieldHarvester harvester;
-      if (!Configuration.TryGetFieldHarvester(sourceType, out harvester))
-        throw new Exception(string.Format("No fieldharvester is configured for handling type '{0}'", sourceType));
-
       Reference optionReferenceInfo = null;
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, sourceType));
       tokens.Add(new Token(TokenType.StartScope));
 
-      var fields = harvester.GetFields(sourceType);
-      var helper = new HarvestHelper();
-      foreach (FieldInfo ffield in fields)
-      {
-        var name = helper.SanitizeFieldName(ffield.Name);
+      ReflectionInfo reflection = ReflectFields(sourceType);
 
-        Introspect(ffield.GetValue(source), new Field(name));
+      for (int i = 0; i < reflection.RawReflectedFields.Count; i++)
+      {
+        var ffield = reflection.RawReflectedFields[i];
+        Introspect(ffield.GetValue(source), reflection.Fields[i]);
       }
+      
       tokens.Add(new Token(TokenType.EndScope));
     }
 
+    ReflectionInfo ReflectFields(Type sourceType)
+    {
+      ReflectionInfo reflection;
+      if ((reflection = harvestCache.TryGet(sourceType)) == null)
+      {
+        IFieldHarvester harvester;
+        if (!Configuration.TryGetFieldHarvester(sourceType, out harvester))
+          throw new Exception(string.Format("No fieldharvester is configured for handling type '{0}'", sourceType));
+
+        var fields = harvester.GetFields(sourceType);
+        reflection = new ReflectionInfo(fields);
+        harvestCache.TryAdd(sourceType, reflection);
+      }
+
+      return reflection;
+    }
 
     bool IntrospectSimpleValue(object source, Field field, Type sourceType)
     {

@@ -11,11 +11,7 @@ public class UnusedReferencesTokenFilter
   /// </summary>
   public List<Token> FilterUnusedReferences(List<Token> tokens)
   {
-    var backreferences = tokens
-      .Where(x => x.Tokenkind == TokenType.SeenBeforeWithReference)
-      .Select(x => x.ReferenceNo)
-      .Distinct()
-      .ToArray();
+    var backreferences = GetBackreferences(tokens);
 
     var remappedReferences = RemappedReferences(backreferences);
 
@@ -29,6 +25,15 @@ public class UnusedReferencesTokenFilter
       .ToList();
 
     return result;
+  }
+
+  public Reference[] GetBackreferences(List<Token> tokens)
+  {
+    return tokens
+      .Where(x => x.Tokenkind == TokenType.SeenBeforeWithReference)
+      .Select(x => x.ReferenceNo)
+      .Distinct()
+      .ToArray();
   }
 
   Dictionary<Reference, Reference> RemappedReferences(Reference[] backreferences)

@@ -94,12 +94,18 @@ namespace StatePrinter.Configurations
       fieldHarvesters.Insert(0, handler);
     }
 
+    Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>(); 
+    
     /// <summary>
     /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
     /// </summary>
     public bool TryGetValueConverter(Type source, out IValueConverter result)
     {
-      result = valueConverters.FirstOrDefault(x => x.CanHandleType(source));
+      if (!converterLookup.TryGetValue(source, out result))
+      {
+        result = valueConverters.FirstOrDefault(x => x.CanHandleType(source));
+        converterLookup.Add(source, result);        
+      }
       return result != null;
     }
 

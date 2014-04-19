@@ -19,18 +19,40 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using StatePrinter.Configurations;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
   [TestFixture]
   class IEnumeratbleTest
   {
-    readonly StatePrinter printer = new StatePrinter();
+    StatePrinter printer;
+
+    [SetUp]
+    public void Setup()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+      printer = new StatePrinter(cfg);
+    }
+
 
     [Test]
     public void EmptyIntArray()
     {
       Assert.AreEqual("new Int32[]()\r\n", printer.PrintObject(new int[0]));
+    }
+
+
+    [Test]
+    public void EmptyIntArray_json()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+
+      printer = new StatePrinter(cfg);
+      Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
     }
 
     [Test]
