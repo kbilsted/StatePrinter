@@ -55,36 +55,36 @@ namespace StatePrinter.Introspection
       FieldType = fieldFieldType;
     }
 
-    //public override bool Equals(object obj)
-    //{
-    //  return Equals(obj as Token);
-    //}
+    public override bool Equals(object obj)
+    {
+      return Equals(obj as Token);
+    }
 
-    //public bool Equals(Token other)
-    //{
-    //  if (other == null) return false;
-    //  if (ReferenceEquals(other, this)) return true;
-    //  if (Tokenkind != other.Tokenkind) return false;
-    //  if (!Equals(ReferenceNo, other.ReferenceNo)) return false;
-    //  if (Value != other.Value) return false;
-    //  if (FieldType != other.FieldType) return false;
+    public bool Equals(Token other)
+    {
+      if (other == null) return false;
+      if (ReferenceEquals(other, this)) return true;
+      if (Tokenkind != other.Tokenkind) return false;
+      if (!Equals(ReferenceNo, other.ReferenceNo)) return false;
+      if (Value != other.Value) return false;
+      if (FieldType != other.FieldType) return false;
 
-    //  return true;
-    //}
+      return true;
+    }
 
 
-    //public override int GetHashCode()
-    //{
-    //  unchecked
-    //  {
-    //    var hashCode = (int) Tokenkind;
-    //    hashCode = (hashCode*397) ^ (FieldType != null ? FieldType.GetHashCode() : 0);
-    //    hashCode = (hashCode*397) ^ Field.GetHashCode();
-    //    hashCode = (hashCode*397) ^ (Value != null ? Value.GetHashCode() : 0);
-    //    hashCode = (hashCode*397) ^ (ReferenceNo != null ? ReferenceNo.GetHashCode() : 0);
+    public override int GetHashCode()
+    {
+      unchecked
+      {
+        var hashCode = (int)Tokenkind;
+        hashCode = (hashCode * 397) ^ (FieldType != null ? FieldType.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ Field.GetHashCode();
+        hashCode = (hashCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
+        hashCode = (hashCode * 397) ^ (ReferenceNo != null ? ReferenceNo.GetHashCode() : 0);
 
-    //    return hashCode;
-    //  }
-    //}
+        return hashCode;
+      }
+    }
   }
 }
