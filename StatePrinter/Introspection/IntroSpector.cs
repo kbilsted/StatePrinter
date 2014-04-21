@@ -35,6 +35,11 @@ namespace StatePrinter.Introspection
     readonly Configuration Configuration;
     readonly HarvestInfoCache harvestCache;
 
+    static readonly Token Startscope = new Token(TokenType.StartScope);
+    static readonly Token Endscope = new Token(TokenType.EndScope);
+    static readonly Token StartEnumeration = new Token(TokenType.StartEnumeration);
+    static readonly Token EndEnumeration = new Token(TokenType.EndEnumeration);
+
     /// <summary>
     /// Each entry is assigned a reference number used for back-referencing
     /// </summary>
@@ -100,7 +105,7 @@ namespace StatePrinter.Introspection
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, sourceType));
-      tokens.Add(new Token(TokenType.StartScope));
+      tokens.Add(Startscope);
 
       ReflectionInfo reflection = ReflectFields(sourceType);
 
@@ -109,8 +114,8 @@ namespace StatePrinter.Introspection
         var ffield = reflection.RawReflectedFields[i];
         Introspect(ffield.GetValue(source), reflection.Fields[i]);
       }
-      
-      tokens.Add(new Token(TokenType.EndScope));
+
+      tokens.Add(Endscope);
     }
 
     ReflectionInfo ReflectFields(Type sourceType)
@@ -166,7 +171,7 @@ namespace StatePrinter.Introspection
       if (!isKeyTypeSimple)
         return false; // print as enumerable which is more verbose
 
-      tokens.Add(new Token(TokenType.StartEnumeration));
+      tokens.Add(StartEnumeration);
 
       var keys = source.Keys;
       foreach (var key in keys)
@@ -176,7 +181,7 @@ namespace StatePrinter.Introspection
         var outputfieldName = new Field(field.Name, keyValue);
         Introspect(valueValue, outputfieldName);
       }
-      tokens.Add(new Token(TokenType.EndEnumeration));
+      tokens.Add(EndEnumeration);
 
       return true;
     }
@@ -191,7 +196,7 @@ namespace StatePrinter.Introspection
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
-      tokens.Add(new Token(TokenType.StartEnumeration));
+      tokens.Add(StartEnumeration);
 
       int i = 0;
       foreach (var x in enumerable)
@@ -199,7 +204,7 @@ namespace StatePrinter.Introspection
         var outputFieldName = new Field(field.Name, ""+ i++);
         Introspect(x, outputFieldName);
       }
-      tokens.Add(new Token(TokenType.EndEnumeration));
+      tokens.Add(EndEnumeration);
 
       return true;
     }
