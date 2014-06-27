@@ -3,13 +3,16 @@
 
 StatePrinter - "The automatic ```.ToString()``` utility."
 
+Version 1.0.2 - get it here (https://www.nuget.org/packages/StatePrinter/)
+
+
 # 1. Introduction
 
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
 
 * *No more manual .ToString()* - it is much easier to write robus and self-sufficient `ToString()` methods. 
 * It becomes much easier to write unit tests against object-graphs. 
-* It is part of the back-end engine of the very nice ApprovalTests framework.
+* It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
 
 
 ### 1.1 Simple usage
