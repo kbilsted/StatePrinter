@@ -121,7 +121,7 @@ namespace StatePrinter.Tests.IntegrationTests
 
 
     [Test]
-    public void CyclicGraph()
+    public void CyclicGraph_curly()
     {
       var course = new Course();
       course.Members.Add(new Student("Stan", course));

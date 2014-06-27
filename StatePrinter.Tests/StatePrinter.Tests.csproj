@@ -50,6 +50,7 @@
     <Compile Include="Configurations\ConfigurationTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="IntegrationTests\ArrayTest.cs" />
+    <Compile Include="IntegrationTests\CultureTests.cs" />
     <Compile Include="IntegrationTests\DictionaryTest.cs" />
     <Compile Include="IntegrationTests\IEnumeratbleTest.cs" />
     <Compile Include="IntegrationTests\InheritanceTest.cs" />
