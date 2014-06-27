@@ -31,16 +31,17 @@ Console.WriteLine(printer.PrintObject(car));
 
 and you get the following output
 	
-	ROOT = <Car>
+	new Car()
 	{
 	    StereoAmplifiers = null
-	    steeringWheel = <SteeringWheel>
+	    steeringWheel = new SteeringWheel()
 	    {
 	        Size = 3
-	        Grip = <FoamGrip>
+	        Grip = new FoamGrip()
 	        {
 	            Material = ""Plastic""
 	        }
+	        Weight = 525
 	    }
 	    Brand = ""Toyota""
 	}
@@ -53,33 +54,32 @@ var course = new Course();
 course.Members.Add(new Student("Stan", course));
 course.Members.Add(new Student("Richy", course));
 
-Console.WriteLine(printer.PrintObject(course, "Start"));
+Console.WriteLine(printer.PrintObject(course));
 ```
 
 yields	 
 	     
-	Start = <Course>, ref: 0
+	new Course(), ref: 0
 	{
-	    Members = <List<Student>>
-	    Members[0] = <Student>
+	    Members = new List<Student>()
+	    Members[0] = new Student()
 	    {
 	        name = ""Stan""
 	        course =  -> 0
 	    }
-	    Members[1] = <Student>
+	    Members[1] = new Student()
 	    {
 	        name = ""Richy""
 	        course =  -> 0
 	    }
 	}
-	
 
 notice the `-> 0` this is a pointer back to an already printed object. Notice that references are only added to the output if needed. This amongst alot of other details are configurable.
 
 
 ### 1.2 Generic ToString() usage
 
-If you are anything like me, there is nothing worse than having to edit all sorts of bizare methods on a class whenever you add a field to a class. For that reason I always find myself not wanting to maintain the `ToString()` method. With the stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
+If you are anything like me, there is nothing worse than having to edit all sorts of bizare methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With the stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
 
 
 ```C#
@@ -105,10 +105,10 @@ Console.WriteLine( new AClassWithToString() );
 
 we get
 
-	 = <AClassWithToString>
+	new AClassWithToString()
 	{
 	    B = ""hello""
-	    C = <Int32[]>
+	    C = new Int32[]()
 	    C[0] = 5
 	    C[1] = 4
 	    C[2] = 3
@@ -120,12 +120,13 @@ we get
 
 # 2. Configuration
 
-Now, this is the fun part. Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts each of which represents a sub-process of the state printer. Since the configuration is made through code, we'll just as well explain the interfaces.
+Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts each of which represents a sub-process of the state printer. Since the configuration is made through code, we'll just as well explain the interfaces.
 
 * `IFieldHarvester` deals with how/which fields are harvested from types. E.g. only public fields are printed.
 * `IValueConverter` handles Which types are converted into "simple values". Eg. the decimal type contains a lot of internal stuff, and usually we only want to get the numeric value printed. Or maybe you annotate enum values preser those values printed.
 * `IOutputFormatter` deals with turning tokens (internal representation of the object state) into a string form. 
  
+Finally, culture specific printing of dates and numbers are supported.
 
 
 ## 2.1 FILO configuration - First In, Last Out
@@ -182,8 +183,36 @@ var printer = new StatePrinter(cfg);
 ```
 
 
+## 2.3 Culture specific printing
 
-## 2.3 Field harvesting
+The default culture is `CultureInfo.CurrentCulture`. You can change the `Culture` field in the configuration to suit your needs. 
+
+      const decimal decimalNumber = 12345.343M;
+      var dateTime = new DateTime(2010, 2, 28, 22, 10, 59);
+
+First the us culture
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.Culture = new CultureInfo("en-US");
+      var printer = new StatePrinter(cfg);
+
+      Assert.AreEqual("12345.343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
+
+The same input with a different culture
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.Culture = new CultureInfo("da-DK");
+      var printer = new StatePrinter(cfg);
+      Assert.AreEqual("12345,343\r\n", printer.PrintObject(decimalNumber));
+      Assert.AreEqual("28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
+
+
+
+
+
+
+## 2.4 Field harvesting
 
 The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester` and `PublicFieldsHarvester`. By default we harvest all fields, but you can use whatever implementation you want.
 
@@ -224,7 +253,9 @@ public bool CanHandleType(Type type)
 
 
 
-## 2.4 Simple value printing
+
+
+## 2.5 Simple value printing
 
 After we have harvested the fields of the object graph, we may desire to turn a complex object into a simple value. That is one that doesn't hold any nested structure. You'd be surprised of the amount of "garbage" values we would print if we revealed the whole state of the string or decimal instances. If you have any interest in such fields, feel free to supply your own implementation.
 
@@ -259,7 +290,7 @@ var printer = new StatePrinter(cfg);
 Due to the FILO principle (First In Last Out) our valueconverter is consulted before the standard implementation.
 
 
-## 2.5 Output formatting
+## 2.6 Output formatting
 
 the `IOutputFormatter` only contains a single method
 
@@ -281,6 +312,102 @@ public class Token : IEquatable<Token>
 ```
 
 So at this point in the process we need not worry about recursion, field traversal or the like. We focus on the formatting, turning the tokens into a XML-like, JSON-like, LISP-like S-Expressions or whatever you wish. In the current implementation we make two passes on the input to track which objects are referred to by later object. Those we wish to augment with a reference.
+
+The following three outputters are implemented:
+
+
+
+
+### Curly style
+
+The curly style is reminiscent for C# code
+
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+      
+      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+      
+      printer.PrintObject(car);
+
+Yields the output
+
+	new Course(), ref: 0
+	{
+	    Members = new List<Student>()
+	    Members[0] = new Student()
+	    {
+	        name = ""Stan""
+	        course =  -> 0
+	    }
+	    Members[1] = new Student()
+	    {
+	        name = ""Richy""
+	        course =  -> 0
+	    }
+	}
+
+
+
+### JSon style
+
+The JSon style follows the JSon format and describe cyclic references as paths from the root
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+      
+      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+      
+      printer.PrintObject(car);
+
+Yields the output
+
+	{
+	    ""Members"" :
+	    [
+	        {
+	            ""name"" : ""Stan"",
+	            ""course"" :  root
+	        }
+	        {
+	            ""name"" : ""Richy"",
+	            ""course"" :  root
+	        }
+	    ]
+	}
+
+
+
+### XML style
+
+The Xml style is the most verbose
+
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+      var printer = new StatePrinter(cfg);
+      
+      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+      
+      printer.PrintObject(car);
+
+Yields the output
+
+
+	<ROOT type='Car'>
+	    <StereoAmplifiers>null</StereoAmplifiers>
+	    <steeringWheel type='SteeringWheel'>
+	        <Size>3</Size>
+	        <Grip type='FoamGrip'>
+	            <Material>""Plastic""</Material>
+	        </Grip>
+	        <Weight>525</Weight>
+	    </steeringWheel>
+	    <Brand>""Toyota""</Brand>
+	</ROOT>
+
 
 
 # 3. License
