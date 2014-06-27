@@ -16,12 +16,12 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using StatePrinter.FieldHarvesters;
 
-namespace StatePrinter.FieldHarvest
+namespace StatePrinter.FieldHarvesters
 {
   /// <summary>
   /// Harvest all fields, public and private. 

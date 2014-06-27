@@ -23,6 +23,9 @@ namespace StatePrinter.OutputFormatters
 {
   public static class OutputFormatterHelpers
   {
+    /// <summary>
+    /// Convert a type into a human readable string
+    /// </summary>
     public static string MakeReadable(Type type)
     {
       if(type == null)

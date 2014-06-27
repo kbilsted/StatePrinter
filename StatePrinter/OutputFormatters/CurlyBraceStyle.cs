@@ -35,7 +35,7 @@ namespace StatePrinter.OutputFormatters
     /// <summary>
     /// Specifies how indentation is done. 
     /// </summary>
-    readonly string IndentIncrement = "    ";
+    readonly string IndentIncrement;
 
     public CurlyBraceStyle(string indentIncrement)
     {
@@ -52,67 +52,73 @@ namespace StatePrinter.OutputFormatters
 
     string MakeString(IEnumerable<Token> tokens)
     {
-      var sb = new StringBuilder();
-      string indent = "";
+      var sb = new IndentingStringBuilder(IndentIncrement);
 
       foreach (var token in tokens)
       {
-        string fieldName = null;
-        if (token.Field != null)
-        {
-          fieldName = token.Field.Name
-                      + (token.Field.SimpleKeyInArrayOrDictionary != null
-                        ? ("[" + token.Field.SimpleKeyInArrayOrDictionary + "]")
-                        : "");
-        }
-
-        // fieldname is empty if the ROOT-element-name has not been supplied
-        string fieldnameAssign = string.IsNullOrEmpty(fieldName)
-          ? ""
-          : (fieldName + " = ");
-
-        switch (token.Tokenkind)
-        {
-          case TokenType.StartScope:
-            sb.AppendLine(indent + "{");
-            indent += IndentIncrement;
-            break;
-
-          case TokenType.EndScope:
-            indent = indent.Substring(IndentIncrement.Length);
-            sb.AppendLine(indent + "}");
-            break;
-
-          case TokenType.StartEnumeration:
-          case TokenType.EndEnumeration:
-            break;
-
-          case TokenType.SimpleFieldValue:
-            sb.AppendLine(string.Format("{0}{1}{2}", indent, fieldnameAssign, token.Value));
-            break;
-
-          case TokenType.SeenBeforeWithReference:
-            var seenBeforeReference = " -> " + token.ReferenceNo.Number;
-            sb.AppendLine(string.Format("{0}{1}{2}", indent, fieldnameAssign, seenBeforeReference));
-            break;
-
-          case TokenType.FieldnameWithTypeAndReference:
-            var optionReferenceInfo = token.ReferenceNo == null
-              ? ""
-              : string.Format(", ref: {0}", token.ReferenceNo.Number);
-
-            var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType);
-
-            sb.AppendLine(string.Format("{0}{1}new {2}(){3}", indent, fieldnameAssign, fieldType, optionReferenceInfo));
-            break;
-
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
+        MakeTokenString(token, sb);
       }
 
       return sb.ToString();
     }
 
+    void MakeTokenString(Token token, IndentingStringBuilder sb)
+    {
+      switch (token.Tokenkind)
+      {
+        case TokenType.StartScope:
+          sb.AppendFormatLine("{{");
+          sb.Indent();
+          break;
+
+        case TokenType.EndScope:
+          sb.DeIndent();
+          sb.AppendFormatLine("}}");
+          break;
+
+        case TokenType.StartEnumeration:
+        case TokenType.EndEnumeration:
+          break;
+
+        case TokenType.SimpleFieldValue:
+          sb.AppendFormatLine("{0}{1}", MakeFieldnameAssign(token), token.Value);
+          break;
+
+        case TokenType.SeenBeforeWithReference:
+          var seenBeforeReference = " -> " + token.ReferenceNo.Number;
+          sb.AppendFormatLine("{0}{1}", MakeFieldnameAssign(token), seenBeforeReference);
+          break;
+
+        case TokenType.FieldnameWithTypeAndReference:
+          var optionReferenceInfo = token.ReferenceNo == null
+            ? ""
+            : string.Format(", ref: {0}", token.ReferenceNo.Number);
+
+          var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType);
+
+          sb.AppendFormatLine("{0}new {1}(){2}", MakeFieldnameAssign(token), fieldType, optionReferenceInfo);
+          break;
+
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+    }
+
+    string MakeFieldnameAssign(Token token)
+    {
+      if (token.Field == null)
+        return "";
+
+      var simpleLookupKey = token.Field.SimpleKeyInArrayOrDictionary == null
+        ? ""
+        : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
+      var fieldName = token.Field.Name + simpleLookupKey;
+
+      // fieldname is empty if the ROOT-element-name has not been supplied
+      string fieldnameAssign = string.IsNullOrEmpty(fieldName)
+        ? ""
+        : fieldName + " = ";
+      return fieldnameAssign;
+    }
   }
 }

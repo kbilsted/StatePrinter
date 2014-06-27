@@ -335,7 +335,8 @@ namespace StatePrinter.Tests.IntegrationTests
             <name>""Richy""</name>
             <course ref='0' />
         </Members>
-    </Enumeration>
+        </Enumeration>
+    </Members>
 </ROOT>
 ";
       Assert.AreEqual(expected, printer.PrintObject(course));

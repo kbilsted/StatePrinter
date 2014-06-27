@@ -17,14 +17,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using NUnit.Framework;
+using StatePrinter.Configurations;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.PerformanceTests
 {
   [TestFixture]
   [Explicit]
-  class ManySmallObjects
+  internal class ManySmallObjects
   {
     private const int N = 1000000;
 
@@ -48,27 +52,50 @@ namespace StatePrinter.Tests.PerformanceTests
     [Test]
     public void DumpManySmallObjects()
     {
-      var x = new List<ToDump>();
-      for (int i = 0; i < N; i++)
+      for (int i = 1000; i <= N*2; i *= 2)
       {
-        x.Add(new ToDump());    
+        DumpNObjects(i);
       }
-
-      var printer = new StatePrinter();
-      printer.PrintObject(x);
     }
+
+    private void DumpNObjects(int max)
+    {
+      var x = new List<ToDump>();
+      for (int i = 0; i < max; i++)
+        x.Add(new ToDump());
+
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+      var mills = time(() =>
+                       {
+                         var printer = new StatePrinter(cfg);
+                         printer.PrintObject(x);
+                       });
+      Console.WriteLine(max + ":  " + mills);
+    }
+
 
     internal class Base
     {
       internal string Boo;
     }
-    
-    class ToDump : Base
+
+
+    private class ToDump : Base
     {
       internal string Poo = "dd";
     }
 
-  }
 
+
+    private long time(Action a)
+    {
+      var watch = new Stopwatch();
+      watch.Start();
+      a();
+      watch.Stop();
+      return watch.ElapsedMilliseconds;
+    }
+  }
 
 }

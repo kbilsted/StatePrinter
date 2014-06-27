@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using StatePrinter.Introspection;
 
@@ -35,7 +36,7 @@ namespace StatePrinter.OutputFormatters
     /// <summary>
     /// Specifies how indentation is done. 
     /// </summary>
-    readonly string IndentIncrement = "    ";
+    readonly string IndentIncrement;
 
     public XmlStyle(string indentIncrement)
     {
@@ -51,63 +52,72 @@ namespace StatePrinter.OutputFormatters
 
     string MakeString(IEnumerable<Token> tokens)
     {
-      var sb = new StringBuilder();
-      string indent = "";
+      var sb = new IndentingStringBuilder(IndentIncrement);
 
-      Token last = null;
+      Token previous = null;
       var endTags = new Stack<string>();
       foreach (var token in tokens)
       {
-
-        string tagName = GetTagName(token);
-
-        switch (token.Tokenkind)
-        {
-          case TokenType.StartScope:
-            indent += IndentIncrement;
-            endTags.Push(GetTagName(last));
-            break;
-
-          case TokenType.EndScope:
-            indent = indent.Substring(IndentIncrement.Length);
-            sb.AppendLine(string.Format("{0}</{1}>", indent, endTags.Pop()));
-            break;
-
-          case TokenType.StartEnumeration:
-            indent += IndentIncrement;
-            sb.AppendLine(string.Format("{0}<Enumeration>", indent));
-            break;
-
-          case TokenType.EndEnumeration:
-            indent = indent.Substring(IndentIncrement.Length);
-            sb.AppendLine(string.Format("{0}</Enumeration>", indent));
-            break;
-
-          case TokenType.SimpleFieldValue:
-            sb.AppendLine(string.Format("{0}<{1}>{2}</{1}>", indent, tagName, token.Value));
-            break;
-
-          case TokenType.SeenBeforeWithReference:
-            var seenBeforeReference = string.Format(" ref='{0}'", token.ReferenceNo.Number);
-            sb.AppendLine(string.Format("{0}<{1}{2} />", indent, tagName, seenBeforeReference));
-            break;
-
-          case TokenType.FieldnameWithTypeAndReference:
-            var optionReferenceInfo = token.ReferenceNo != null
-              ? string.Format(" ref='{0}'", token.ReferenceNo.Number)
-              : "";
-            var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType).Replace('<','(').Replace('>',')');
-            sb.AppendLine(string.Format("{0}<{1} type='{2}'{3}>", indent, tagName, fieldType, optionReferenceInfo));
-            break;
-
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
-
-        last = token;
+        MakeTokenString(token, sb, endTags, previous);
+        previous = token;
       }
 
+      if(endTags.Any())
+        throw new Exception("Internal logic error");
+
       return sb.ToString();
+    }
+
+    void MakeTokenString(Token token, IndentingStringBuilder sb, Stack<string> endTags, Token previous)
+    {
+      string tagName = GetTagName(token);
+
+      switch (token.Tokenkind)
+      {
+        case TokenType.StartScope:
+          sb.Indent();
+          endTags.Push(GetTagName(previous));
+          break;
+
+        case TokenType.EndScope:
+          sb.DeIndent();
+          sb.AppendFormatLine("</{0}>", endTags.Pop());
+          break;
+
+        case TokenType.StartEnumeration:
+          sb.Indent();
+          sb.AppendFormatLine("<Enumeration>");
+          endTags.Push(GetTagName(previous));
+          break;
+
+        case TokenType.EndEnumeration:
+          sb.AppendFormatLine("</Enumeration>");
+          sb.DeIndent();
+          sb.AppendFormatLine("</{0}>", endTags.Pop());
+          break;
+
+        case TokenType.SimpleFieldValue:
+          sb.AppendFormatLine("<{0}>{1}</{0}>", tagName, token.Value);
+          break;
+
+        case TokenType.SeenBeforeWithReference:
+          var seenBeforeReference = string.Format(" ref='{0}'", token.ReferenceNo.Number);
+          sb.AppendFormatLine("<{0}{1} />", tagName, seenBeforeReference);
+          break;
+
+        case TokenType.FieldnameWithTypeAndReference:
+          var optionReferenceInfo = token.ReferenceNo != null
+            ? string.Format(" ref='{0}'", token.ReferenceNo.Number)
+            : "";
+          var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType)
+              .Replace('<', '(')
+              .Replace('>', ')');
+          sb.AppendFormatLine("<{0} type='{1}'{2}>", tagName, fieldType, optionReferenceInfo);
+          break;
+
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
     }
 
     private string GetTagName(Token token)

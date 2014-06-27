@@ -17,6 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinter.Configurations;
@@ -108,6 +109,44 @@ namespace StatePrinter.Tests.IntegrationTests
     }
 }
 ";
+      Assert.AreEqual(expected, printer.PrintObject(d));
+    }
+
+    [Test]
+    public void xml_Dictionary_person_address()
+    {
+      var cfg = ConfigurationHelper.GetStandardConfiguration();
+      cfg.OutputFormatter = new XmlStyle("   ");
+
+      printer = new StatePrinter(cfg);
+      var d = new Dictionary<Person, Address>
+              {
+                {
+                  new Person {Age = 37, FirstName = "Klaus", LastName = "Meyer"},
+                  new Address() {Street = "Fairway Dr.", StreetNumber = 50267, Country = Country.USA, Zip = "CA 91601"}
+                },
+              };
+
+      var expected =
+@"<ROOT type='Dictionary(Person, Address)'>
+   <Enumeration>
+   <ROOT type='KeyValuePair(Person, Address)'>
+      <key type='Person'>
+         <Age>37</Age>
+         <FirstName>""Klaus""</FirstName>
+         <LastName>""Meyer""</LastName>
+      </key>
+      <value type='Address'>
+         <Street>""Fairway Dr.""</Street>
+         <StreetNumber>50267</StreetNumber>
+         <Zip>""CA 91601""</Zip>
+         <Country>USA</Country>
+      </value>
+   </ROOT>
+   </Enumeration>
+</ROOT>
+";
+
       Assert.AreEqual(expected, printer.PrintObject(d));
     }
 
