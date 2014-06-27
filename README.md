@@ -3,7 +3,7 @@
 
 StatePrinter - "The automatic ```.ToString()``` utility."
 
-Version 1.0.2 - get it here (https://www.nuget.org/packages/StatePrinter/)
+Version 1.0.3 - get it here (https://www.nuget.org/packages/StatePrinter/)
 
 
 # 1. Introduction
