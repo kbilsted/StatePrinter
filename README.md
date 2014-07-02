@@ -413,7 +413,143 @@ Yields the output
 
 
 
-# 3. License
+
+# 3. Unit testing
+
+When unit testing, you often have to write a ton of asserts to check the state of a business object. The problem with such an approach are manyfold
+
+* It is quite laborious
+* Readability is average but lacks a terse feeling, especially when you are dealing with sub-objects
+* Along the same line, it is difficult to see that all fields are in fact covered by the asserts
+* When the business object is extended in the future, it is a manual task to identify and add asserts 
+
+When using the StatePrinter these problems are mitigated as you are asserting against a easily read string representation. You know all fields are covered, as all fields are printed. When the object changes in the future, so will its string representation, and thus your tests fail.
+
+
+## 3.1 Restricting fields when dumping
+
+Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
+
+* They may hold uninteresting values polute the assert
+* They may even change value from execution to execution
+
+We can easilty remedy this situation using the FieldHarvester abstraction described above, however, we do not feel inclined to create an implementation of the harvesting interface pr. class to be tested. Instead, a generic implementation can be made that operates on `Func`'s and thus is more light-weigt. 
+
+
+```C#
+ public class SelectiveHarvester : IFieldHarvester
+ {
+    Implementation selected = null;
+    readonly List<Implementation> implementations = new List<Implementation>(); 
+
+    public bool CanHandleType(Type type)
+    {
+      selected = implementations.FirstOrDefault(x => x.Selector.IsAssignableFrom(type));
+      return selected != null;
+    }
+
+    public List<FieldInfo> GetFields(Type type)
+    {
+      var fields = new HarvestHelper().GetFields(type);
+      return selected.Filter(fields).ToList();
+    }
+
+    public void Add(Type selector, Func<List<FieldInfo>, IEnumerable<FieldInfo>> filter)
+    {
+      implementations.Add(new Implementation(selector, filter));
+    }
+
+
+    class Implementation
+    {
+      public readonly Type Selector;
+      public readonly Func<List<FieldInfo>, IEnumerable<FieldInfo>> Filter;
+
+      public Implementation(Type selector, Func<List<FieldInfo>, IEnumerable<FieldInfo>> filter)
+      {
+        Selector = selector;
+        Filter = filter;
+      }
+    }
+  }
+}
+```
+
+in fact this implementation will be included in the next release.
+
+You can now easily configure what to dump when testing
+
+### 3.1.1 Example
+
+First we define 3 business classes. Where `X` in the classes `A` and `B` is a unwanted property with respect to testing. For `C` instances, however, we do want to print the state of `X` since it holds a different meaning despite the naming coincidence.
+
+```C#
+class A
+{
+  public DateTime X;
+  public string Name;
+}
+
+class B : A
+{
+  public int Age;
+}
+
+class C
+{
+  public DateTime X;
+}
+```
+
+
+A normal test would look like
+
+
+```C#
+[Test]
+public void UserStory()
+{
+  var cfg = ConfigurationHelper.GetStandardConfiguration();
+  var printer = new StatePrinter(cfg);
+
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly"});
+  ...
+}
+```
+
+but this will dump `X`. Thus we need to configure	
+
+
+```C#
+var harvester = new SelectiveHarvester();
+harvester.Add(typeof(A), x => x.Where(y => y.Name != "X"));
+
+cfg.Add(harvester);
+```
+
+And the end result looks like
+
+
+```C#
+[Test]
+public void UserStory()
+{
+  var cfg = ConfigurationHelper.GetStandardConfiguration();
+
+  var harvester = new SelectiveHarvester();
+  harvester.Add(typeof(A), x => x.Where(y => y.Name != "X"));
+  cfg.Add(harvester);
+  
+  var printer = new StatePrinter(cfg);
+
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly"});
+  Assert.AreEqual(@"new A(){    Name = ""Charly""}", state.Replace("\r\n", ""));
+}
+```
+
+
+
+# 4. License
 
 StatePrinter is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
 
