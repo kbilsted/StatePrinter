@@ -341,12 +341,12 @@ Yields the output
 	    Members = new List<Student>()
 	    Members[0] = new Student()
 	    {
-	        name = ""Stan""
+	        name = "Stan"
 	        course =  -> 0
 	    }
 	    Members[1] = new Student()
 	    {
-	        name = ""Richy""
+	        name = "Richy"
 	        course =  -> 0
 	    }
 	}
@@ -368,15 +368,15 @@ The JSon style follows the JSon format and describe cyclic references as paths f
 Yields the output
 
 	{
-	    ""Members"" :
+	    "Members" :
 	    [
 	        {
-	            ""name"" : ""Stan"",
-	            ""course"" :  root
+	            "name" : "Stan",
+	            "course" :  root
 	        }
 	        {
-	            ""name"" : ""Richy"",
-	            ""course"" :  root
+	            "name" : "Richy",
+	            "course" :  root
 	        }
 	    ]
 	}
@@ -404,11 +404,11 @@ Yields the output
 	    <steeringWheel type='SteeringWheel'>
 	        <Size>3</Size>
 	        <Grip type='FoamGrip'>
-	            <Material>""Plastic""</Material>
+	            <Material>"Plastic"</Material>
 	        </Grip>
 	        <Weight>525</Weight>
 	    </steeringWheel>
-	    <Brand>""Toyota""</Brand>
+	    <Brand>"Toyota"</Brand>
 	</ROOT>
 
 
