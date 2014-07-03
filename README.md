@@ -5,6 +5,8 @@ StatePrinter - "The automatic ".ToString()" utility."
 
 Version 1.0.4 - get it here (https://www.nuget.org/packages/StatePrinter/)
 
+Requires C# 3.5 or newer
+
 
 # 1. Introduction
 
