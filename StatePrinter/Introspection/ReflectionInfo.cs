@@ -18,6 +18,7 @@
 // under the License.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using StatePrinter.FieldHarvesters;
 
@@ -31,18 +32,10 @@ namespace StatePrinter.Introspection
     public readonly List<FieldInfo> RawReflectedFields;
     public readonly List<Field> Fields;  
 
-    public ReflectionInfo(List<FieldInfo> rawReflectedFields)
+    public ReflectionInfo(List<SanitiedFieldInfo> rawReflectedFields)
     {
-      Fields = new List<Field>(rawReflectedFields.Count);
-      RawReflectedFields = rawReflectedFields;
-
-      var helper = new HarvestHelper();
-
-      foreach (var field in rawReflectedFields)
-      {
-        var name = helper.SanitizeFieldName(field.Name);
-        Fields.Add(new Field(name));
-      }
+      Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToList();
+      RawReflectedFields = rawReflectedFields.Select(x=>x.FieldInfo).ToList();
     }
   }
 }

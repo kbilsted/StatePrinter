@@ -32,22 +32,24 @@ namespace StatePrinter.FieldHarvesters
     internal const string BackingFieldSuffix = ">k__BackingField";
 
     /// <summary>
-    ///   We ignore all properties as they, in the end, will only point to some computated state or other fields.
-    ///   Hence they do not provide information about the actual state of the object.
+    /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
+    /// Hence they do not provide information about the actual state of the object.
     /// </summary>
-    public List<FieldInfo> GetFields(Type type)
+    public List<SanitiedFieldInfo> GetFields(Type type)
     {
       const BindingFlags flags = BindingFlags.Public
                             | BindingFlags.NonPublic
                             | BindingFlags.Instance
                             | BindingFlags.DeclaredOnly;
 
-      return GetFields(type, flags).ToList();
+      return GetFields(type, flags)
+        .Select(x => new SanitiedFieldInfo(x, SanitizeFieldName(x.Name)))
+        .ToList();
     }
 
     /// <summary>
-    ///   We ignore all properties as they, in the end, will only point to some computated state or other fields.
-    ///   Hence they do not provide information about the actual state of the object.
+    /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
+    /// Hence they do not provide information about the actual state of the object.
     /// </summary>
     public IEnumerable<FieldInfo> GetFields(Type type, BindingFlags flags)
     {
@@ -74,11 +76,32 @@ namespace StatePrinter.FieldHarvesters
       return true;
     }
 
+    /// <summary>
+    /// Replaces the name of properties to remove the k__BackingField nonsense from the name.
+    /// </summary>
     public string SanitizeFieldName(string fieldName)
     {
       return fieldName.StartsWith("<")
         ? fieldName.Substring(1).Replace(BackingFieldSuffix, "")
         : fieldName;
+    }
+  }
+
+  /// <summary>
+  /// For each type we print, we hold the reflected and the readable version of the fields
+  /// </summary>
+  public class SanitiedFieldInfo
+  {
+    public readonly FieldInfo FieldInfo;
+    /// <summary>
+    /// The sanitized name is the name the user would expect. Eg. the field 'X' has the value 'X' and the property 'Y' has the value 'Y' rather than the value '&lt;Y&gt;k__BackingField'.
+    /// </summary>
+    public readonly string SanitizedName;
+
+    public SanitiedFieldInfo(FieldInfo fieldInfo, string sanitizedName)
+    {
+      FieldInfo = fieldInfo;
+      SanitizedName = sanitizedName;
     }
   }
 }

@@ -34,10 +34,12 @@ namespace StatePrinter.Configurations
   /// </summary>
   public class Configuration : ICloneable
   {
+    public const string DefaultIndention = "    "; 
+
     /// <summary>
     /// Specifies how indentation is done. 
     /// </summary>
-    public string IndentIncrement = "    ";
+    public readonly string IndentIncrement;
 
     public CultureInfo Culture = CultureInfo.CurrentCulture;
 
@@ -54,22 +56,22 @@ namespace StatePrinter.Configurations
       Culture = culture;
     }
 
-    public Configuration()
+    public Configuration(string indentIncrement = DefaultIndention)
     {
-      OutputFormatter = new CurlyBraceStyle(IndentIncrement);
+      IndentIncrement = indentIncrement;
+      OutputFormatter = new CurlyBraceStyle(indentIncrement);
     }
 
-    
     public IOutputFormatter OutputFormatter;
 
-    private readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
+    readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
 
     public ReadOnlyCollection<IValueConverter> SimplePrinters
     {
       get { return new ReadOnlyCollection<IValueConverter>(valueConverters); }
     }
 
-    private readonly List<IFieldHarvester> fieldHarvesters = new List<IFieldHarvester>();
+    readonly List<IFieldHarvester> fieldHarvesters = new List<IFieldHarvester>();
 
     public ReadOnlyCollection<IFieldHarvester> FieldHarvesters 
     {
@@ -94,7 +96,7 @@ namespace StatePrinter.Configurations
       fieldHarvesters.Insert(0, handler);
     }
 
-    Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>(); 
+    readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>(); 
     
     /// <summary>
     /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
@@ -123,5 +125,19 @@ namespace StatePrinter.Configurations
       var res = new Configuration(fieldHarvesters, valueConverters, IndentIncrement, OutputFormatter, Culture);
       return res;
     }
+
+    #region unit testing support
+
+    SelectiveHarvester selective;
+
+    /// <summary>
+    /// Adds to the configuration a <see cref="StatePrinter.FieldHarvesters.SelectiveHarvester"/> and returns it.
+    /// </summary>
+    public SelectiveHarvester SelectiveHarvester()
+    {
+      return selective ?? (selective = new SelectiveHarvester(this));
+    }
+
+    #endregion
   }
 }

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
 {
@@ -29,6 +28,7 @@ namespace StatePrinter.FieldHarvesters
   public interface IFieldHarvester
   {
     bool CanHandleType(Type type);
-    List<FieldInfo> GetFields(Type type);
+
+    List<SanitiedFieldInfo> GetFields(Type type);
   }
 }

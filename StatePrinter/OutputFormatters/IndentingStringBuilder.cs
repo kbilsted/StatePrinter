@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using StatePrinter.Configurations;
 
 namespace StatePrinter.OutputFormatters
 {
   class IndentingStringBuilder
   {
-    StringBuilder sb = new StringBuilder();
-
-    /// <summary>
-    /// Specifies how indentation is done. 
-    /// </summary>
-    readonly string IndentIncrement = "    ";
+    readonly StringBuilder sb = new StringBuilder();
+    readonly string IndentIncrement;
 
     string indent = "";
 
-    public IndentingStringBuilder(string indentIncrement)
+    public IndentingStringBuilder(string indentIncrement = Configuration.DefaultIndention)
     {
       IndentIncrement = indentIncrement;
     }

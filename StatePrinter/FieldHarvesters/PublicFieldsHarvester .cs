@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
 {
@@ -43,11 +42,12 @@ namespace StatePrinter.FieldHarvesters
     /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
     /// Hence they do not provide information about the actual state of the object.
     /// </summary>
-    public List<FieldInfo> GetFields(Type type)
+    public List<SanitiedFieldInfo> GetFields(Type type)
     {
       // we need all fields in order to get the private backing field of public properties
       var fields = new HarvestHelper().GetFields(type);
-      var res = fields.Where(x => x.IsPublic || x.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
+      var res = fields.Where(x => x.FieldInfo.IsPublic || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
+      
       return res.ToList();
     }
   }

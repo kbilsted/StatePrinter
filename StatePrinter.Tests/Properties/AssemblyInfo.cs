@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("StatePrinter.Tests")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Tests for the StatePrinter. Apache v2.0 License")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hewlett-Packard")]
+[assembly: AssemblyCompany("Kasper B. Graversen, Inc.")]
 [assembly: AssemblyProduct("StatePrinter.Tests")]
-[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2014")]
+[assembly: AssemblyCopyright("Kasper B. Graversen")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)] 

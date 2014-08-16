@@ -31,9 +31,9 @@ namespace StatePrinter.Configurations
     /// 
     /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
     /// </summary>
-    public static Configuration GetStandardConfiguration()
+    public static Configuration GetStandardConfiguration(string indentIncrement = Configuration.DefaultIndention)
     {
-      var cfg = new Configuration();
+      var cfg = new Configuration(indentIncrement);
 
       // valueconverters
       cfg.Add(new StandardTypesConverter(cfg));
@@ -45,7 +45,7 @@ namespace StatePrinter.Configurations
       cfg.Add(new AllFieldsHarvester());
 
       // outputformatters
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+      cfg.OutputFormatter = new CurlyBraceStyle(indentIncrement);
       
       return cfg;
     }

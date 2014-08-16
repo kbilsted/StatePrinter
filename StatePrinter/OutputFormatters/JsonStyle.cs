@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StatePrinter.Configurations;
 using StatePrinter.Introspection;
 
 namespace StatePrinter.OutputFormatters
@@ -35,9 +36,9 @@ namespace StatePrinter.OutputFormatters
     /// <summary>
     /// Specifies how indentation is done. 
     /// </summary>
-    readonly string IndentIncrement = "    ";
+    readonly string IndentIncrement;
 
-    public JsonStyle(string indentIncrement)
+    public JsonStyle(string indentIncrement = Configuration.DefaultIndention)
     {
       IndentIncrement = indentIncrement;
     }
@@ -54,8 +55,7 @@ namespace StatePrinter.OutputFormatters
     Dictionary<Reference, string> CreatePathsFromReferences(List<Token> tokens, Reference[] backreferences)
     {
       var paths = new Dictionary<Reference, string>();
-      var path = new List<string>();
-      path.Add("root");
+      var path = new List<string> { "root" };
 
       string last = null;
 
@@ -69,20 +69,23 @@ namespace StatePrinter.OutputFormatters
             break;
 
           case TokenType.EndScope:
-            if (path.Count > 0)
+            if (path.Any())
               path.RemoveAt(path.Count - 1);
             break;
 
           case TokenType.FieldnameWithTypeAndReference:
             if (token.Field.Name != null)
-              last = token.Field.Name
-                + (token.Field.SimpleKeyInArrayOrDictionary == null
+            {
+              var keyname = (token.Field.SimpleKeyInArrayOrDictionary == null
                 ? ""
                 : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]");
+              last = token.Field.Name + keyname;
+            }
 
-            if (token.ReferenceNo != null)
+            if (token.ReferenceNo != null && !paths.ContainsKey(token.ReferenceNo))
             {
-              paths[token.ReferenceNo] = string.Join(".", (last == null ? path : path.Concat(new[] { last })).ToArray());
+              var parts = (last == null ? path : path.Concat(new[] { last })).ToArray();
+              paths[token.ReferenceNo] = string.Join(".", parts);
             }
             break;
 
@@ -105,82 +108,92 @@ namespace StatePrinter.OutputFormatters
 
       for (int i = 0; i < tokens.Count; i++)
       {
-        var token = tokens[i];
-
-        string fieldnameColon = null;
-        switch (token.Tokenkind)
-        {
-          case TokenType.StartScope:
-            sb.AppendFormatLine("{{");
-            sb.Indent();
-            break;
-
-          case TokenType.EndScope:
-            sb.DeIndent();
-            sb.AppendFormatLine("}}");
-            break;
-
-          case TokenType.StartEnumeration:
-            sb.AppendFormatLine("[");
-            sb.Indent();
-            break;
-
-          case TokenType.EndEnumeration:
-            sb.DeIndent();
-            sb.AppendFormatLine("]{0}", OptionalComma(tokens, i));
-            break;
-
-          case TokenType.SimpleFieldValue:
-            {
-              // fieldname is empty if the ROOT-element-name has not been supplied
-              fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
-
-              var optinalComma = OptionalComma(tokens, i);
-              sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, token.Value, optinalComma);
-              break;
-            }
-
-          case TokenType.SeenBeforeWithReference:
-            {
-              // fieldname is empty if the ROOT-element-name has not been supplied
-              fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
-
-              var seenBeforeReference = " " + referencePaths[token.ReferenceNo];
-              sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, seenBeforeReference, OptionalComma(tokens, i));
-              break;
-            }
-
-          case TokenType.FieldnameWithTypeAndReference:
-            // if we are part of an idex, do not print the field name as it has alreadty been printed
-            if (token.Field.SimpleKeyInArrayOrDictionary == null)
-            {
-              // fieldname is empty if the ROOT-element-name has not been supplied
-              fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" :");
-
-              // inline-print empty collections
-              string optionalValue = "";
-              bool isNextEmptyEnumeration = i + 2 < tokens.Count // TODO optimize by introducing a variable holding "count-2"
-                      && tokens[i + 1].Tokenkind == TokenType.StartEnumeration
-                      && tokens[i + 2].Tokenkind == TokenType.EndEnumeration;
-              if (isNextEmptyEnumeration)
-              {
-                i += 2;
-                optionalValue = (fieldnameColon == "" ? "" : " ") + "[]";
-              }
-
-              sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, optionalValue, OptionalComma(tokens, i));
-            }
-            break;
-
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
+        int skip = MakeStringFromToken(tokens, i, referencePaths, sb);
+        i += skip;
       }
 
       return sb.ToString();
     }
 
-    private string GetEmptyOrFieldname(Token token, string formatting)
+    int MakeStringFromToken(List<Token> tokens, int pos, Dictionary<Reference, string> referencePaths, IndentingStringBuilder sb)
+    {
+      var token = tokens[pos];
+
+      int skip = 0;
+
+      string fieldnameColon = null;
+      switch (token.Tokenkind)
+      {
+        case TokenType.StartScope:
+          sb.AppendFormatLine("{{");
+          sb.Indent();
+          break;
+
+        case TokenType.EndScope:
+          sb.DeIndent();
+          sb.AppendFormatLine("}}");
+          break;
+
+        case TokenType.StartEnumeration:
+          sb.AppendFormatLine("[");
+          sb.Indent();
+          break;
+
+        case TokenType.EndEnumeration:
+          sb.DeIndent();
+          sb.AppendFormatLine("]{0}", OptionalComma(tokens, pos));
+          break;
+
+        case TokenType.SimpleFieldValue:
+          {
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
+
+            var optinalComma = OptionalComma(tokens, pos);
+            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, token.Value, optinalComma);
+            break;
+          }
+
+        case TokenType.SeenBeforeWithReference:
+          {
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
+
+            var seenBeforeReference = " " + referencePaths[token.ReferenceNo];
+            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, seenBeforeReference, OptionalComma(tokens, pos));
+            break;
+          }
+
+        case TokenType.FieldnameWithTypeAndReference:
+          // if we are part of an idex, do not print the field name as it has alreadty been printed
+          if (token.Field.SimpleKeyInArrayOrDictionary == null)
+          {
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" :");
+
+            // inline-print empty collections
+            string optionalValue = "";
+            bool isNextEmptyEnumeration = pos + 2 < tokens.Count // TODO optimize by introducing a variable holding "count-2"
+                    && tokens[pos + 1].Tokenkind == TokenType.StartEnumeration
+                    && tokens[pos + 2].Tokenkind == TokenType.EndEnumeration;
+            if (isNextEmptyEnumeration)
+            {
+              skip += 2;
+              optionalValue = (fieldnameColon == "" ? "" : " ") + "[]";
+            }
+
+            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, optionalValue, OptionalComma(tokens, pos+skip));
+          }
+          break;
+
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+
+      return skip;
+    }
+
+    string GetEmptyOrFieldname(Token token, string formatting)
     {
       return token.Field == null || string.IsNullOrEmpty(token.Field.Name)
         ? ""

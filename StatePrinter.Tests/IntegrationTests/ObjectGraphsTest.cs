@@ -280,7 +280,8 @@ namespace StatePrinter.Tests.IntegrationTests
     ""Father"" :  root.Children[0].Father
 }
 ";
-      Assert.AreEqual(expected, printer.PrintObject(mother));
+      var actual = printer.PrintObject(mother);
+      Assert.AreEqual(expected, actual);
     }
 
 

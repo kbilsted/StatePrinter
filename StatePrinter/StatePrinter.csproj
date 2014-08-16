@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>SecurityRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationHelper.cs" />
+    <Compile Include="FieldHarvesters\SelectiveHarvester.cs" />
     <Compile Include="FieldHarvesters\AllFieldsHarvester.cs" />
     <Compile Include="FieldHarvesters\HarvestHelper.cs" />
     <Compile Include="FieldHarvesters\IFieldHarvester.cs" />

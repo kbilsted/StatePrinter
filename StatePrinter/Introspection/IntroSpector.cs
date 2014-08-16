@@ -101,8 +101,8 @@ namespace StatePrinter.Introspection
 
     void IntrospectComplexType(object source, Field field, Type sourceType)
     {
-      Reference optionReferenceInfo = null;
-      seenBefore.TryGetValue(source, out  optionReferenceInfo);
+      Reference optionReferenceInfo;
+      seenBefore.TryGetValue(source, out optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, sourceType));
       tokens.Add(Startscope);
@@ -137,7 +137,7 @@ namespace StatePrinter.Introspection
 
     bool IntrospectSimpleValue(object source, Field field, Type sourceType)
     {
-      IValueConverter handler = null;
+      IValueConverter handler;
       if (!Configuration.TryGetValueConverter(sourceType, out handler))
         return false;
 
@@ -192,7 +192,7 @@ namespace StatePrinter.Introspection
       if (enumerable == null)
         return false;
 
-      Reference optionReferenceInfo = null;
+      Reference optionReferenceInfo;
       seenBefore.TryGetValue(source, out  optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));

@@ -26,12 +26,13 @@ namespace StatePrinter.Introspection
   /// The result of introspection. 
   /// A <see cref="IOutputFormatter"/> transforms tokens into the final output format.
   /// </summary>
-  public class Token //: IEquatable<Token>
+  public class Token : IEquatable<Token>
   {
     public readonly TokenType Tokenkind;
     public readonly Type FieldType;
     public readonly Field Field;
     public readonly string Value;
+
     /// <summary>
     /// Each entry is assigned an internal referenceno.
     /// </summary>

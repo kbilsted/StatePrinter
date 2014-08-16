@@ -34,10 +34,10 @@ namespace StatePrinter.Tests.FieldHarvesters
     {
       var harvester = new AllFieldsHarvester();
 
-      var fields = harvester.GetFields(typeof (Car)).Select(x => helper.SanitizeFieldName(x.Name)).ToArray();
+      var fields = harvester.GetFields(typeof (Car)).Select(x => x.SanitizedName).ToArray();
       CollectionAssert.AreEquivalent(new[] { "StereoAmplifiers", "steeringWheel", "Brand" }, fields);
 
-      fields = harvester.GetFields(typeof (SteeringWheel)).Select(x => helper.SanitizeFieldName(x.Name)).ToArray();
+      fields = harvester.GetFields(typeof (SteeringWheel)).Select(x => x.SanitizedName).ToArray();
       CollectionAssert.AreEquivalent(new[] { "Size", "Grip", "Weight" }, fields);
     }
 
@@ -46,10 +46,10 @@ namespace StatePrinter.Tests.FieldHarvesters
     {
       var harvester = new PublicFieldsHarvester();
 
-      var fields = harvester.GetFields(typeof(Car)).Select(x => helper.SanitizeFieldName(x.Name)).ToArray();
+      var fields = harvester.GetFields(typeof(Car)).Select(x => x.SanitizedName).ToArray();
       CollectionAssert.AreEquivalent(new[] { "Brand" }, fields);
 
-      fields = harvester.GetFields(typeof(SteeringWheel)).Select(x => helper.SanitizeFieldName(x.Name)).ToArray();
+      fields = harvester.GetFields(typeof(SteeringWheel)).Select(x => x.SanitizedName).ToArray();
       CollectionAssert.AreEquivalent(new string[0] { }, fields);
     }
   }

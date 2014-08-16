@@ -18,7 +18,6 @@
 // under the License.
 
 using System;
-using System.Globalization;
 using NUnit.Framework;
 using StatePrinter.Configurations;
 using StatePrinter.OutputFormatters;

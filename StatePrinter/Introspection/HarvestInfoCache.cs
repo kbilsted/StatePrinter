@@ -25,12 +25,12 @@ namespace StatePrinter.Introspection
 {
   /// <summary>
   /// Assume that types don't change at run-time. Cache harvested information.
-  /// Due to supporting C# 3.5 we cannot use ConcurrentDictionary
   /// </summary>
   class HarvestInfoCache : IDisposable
   {
-    Dictionary<Type, ReflectionInfo> harvestCache = new Dictionary<Type, ReflectionInfo>();
-    ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
+    // Due to supporting C# 3.5 we cannot use ConcurrentDictionary
+    readonly Dictionary<Type, ReflectionInfo> harvestCache = new Dictionary<Type, ReflectionInfo>();
+    readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
 
     public ReflectionInfo TryGet(Type type)
     {
