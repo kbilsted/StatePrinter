@@ -80,7 +80,7 @@ namespace StatePrinter.Introspection
       {
         var hashCode = (int)Tokenkind;
         hashCode = (hashCode * 397) ^ (FieldType != null ? FieldType.GetHashCode() : 0);
-        hashCode = (hashCode * 397) ^ Field.GetHashCode();
+        hashCode = (hashCode * 397) ^ (Field != null ? Field.GetHashCode() : 0);
         hashCode = (hashCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
         hashCode = (hashCode * 397) ^ (ReferenceNo != null ? ReferenceNo.GetHashCode() : 0);
 

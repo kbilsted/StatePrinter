@@ -26,6 +26,6 @@ namespace StatePrinter.Introspection
     EndEnumeration,
     SeenBeforeWithReference, 
     SimpleFieldValue, 
-    FieldnameWithTypeAndReference 
+    FieldnameWithTypeAndReference,
   }
 }
