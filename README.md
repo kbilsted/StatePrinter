@@ -17,7 +17,7 @@ The StatePrinter is a free, highly configurable, thread safe utility that can tu
 * It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
 
 
-Build server status: <img src="https://ci.appveyor.com/api/projects/status/github/StatePrinter?svg=true&branch=master" />
+Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
 
 ### 1.1 Simple usage
 
