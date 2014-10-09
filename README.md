@@ -13,9 +13,11 @@ Requires C# 3.5 or newer
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
 
 * *No more manual .ToString()* - it is much easier to write robus and self-sufficient `ToString()` methods. 
-* It becomes much easier to write unit tests against object-graphs. 
+* It becomes much easier to write unit tests. No more screenfuls of asserts. Especially testing against object-graphs is a bliss. 
 * It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
 
+
+Build server status: <img src="https://ci.appveyor.com/api/projects/status/github/StatePrinter?svg=true&branch=master" />
 
 ### 1.1 Simple usage
 
