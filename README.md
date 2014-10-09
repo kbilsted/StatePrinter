@@ -8,6 +8,9 @@ Version 1.0.4 - get it here (https://www.nuget.org/packages/StatePrinter/)
 Requires C# 3.5 or newer
 
 
+Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
+
+
 # 1. Introduction
 
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
@@ -16,8 +19,6 @@ The StatePrinter is a free, highly configurable, thread safe utility that can tu
 * It becomes much easier to write unit tests. No more screenfuls of asserts. Especially testing against object-graphs is a bliss. 
 * It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
 
-
-Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
 
 ### 1.1 Simple usage
 
