@@ -24,6 +24,7 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
+  [SetCulture("da-DK")]
   [TestFixture]
   class StandardConfigurationTests
   {

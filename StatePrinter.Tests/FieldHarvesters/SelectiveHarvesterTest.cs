@@ -50,7 +50,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       public DateTime X;
     }
 
-
+    [SetCulture("da-DK")]
     [Test]
     public void TestFluintInterface()
     {
@@ -68,6 +68,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
     }
 
+    [SetCulture("da-DK")]
     [Test]
     public void UserStory()
     {
