@@ -347,7 +347,7 @@ namespace StatePrinter.Tests.IntegrationTests
   #region car
   class Car
   {
-    protected int? StereoAmplifiers;
+    protected int? StereoAmplifiers = null;
     private SteeringWheel steeringWheel;
     public string Brand { get; set; }
     public Car(SteeringWheel steeringWheel)

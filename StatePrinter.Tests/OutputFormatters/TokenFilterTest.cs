@@ -28,7 +28,7 @@ namespace StatePrinter.Tests.OutputFormatters
   {
 
     [Test]
-    public void GetHashCode()
+    public void GetHashcode()
     {
       var sut = new Token(TokenType.FieldnameWithTypeAndReference, null, null, null, null);
       Assert.AreEqual(-1280274074, sut.GetHashCode());
