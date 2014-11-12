@@ -58,7 +58,9 @@ namespace StatePrinter.FieldHarvesters
 
     #region IFieldHarvester
 
-    bool SelectStrategy(Type type, IEnumerable<Implementation> implementations,
+    bool SelectStrategy(
+      Type type,
+      IEnumerable<Implementation> implementations,
       Strategy implementationKind)
     {
       selected = implementations.Where(x => x.Selector.IsAssignableFrom(type)).ToList();
@@ -83,7 +85,7 @@ namespace StatePrinter.FieldHarvesters
     }
 
     /// <summary>
-    /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
+    /// We ignore all properties as they, in the end, will only point to some computed state or other fields.
     /// Hence they do not provide information about the actual state of the object.
     /// </summary>
     List<SanitiedFieldInfo> IFieldHarvester.GetFields(Type type)
@@ -113,14 +115,12 @@ namespace StatePrinter.FieldHarvesters
       return fields;
     }
     #endregion
-    
+
 
     /// <summary>
     /// Add a filter that exludes one or more fields
     /// </summary>
-    /// <typeparam name="TTarget">The type to operate on</typeparam>
-    /// <param name="filter"></param>
-    /// <returns>Returns itself so you can chain the exclude calls.</returns>
+    /// <returns>Returns itself so you can chain the filter calls.</returns>
     public SelectiveHarvester AddFilter<TTarget>(Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
     {
       PreConditionToAdd<TTarget>(Strategy.Filter);
@@ -134,7 +134,7 @@ namespace StatePrinter.FieldHarvesters
     /// Includes one or more fields.
     /// </summary>
     /// <typeparam name="TTarget">The type to operate on</typeparam>
-    /// <returns>Returns itself so you can chain the exclude calls.</returns>
+    /// <returns>Returns itself so you can chain the include calls.</returns>
     public SelectiveHarvester Include<TTarget>(params Expression<Func<TTarget, object>>[] fieldSpecifications)
     {
       PreConditionToAdd<TTarget>(Strategy.Includer);

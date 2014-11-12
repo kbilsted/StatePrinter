@@ -17,32 +17,33 @@
 // specific language governing permissions and limitations
 // under the License.
 using System;
+
 using StatePrinter.Configurations;
 using StatePrinter.Introspection;
 
-namespace StatePrinter
+namespace StatePrint
 {
   /// <summary>
   /// A class able to dump an object graph to a string.
   /// class inheritance hierarchies as well as cyclic graphs are supported.
   /// 
-  /// Simply call the <see cref="PrintObject"/> with an object or object-graph to get a string represention.
+  /// Simply call the <see cref="PrintObject"/> with an object or object-graph to get a string representation.
   /// 
   /// The printing process is thread safe.
   /// 
-  /// The objectprinter is highly customizable both in terms of which types and fields are printed as well as how printing of values is done.
+  /// The state printer is highly customizable both in terms of which types and fields are printed as well as how printing of values is done.
   /// </summary>
   public class StatePrinter
   {
-    readonly Configuration Configuration;
+    readonly Configuration configuration;
     static readonly HarvestInfoCache harvestCache = new HarvestInfoCache();
 
     public StatePrinter(Configuration configuration)
     {
-      if(configuration == null)
+      if (configuration == null)
         throw new ArgumentNullException("configuration");
 
-      Configuration = (Configuration) configuration.Clone();
+      this.configuration = (Configuration)configuration.Clone();
     }
 
     /// <summary>
@@ -50,23 +51,34 @@ namespace StatePrinter
     /// </summary>
     public StatePrinter()
     {
-      Configuration = ConfigurationHelper.GetStandardConfiguration();
+      configuration = ConfigurationHelper.GetStandardConfiguration();
     }
 
     /// <summary>
-    /// Print an objectgraph to a string. 
+    /// Print an object graph to a string.
     /// </summary>
     /// <param name="objectToPrint">What to print.</param>
     /// <param name="rootname">The name of the root as it is printed.</param>
     public string PrintObject(object objectToPrint, string rootname = null)
     {
-      var introSpector = new IntroSpector(Configuration, harvestCache);
+      var introSpector = new IntroSpector(configuration, harvestCache);
       var tokens = introSpector.PrintObject(objectToPrint, rootname);
-      
-      var formatter = Configuration.OutputFormatter;
+
+      var formatter = configuration.OutputFormatter;
 
       return formatter.Print(tokens);
     }
+  }
+}
 
+
+namespace StatePrinter
+{
+  /// <summary>
+  /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="StatePrint.StatePrinter"/>
+  /// </summary>
+  [Obsolete]
+  public class StatePrinter : StatePrint.StatePrinter
+  {
   }
 }
