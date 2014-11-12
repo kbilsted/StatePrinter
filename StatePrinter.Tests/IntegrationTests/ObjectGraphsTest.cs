@@ -222,7 +222,7 @@ namespace StatePrinter.Tests.IntegrationTests
     Father =  -> 2
 }
 ";
-      Console.WriteLine(printer.PrintObject(mother));
+      //Console.WriteLine(printer.PrintObject(mother));
       Assert.AreEqual(expected, printer.PrintObject(mother));
     }
 

@@ -71,7 +71,7 @@ namespace StatePrinter.Tests.PerformanceTests
                          var printer = new Stateprinter(cfg);
                          printer.PrintObject(x);
                        });
-      Console.WriteLine(max + ":  " + mills);
+      //Console.WriteLine(max + ":  " + mills);
     }
 
 
