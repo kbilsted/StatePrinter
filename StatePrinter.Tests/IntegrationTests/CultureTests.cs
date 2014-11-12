@@ -16,7 +16,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.Culture = new CultureInfo("en-US");
-      var usPrinter = new StatePrinter(cfg);
+      var usPrinter = new Stateprinter(cfg);
 
       Assert.AreEqual("12345.343\r\n", usPrinter.PrintObject(decimalNumber));
       Assert.AreEqual("12345.34\r\n", usPrinter.PrintObject((float)decimalNumber));
@@ -28,7 +28,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.Culture = new CultureInfo("da-DK");
-      var dkPrinter = new StatePrinter(cfg);
+      var dkPrinter = new Stateprinter(cfg);
 
       Assert.AreEqual("12345,343\r\n", dkPrinter.PrintObject(decimalNumber));
       Assert.AreEqual("12345,34\r\n", dkPrinter.PrintObject((float)decimalNumber));

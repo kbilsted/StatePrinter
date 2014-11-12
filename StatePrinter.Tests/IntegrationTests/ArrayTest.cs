@@ -29,7 +29,7 @@ namespace StatePrinter.Tests.IntegrationTests
     public void TwoDimArray()
     {
       int[,] twoDimArray = {{1, 2}, {3, 4}};
-      var printer = new StatePrinter();
+      var printer = new Stateprinter();
       Console.WriteLine(printer.PrintObject(twoDimArray, ""));
     }
   }

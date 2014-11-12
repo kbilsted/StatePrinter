@@ -22,7 +22,7 @@ using NUnit.Framework;
 namespace StatePrinter.Tests.IntegrationTests
 {
   /// <summary>
-  /// An example of using the objectprinter as a generic ToString() implementation.
+  /// An example of using the state printer as a generic ToString() implementation.
   /// </summary>
   [TestFixture]
   class ToStringMethodTest
@@ -52,7 +52,7 @@ namespace StatePrinter.Tests.IntegrationTests
   {
     string B = "hello";
     int[] C = {5,4,3,2,1};
-    static readonly StatePrinter printer = new StatePrinter();
+    static readonly Stateprinter printer = new Stateprinter();
 
     public override string ToString()
     {

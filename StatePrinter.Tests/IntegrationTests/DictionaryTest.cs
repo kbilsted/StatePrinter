@@ -29,14 +29,14 @@ namespace StatePrinter.Tests.IntegrationTests
   [TestFixture]
   class DictionaryTest
   {
-    StatePrinter printer;
+    Stateprinter printer;
 
     [SetUp]
     public void Setup()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
     }
 
 

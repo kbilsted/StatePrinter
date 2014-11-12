@@ -21,7 +21,7 @@ using System;
 using StatePrinter.Configurations;
 using StatePrinter.Introspection;
 
-namespace StatePrint
+namespace StatePrinter
 {
   /// <summary>
   /// A class able to dump an object graph to a string.
@@ -33,12 +33,15 @@ namespace StatePrint
   /// 
   /// The state printer is highly customizable both in terms of which types and fields are printed as well as how printing of values is done.
   /// </summary>
-  public class StatePrinter
+  public class Stateprinter
   {
     readonly Configuration configuration;
     static readonly HarvestInfoCache harvestCache = new HarvestInfoCache();
 
-    public StatePrinter(Configuration configuration)
+    /// <summary>
+    /// Create an state printer using the supplied configuration.
+    /// </summary>
+    public Stateprinter(Configuration configuration)
     {
       if (configuration == null)
         throw new ArgumentNullException("configuration");
@@ -47,9 +50,9 @@ namespace StatePrint
     }
 
     /// <summary>
-    /// Create an object printer using the <see cref="ConfigurationHelper.GetStandardConfiguration"/>
+    /// Create an state printer using the <see cref="ConfigurationHelper.GetStandardConfiguration"/>
     /// </summary>
-    public StatePrinter()
+    public Stateprinter()
     {
       configuration = ConfigurationHelper.GetStandardConfiguration();
     }
@@ -69,16 +72,19 @@ namespace StatePrint
       return formatter.Print(tokens);
     }
   }
-}
 
-
-namespace StatePrinter
-{
   /// <summary>
-  /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="StatePrint.StatePrinter"/>
+  /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="Stateprinter"/>
   /// </summary>
   [Obsolete]
-  public class StatePrinter : StatePrint.StatePrinter
+  public class StatePrinter : Stateprinter
   {
+    public StatePrinter() : base()
+    {
+    }
+
+    public StatePrinter(Configuration configuration) : base(configuration)
+    {
+    }
   }
 }

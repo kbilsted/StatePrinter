@@ -34,22 +34,22 @@ namespace StatePrinter.OutputFormatters
   public class JsonStyle : IOutputFormatter
   {
     /// <summary>
-    /// Specifies how indentation is done. 
+    /// Specifies how indentation is done.
     /// </summary>
-    readonly string IndentIncrement;
+    readonly string indentIncrement;
 
     public JsonStyle(string indentIncrement = Configuration.DefaultIndention)
     {
-      IndentIncrement = indentIncrement;
+      this.indentIncrement = indentIncrement;
     }
 
     public string Print(List<Token> tokens)
     {
       var filter = new UnusedReferencesTokenFilter();
       var backreferences = filter.GetBackreferences(tokens);
-      Dictionary<Reference, string> ReferencePaths = CreatePathsFromReferences(tokens, backreferences);
+      Dictionary<Reference, string> referencePaths = CreatePathsFromReferences(tokens, backreferences);
 
-      return MakeString(tokens, ReferencePaths);
+      return MakeString(tokens, referencePaths);
     }
 
     Dictionary<Reference, string> CreatePathsFromReferences(List<Token> tokens, Reference[] backreferences)
@@ -76,9 +76,9 @@ namespace StatePrinter.OutputFormatters
           case TokenType.FieldnameWithTypeAndReference:
             if (token.Field.Name != null)
             {
-              var keyname = (token.Field.SimpleKeyInArrayOrDictionary == null
+              var keyname = token.Field.SimpleKeyInArrayOrDictionary == null
                 ? ""
-                : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]");
+                : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
               last = token.Field.Name + keyname;
             }
 
@@ -104,7 +104,7 @@ namespace StatePrinter.OutputFormatters
 
     string MakeString(List<Token> tokens, Dictionary<Reference, string> referencePaths)
     {
-      var sb = new IndentingStringBuilder(IndentIncrement);
+      var sb = new IndentingStringBuilder(indentIncrement);
 
       for (int i = 0; i < tokens.Count; i++)
       {
@@ -182,7 +182,7 @@ namespace StatePrinter.OutputFormatters
               optionalValue = (fieldnameColon == "" ? "" : " ") + "[]";
             }
 
-            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, optionalValue, OptionalComma(tokens, pos+skip));
+            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, optionalValue, OptionalComma(tokens, pos + skip));
           }
           break;
 

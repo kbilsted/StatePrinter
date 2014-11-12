@@ -28,14 +28,14 @@ namespace StatePrinter.Tests.IntegrationTests
   [TestFixture]
   class ObjectGraphsTest
   {
-    StatePrinter printer;
+    Stateprinter printer;
 
     [SetUp]
     public void Setup()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
       var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
       car.Brand = "Toyota";
@@ -99,7 +99,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
       car.Brand = "Toyota";
 
@@ -152,7 +152,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
       var course = new Course();
       course.Members.Add(new Student("Stan", course));
@@ -232,7 +232,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
 
       var mother = MakeFamily();
@@ -319,7 +319,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       var course = new Course();
       course.Members.Add(new Student("Stan", course));
       course.Members.Add(new Student("Richy", course));

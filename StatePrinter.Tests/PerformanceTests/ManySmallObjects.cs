@@ -39,7 +39,7 @@ namespace StatePrinter.Tests.PerformanceTests
     public void TestManyPrintings()
     {
       var toPrint = new Base();
-      var printer = new StatePrinter();
+      var printer = new Stateprinter();
 
       for (int i = 0; i < N; i++)
         printer.PrintObject(toPrint);
@@ -68,7 +68,7 @@ namespace StatePrinter.Tests.PerformanceTests
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
       var mills = time(() =>
                        {
-                         var printer = new StatePrinter(cfg);
+                         var printer = new Stateprinter(cfg);
                          printer.PrintObject(x);
                        });
       Console.WriteLine(max + ":  " + mills);

@@ -27,14 +27,14 @@ namespace StatePrinter.Tests.IntegrationTests
   [TestFixture]
   class IEnumeratbleTest
   {
-    StatePrinter printer;
+    Stateprinter printer;
 
     [SetUp]
     public void Setup()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
     }
 
 
@@ -51,7 +51,7 @@ namespace StatePrinter.Tests.IntegrationTests
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
 
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
       Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
     }
 
@@ -117,7 +117,7 @@ namespace StatePrinter.Tests.IntegrationTests
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle("   ");
 
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
       var d = new Dictionary<Person, Address>
               {
                 {

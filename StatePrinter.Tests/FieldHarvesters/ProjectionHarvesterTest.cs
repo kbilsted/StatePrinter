@@ -26,10 +26,10 @@ using StatePrinter.FieldHarvesters;
 namespace StatePrinter.Tests.FieldHarvesters
 {
   /// <summary>
-  /// Shows how the <see cref="SelectiveHarvester"/> can be utilized in unit tests
+  /// Shows how the <see cref="ProjectionHarvester"/> can be utilized in unit tests
   /// </summary>
   [TestFixture]
-  class SelectiveHarvesterTest
+  class ProjectionHarvesterTest
   {
     class A
     {
@@ -56,12 +56,12 @@ namespace StatePrinter.Tests.FieldHarvesters
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
       cfg.SelectiveHarvester().Exclude<A>(x => x.X, x => x.Y);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
-      var state = printer.PrintObject(new A {X = DateTime.Now, Name = "Charly"});
+      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
       Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
 
-      state = printer.PrintObject(new B {X = DateTime.Now, Name = "Charly", Age = 43});
+      state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
       Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
 
       state = printer.PrintObject(new C {X = new DateTime(2010, 9, 8)});
@@ -76,7 +76,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       cfg.SelectiveHarvester()
         .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
       var state = printer.PrintObject(new A {X = DateTime.Now, Name = "Charly"});
       Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
@@ -95,7 +95,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void ExcludeFilter_ForTypesAndSubtypes()
       {
-        var selective = new SelectiveHarvester();
+        var selective = new ProjectionHarvester();
         selective.AddFilter<A>(
           x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
@@ -107,7 +107,7 @@ namespace StatePrinter.Tests.FieldHarvesters
         ExpectedMessage = "Type A has already been configured as an excluder.")]
       public void AddFilter_OnAlreadyExclude_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<A>(x => x.X);
         harvester.AddFilter<A>(x => null);
       }
@@ -117,7 +117,7 @@ namespace StatePrinter.Tests.FieldHarvesters
         ExpectedMessage = "Type A has already been configured as an includer.")]
       public void AddFilter_OnAlreadyInclude_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Include<A>(x => x.X);
         harvester.AddFilter<A>(x => null);
       }
@@ -132,7 +132,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void WrongSpec_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         var ex =
           Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => Math.Min(3, 3)));
         Assert.AreEqual("Field specification must refer to a field", ex.Message);
@@ -147,7 +147,7 @@ namespace StatePrinter.Tests.FieldHarvesters
           "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
       public void AddExclude_FieldOnDifferentType_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<A>(x => x.X.Year);
       }
 
@@ -155,7 +155,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void Fields_WorksForTypesAndSubtypes()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<A>(x => x.X)
           .Exclude<A>(x => x.Y);
 
@@ -165,7 +165,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void Fieldsarr_WorksForTypesAndSubtypes()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<A>(x => x.X, x => x.Y);
 
         Asserts(harvester);
@@ -174,7 +174,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void Exclude_FieldInSuperclass_WorksForTypesAndSubtypes()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<B>(x => x.Name);
 
         IFieldHarvester fh = (IFieldHarvester) harvester;
@@ -193,7 +193,7 @@ namespace StatePrinter.Tests.FieldHarvesters
         ExpectedMessage = "Type A has already been configured as a filter.")]
       public void Exclude_OnAlreadyFilter_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.AddFilter<A>(x => null);
         harvester.Exclude<A>(x => x.X);
       }
@@ -203,7 +203,7 @@ namespace StatePrinter.Tests.FieldHarvesters
         ExpectedMessage = "Type A has already been configured as an includer.")]
       public void Exclude_OnAlreadyInclude_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Include<A>(x => x.X);
         harvester.Exclude<A>(x => x.X);
       }
@@ -217,7 +217,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       [Test]
       public void Include_Fieldsarr_WorksForTypesAndSubtypes()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Include<B>(x => x.Name, x => x.Age);
 
 
@@ -235,13 +235,13 @@ namespace StatePrinter.Tests.FieldHarvesters
         ExpectedMessage = "Type A has already been configured as an excluder.")]
       public void Include_OnAlreadyInclude_Fail()
       {
-        var harvester = new SelectiveHarvester();
+        var harvester = new ProjectionHarvester();
         harvester.Exclude<A>(x => x.X);
         harvester.Include<A>(x => x.X);
       }
     }
 
-    static void Asserts(SelectiveHarvester harvester)
+    static void Asserts(ProjectionHarvester harvester)
     {
       IFieldHarvester fh = (IFieldHarvester) harvester;
       Assert.IsTrue(fh.CanHandleType(typeof (A)));

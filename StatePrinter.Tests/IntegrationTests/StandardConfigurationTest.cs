@@ -28,14 +28,14 @@ namespace StatePrinter.Tests.IntegrationTests
   [TestFixture]
   class StandardConfigurationTests
   {
-    StatePrinter printer;
+    Stateprinter printer;
 
     [SetUp]
     public void Setup()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
 
       Assert.AreEqual("<ROOT>-1</ROOT>\r\n", printer.PrintObject(-1f));
       Assert.AreEqual("<ROOT>3</ROOT>\r\n", printer.PrintObject(3));
@@ -109,7 +109,7 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      printer = new StatePrinter(cfg);
+      printer = new Stateprinter(cfg);
 
       Assert.AreEqual("-1\r\n", printer.PrintObject(-1f));
       Assert.AreEqual("3\r\n", printer.PrintObject(3));
