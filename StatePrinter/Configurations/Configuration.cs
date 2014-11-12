@@ -128,14 +128,14 @@ namespace StatePrinter.Configurations
 
     #region unit testing support
 
-    SelectiveHarvester selective;
+    ProjectionHarvester projection;
 
     /// <summary>
     /// Adds to the configuration a <see cref="StatePrinter.FieldHarvesters.SelectiveHarvester"/> and returns it.
     /// </summary>
-    public SelectiveHarvester SelectiveHarvester()
+    public ProjectionHarvester SelectiveHarvester()
     {
-      return selective ?? (selective = new SelectiveHarvester(this));
+      return projection ?? (projection = new ProjectionHarvester(this));
     }
 
     #endregion

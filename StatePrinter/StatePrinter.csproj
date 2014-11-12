@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationHelper.cs" />
-    <Compile Include="FieldHarvesters\SelectiveHarvester.cs" />
+    <Compile Include="FieldHarvesters\ProjectionHarvester.cs" />
     <Compile Include="FieldHarvesters\AllFieldsHarvester.cs" />
     <Compile Include="FieldHarvesters\HarvestHelper.cs" />
     <Compile Include="FieldHarvesters\IFieldHarvester.cs" />

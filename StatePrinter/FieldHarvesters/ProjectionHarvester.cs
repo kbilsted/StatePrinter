@@ -31,7 +31,7 @@ namespace StatePrinter.FieldHarvesters
   /// Predominantly for unit testing, when you need to easily filter away specific fields in order to 
   /// only test the content of relevant fields.
   /// </summary>  
-  public class SelectiveHarvester : IFieldHarvester
+  public class ProjectionHarvester : IFieldHarvester
   {
     IEnumerable<Implementation> selected;
     Strategy selectedStrategy = Strategy.Includer;
@@ -44,14 +44,14 @@ namespace StatePrinter.FieldHarvesters
     /// <summary>
     /// Create an empty instance.
     /// </summary>
-    public SelectiveHarvester()
+    public ProjectionHarvester()
     {
     }
 
     /// <summary>
     /// Create instance and add to the configuration.
     /// </summary>
-    public SelectiveHarvester(Configuration configuration)
+    public ProjectionHarvester(Configuration configuration)
     {
       configuration.Add(this);
     }
@@ -121,7 +121,7 @@ namespace StatePrinter.FieldHarvesters
     /// Add a filter that exludes one or more fields
     /// </summary>
     /// <returns>Returns itself so you can chain the filter calls.</returns>
-    public SelectiveHarvester AddFilter<TTarget>(Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
+    public ProjectionHarvester AddFilter<TTarget>(Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
     {
       PreConditionToAdd<TTarget>(Strategy.Filter);
 
@@ -135,7 +135,7 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     /// <typeparam name="TTarget">The type to operate on</typeparam>
     /// <returns>Returns itself so you can chain the include calls.</returns>
-    public SelectiveHarvester Include<TTarget>(params Expression<Func<TTarget, object>>[] fieldSpecifications)
+    public ProjectionHarvester Include<TTarget>(params Expression<Func<TTarget, object>>[] fieldSpecifications)
     {
       PreConditionToAdd<TTarget>(Strategy.Includer);
 
@@ -156,7 +156,7 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     /// <typeparam name="TTarget">The type to operate on</typeparam>
     /// <returns>Returns itself so you can chain the exclude calls.</returns>
-    public SelectiveHarvester Exclude<TTarget>(params Expression<Func<TTarget, object>>[] fieldSpecifications)
+    public ProjectionHarvester Exclude<TTarget>(params Expression<Func<TTarget, object>>[] fieldSpecifications)
     {
       PreConditionToAdd<TTarget>(Strategy.Excluder);
 
