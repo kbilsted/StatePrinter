@@ -66,21 +66,27 @@ namespace StatePrinter.Configurations
 
     readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
 
-    public ReadOnlyCollection<IValueConverter> SimplePrinters
+    /// <summary>
+    /// Gets a view of the value converters
+    /// </summary>
+    public ReadOnlyCollection<IValueConverter> ValueConverters
     {
       get { return new ReadOnlyCollection<IValueConverter>(valueConverters); }
     }
 
     readonly List<IFieldHarvester> fieldHarvesters = new List<IFieldHarvester>();
 
+    /// <summary>
+    /// Gets a view of the harvesters
+    /// </summary>
     public ReadOnlyCollection<IFieldHarvester> FieldHarvesters 
     {
       get { return new ReadOnlyCollection<IFieldHarvester>(fieldHarvesters); }
     }
 
     /// <summary>
-    /// Add a configuration. Adding will override the existing behaviour only when the 
-    /// added handler handles a type that is already handlable by the current configuration.
+    /// Add a configuration. Adding will override the existing behaviour only when the
+    /// added handler handles a type that is already handleable by the current configuration.
     /// </summary>
     public void Add(IValueConverter handler)
     {
@@ -88,16 +94,16 @@ namespace StatePrinter.Configurations
     }
 
     /// <summary>
-    /// Add a configuration. Adding will override the existing behaviour only when the 
-    /// added handler handles a type that is already handlable by the current configuration.
+    /// Add a configuration. Adding will override the existing behaviour only when the
+    /// added handler handles a type that is already handleable by the current configuration.
     /// </summary>
     public void Add(IFieldHarvester handler)
     {
       fieldHarvesters.Insert(0, handler);
     }
 
-    readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>(); 
-    
+    readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>();
+
     /// <summary>
     /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
     /// </summary>
@@ -131,9 +137,9 @@ namespace StatePrinter.Configurations
     ProjectionHarvester projection;
 
     /// <summary>
-    /// Adds to the configuration a <see cref="StatePrinter.FieldHarvesters.SelectiveHarvester"/> and returns it.
+    /// Adds to the configuration a <see cref="ProjectionHarvester"/> and returns it.
     /// </summary>
-    public ProjectionHarvester SelectiveHarvester()
+    public ProjectionHarvester Projectionharvester()
     {
       return projection ?? (projection = new ProjectionHarvester(this));
     }

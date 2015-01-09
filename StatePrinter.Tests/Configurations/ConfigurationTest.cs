@@ -34,15 +34,15 @@ namespace StatePrinter.Tests.Configurations
      
       var handler1 = new EnumConverter();
       config.Add(handler1);
-      Assert.AreEqual(1, config.SimplePrinters.Count);
+      Assert.AreEqual(1, config.ValueConverters.Count);
       Assert.AreEqual(0, config.FieldHarvesters.Count);
-      Assert.AreEqual(handler1, config.SimplePrinters.First());
+      Assert.AreEqual(handler1, config.ValueConverters.First());
 
       var handler2 = new EnumConverter(); 
       config.Add(handler2);
-      Assert.AreEqual(2, config.SimplePrinters.Count);
+      Assert.AreEqual(2, config.ValueConverters.Count);
       Assert.AreEqual(0, config.FieldHarvesters.Count);
-      Assert.AreEqual(handler2, config.SimplePrinters.First());
+      Assert.AreEqual(handler2, config.ValueConverters.First());
     }
 
     [Test]

@@ -55,7 +55,7 @@ namespace StatePrinter.Tests.FieldHarvesters
     public void TestFluintInterface()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.SelectiveHarvester().Exclude<A>(x => x.X, x => x.Y);
+      cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
       var printer = new Stateprinter(cfg);
 
       var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
@@ -64,7 +64,7 @@ namespace StatePrinter.Tests.FieldHarvesters
       state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
       Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
 
-      state = printer.PrintObject(new C {X = new DateTime(2010, 9, 8)});
+      state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
       Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
     }
 
@@ -73,7 +73,7 @@ namespace StatePrinter.Tests.FieldHarvesters
     public void UserStory()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.SelectiveHarvester()
+      cfg.Projectionharvester()
         .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
       var printer = new Stateprinter(cfg);
