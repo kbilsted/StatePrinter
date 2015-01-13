@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configurations\ConfigurationTest.cs" />
+    <Compile Include="FieldHarvesters\ToStringAwareHarvester.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="IntegrationTests\ArrayTest.cs" />

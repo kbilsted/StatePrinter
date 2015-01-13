@@ -33,13 +33,13 @@ namespace StatePrinter.FieldHarvesters
   /// </summary>  
   public class ProjectionHarvester : IFieldHarvester
   {
-    IEnumerable<Implementation> selected;
-    Strategy selectedStrategy = Strategy.Includer;
-
-
     readonly List<Implementation> excluders = new List<Implementation>();
     readonly List<Implementation> includers = new List<Implementation>();
     readonly List<Implementation> filters = new List<Implementation>();
+
+    IEnumerable<Implementation> selected;
+    Strategy selectedStrategy = Strategy.Includer;
+
 
     /// <summary>
     /// Create an empty instance.

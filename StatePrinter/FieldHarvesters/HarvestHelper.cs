@@ -43,7 +43,7 @@ namespace StatePrinter.FieldHarvesters
                             | BindingFlags.DeclaredOnly;
 
       return GetFields(type, flags)
-        .Select(x => new SanitiedFieldInfo(x, SanitizeFieldName(x.Name)))
+        .Select(x => new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), (object o) => x.GetValue(o)))
         .ToList();
     }
 
@@ -93,15 +93,23 @@ namespace StatePrinter.FieldHarvesters
   public class SanitiedFieldInfo
   {
     public readonly FieldInfo FieldInfo;
+
     /// <summary>
-    /// The sanitized name is the name the user would expect. Eg. the field 'X' has the value 'X' and the property 'Y' has the value 'Y' rather than the value '&lt;Y&gt;k__BackingField'.
+    /// The sanitized name is the name the user would expect.
+    /// E.g. the field 'X' has the value 'X' and the property 'Y' has the value 'Y' rather than the value '&lt;Y&gt;k__BackingField'.
     /// </summary>
     public readonly string SanitizedName;
 
-    public SanitiedFieldInfo(FieldInfo fieldInfo, string sanitizedName)
+    /// <summary>
+    /// Functionality to fetch the value of the field.
+    /// </summary>
+    public readonly Func<object, object> ValueProvider;
+
+    public SanitiedFieldInfo(FieldInfo fieldInfo, string sanitizedName, Func<object, object> valueProvider)
     {
       FieldInfo = fieldInfo;
       SanitizedName = sanitizedName;
+      ValueProvider = valueProvider;
     }
   }
 }

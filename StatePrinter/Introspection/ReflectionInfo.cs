@@ -17,9 +17,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.Introspection
@@ -29,13 +29,13 @@ namespace StatePrinter.Introspection
   /// </summary>
   class ReflectionInfo
   {
-    public readonly List<FieldInfo> RawReflectedFields;
-    public readonly List<Field> Fields;  
+    public readonly List<Field> Fields;
+    public readonly List<Func<object, object>> ValueProviders;
 
     public ReflectionInfo(List<SanitiedFieldInfo> rawReflectedFields)
     {
       Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToList();
-      RawReflectedFields = rawReflectedFields.Select(x=>x.FieldInfo).ToList();
+      ValueProviders = rawReflectedFields.Select(x => x.ValueProvider).ToList();
     }
   }
 }
