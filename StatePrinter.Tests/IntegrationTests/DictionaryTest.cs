@@ -51,7 +51,6 @@ namespace StatePrinter.Tests.IntegrationTests
     public void IDictionary_untyped_int_int()
     {
       IDictionary d = new Hashtable() { { 1, 2 }, { 2, 4 }, { 3, 6 } };
-      //Console.WriteLine(printer.PrintObject(d));
       Assert.AreEqual(
 @"new Hashtable()
 [0] = new DictionaryEntry()

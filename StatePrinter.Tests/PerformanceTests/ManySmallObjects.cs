@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -30,10 +30,15 @@ namespace StatePrinter.Tests.PerformanceTests
   [Explicit]
   internal class ManySmallObjects
   {
-    private const int N = 1000000;
+    const int N = 1000000;
+
 
     /// <summary>
     /// printing many times reveals the overhead of starting a print
+    /// 
+    /// Version 1.04 - HPPavilion 7
+    /// 11941
+    /// 
     /// </summary>
     [Test]
     public void TestManyPrintings()
@@ -41,13 +46,32 @@ namespace StatePrinter.Tests.PerformanceTests
       var toPrint = new Base();
       var printer = new Stateprinter();
 
-      for (int i = 0; i < N; i++)
-        printer.PrintObject(toPrint);
+      printer.PrintObject(toPrint);
+      var mills = time(
+        () =>
+          {
+            for (int i = 0; i < N; i++) 
+              printer.PrintObject(toPrint);
+          });
+      Console.WriteLine("  " + mills);
     }
 
 
     /// <summary>
     /// Many small objects reveals the overhead of introspecting types.
+    /// 
+    /// Version 1.04 - HPPavilion 7
+    /// 1000:  130
+    /// 2000:  29
+    /// 4000:  56
+    /// 8000:  122
+    /// 16000:  259
+    /// 32000:  497
+    /// 64000:  1021
+    /// 128000:  2062
+    /// 256000:  4332
+    /// 512000:  8567
+    /// 1024000:  16878
     /// </summary>
     [Test]
     public void DumpManySmallObjects()
@@ -71,7 +95,7 @@ namespace StatePrinter.Tests.PerformanceTests
                          var printer = new Stateprinter(cfg);
                          printer.PrintObject(x);
                        });
-      //Console.WriteLine(max + ":  " + mills);
+      Console.WriteLine(max + ":  " + mills);
     }
 
 
@@ -87,7 +111,6 @@ namespace StatePrinter.Tests.PerformanceTests
     }
 
 
-
     private long time(Action a)
     {
       var watch = new Stopwatch();
@@ -97,5 +120,4 @@ namespace StatePrinter.Tests.PerformanceTests
       return watch.ElapsedMilliseconds;
     }
   }
-
 }

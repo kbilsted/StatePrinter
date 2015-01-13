@@ -39,7 +39,7 @@ namespace StatePrinter.FieldHarvesters
     }
 
     /// <summary>
-    /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
+    /// We ignore all properties as they, in the end, will only point to some computed state or other fields.
     /// Hence they do not provide information about the actual state of the object.
     /// </summary>
     public List<SanitiedFieldInfo> GetFields(Type type)
@@ -47,7 +47,7 @@ namespace StatePrinter.FieldHarvesters
       // we need all fields in order to get the private backing field of public properties
       var fields = new HarvestHelper().GetFields(type);
       var res = fields.Where(x => x.FieldInfo.IsPublic || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
-      
+
       return res.ToList();
     }
   }

@@ -28,17 +28,17 @@ using StatePrinter.ValueConverters;
 namespace StatePrinter.Introspection
 {
   /// <summary>
-  /// Is responsible for traversing an objectgraph and returning a stream of tokens 
+  /// Is responsible for traversing an object graph and returning a stream of tokens
   /// </summary>
-  class IntroSpector 
+  class IntroSpector
   {
-    readonly Configuration Configuration;
-    readonly HarvestInfoCache harvestCache;
-
     static readonly Token Startscope = new Token(TokenType.StartScope);
     static readonly Token Endscope = new Token(TokenType.EndScope);
     static readonly Token StartEnumeration = new Token(TokenType.StartEnumeration);
     static readonly Token EndEnumeration = new Token(TokenType.EndEnumeration);
+
+    readonly Configuration configuration;
+    readonly HarvestInfoCache harvestCache;
 
     /// <summary>
     /// Each entry is assigned a reference number used for back-referencing
@@ -50,7 +50,7 @@ namespace StatePrinter.Introspection
 
     public IntroSpector(Configuration configuration, HarvestInfoCache harvestCache)
     {
-      Configuration = configuration;
+      this.configuration = configuration;
       this.harvestCache = harvestCache;
     }
 
@@ -108,11 +108,9 @@ namespace StatePrinter.Introspection
       tokens.Add(Startscope);
 
       ReflectionInfo reflection = ReflectFields(sourceType);
-
-      for (int i = 0; i < reflection.RawReflectedFields.Count; i++)
+      for (int i = 0; i < reflection.Fields.Count; i++)
       {
-        var ffield = reflection.RawReflectedFields[i];
-        Introspect(ffield.GetValue(source), reflection.Fields[i]);
+        Introspect(reflection.ValueProviders[i](source), reflection.Fields[i]);
       }
 
       tokens.Add(Endscope);
@@ -124,10 +122,10 @@ namespace StatePrinter.Introspection
       if ((reflection = harvestCache.TryGet(sourceType)) == null)
       {
         IFieldHarvester harvester;
-        if (!Configuration.TryGetFieldHarvester(sourceType, out harvester))
+        if (!configuration.TryGetFieldHarvester(sourceType, out harvester))
           throw new Exception(string.Format("No fieldharvester is configured for handling type '{0}'", sourceType));
 
-        var fields = harvester.GetFields(sourceType);
+        List<SanitiedFieldInfo> fields = harvester.GetFields(sourceType);
         reflection = new ReflectionInfo(fields);
         harvestCache.TryAdd(sourceType, reflection);
       }
@@ -138,7 +136,7 @@ namespace StatePrinter.Introspection
     bool IntrospectSimpleValue(object source, Field field, Type sourceType)
     {
       IValueConverter handler;
-      if (!Configuration.TryGetValueConverter(sourceType, out handler))
+      if (!configuration.TryGetValueConverter(sourceType, out handler))
         return false;
 
       tokens.Add(new Token(TokenType.SimpleFieldValue, field, handler.Convert(source)));
@@ -166,7 +164,7 @@ namespace StatePrinter.Introspection
 
       IValueConverter handler;
       var keyType = sourceType.GetGenericArguments().First();
-      var isKeyTypeSimple = Configuration.TryGetValueConverter(keyType, out handler);
+      var isKeyTypeSimple = configuration.TryGetValueConverter(keyType, out handler);
 
       if (!isKeyTypeSimple)
         return false; // print as enumerable which is more verbose
@@ -193,7 +191,7 @@ namespace StatePrinter.Introspection
         return false;
 
       Reference optionReferenceInfo;
-      seenBefore.TryGetValue(source, out  optionReferenceInfo);
+      seenBefore.TryGetValue(source, out optionReferenceInfo);
 
       tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
       tokens.Add(StartEnumeration);
@@ -201,7 +199,7 @@ namespace StatePrinter.Introspection
       int i = 0;
       foreach (var x in enumerable)
       {
-        var outputFieldName = new Field(field.Name, ""+ i++);
+        var outputFieldName = new Field(field.Name, "" + i++);
         Introspect(x, outputFieldName);
       }
       tokens.Add(EndEnumeration);

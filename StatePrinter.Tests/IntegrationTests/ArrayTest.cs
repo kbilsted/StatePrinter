@@ -30,7 +30,13 @@ namespace StatePrinter.Tests.IntegrationTests
     {
       int[,] twoDimArray = {{1, 2}, {3, 4}};
       var printer = new Stateprinter();
-      //Console.WriteLine(printer.PrintObject(twoDimArray, ""));
+
+      Assert.AreEqual(@"new Int32[,]()
+[0] = 1
+[1] = 2
+[2] = 3
+[3] = 4
+", printer.PrintObject(twoDimArray, ""));
     }
   }
 }
