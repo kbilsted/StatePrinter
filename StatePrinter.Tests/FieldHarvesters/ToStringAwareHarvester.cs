@@ -32,7 +32,7 @@ namespace StatePrinter.Tests.FieldHarvesters
     class A
     {
       public int X;
-      public B b = new B() { Age = 2 };
+      public B b = new B() { Age = 3 };
     }
 
     class B 
@@ -44,8 +44,7 @@ namespace StatePrinter.Tests.FieldHarvesters
         return "My age is " + Age;
       }
     }
-
-
+    
     [Test]
     public void Userstory_PrintUseToString_WhenAvailable()
     {
@@ -55,14 +54,14 @@ namespace StatePrinter.Tests.FieldHarvesters
 
       var expected = @"new A()
 {
- X = 1
+ X = 2
  b = new B()
  {
-  ToString() = ""My age is 2""
+  ToString() = ""My age is 3""
  }
 }
 ";
-      var actual = sut.PrintObject(new A { X = 1 });
+      var actual = sut.PrintObject(new A { X = 2 });
       Assert.AreEqual(expected, actual);
     }
 
