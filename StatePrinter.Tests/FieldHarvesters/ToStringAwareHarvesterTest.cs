@@ -44,14 +44,27 @@ namespace StatePrinter.Tests.FieldHarvesters
         return "My age is " + Age;
       }
     }
-    
+
+    [Test]
+    public void Userstory_PrintUseToString_WhenDirectlyAvailable()
+    {
+      var sut = GetPrinter();
+      var expected = @"new B()
+{
+ ToString() = ""My age is 1""
+}
+";
+      var actual = sut.PrintObject(new B { Age = 1 });
+      Assert.AreEqual(expected, actual);
+    }
+
+
+
+
     [Test]
     public void Userstory_PrintUseToString_WhenAvailable()
     {
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Add(new ToStringAwareHarvester());
-      var sut = new Stateprinter(cfg);
-
+      var sut = GetPrinter();
       var expected = @"new A()
 {
  X = 1
@@ -65,5 +78,14 @@ namespace StatePrinter.Tests.FieldHarvesters
       Assert.AreEqual(expected, actual);
     }
 
+
+    Stateprinter GetPrinter()
+    {
+      Configuration cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+      cfg.Add(new ToStringAwareHarvester());
+
+      var sut = new Stateprinter(cfg);
+      return sut;
+    }
   }
 }
