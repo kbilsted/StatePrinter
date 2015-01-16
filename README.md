@@ -1,9 +1,11 @@
 ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
 
 
-StatePrinter - "The automatic ".ToString()" utility."
+# StatePrinter - "The automatic ".ToString()" utility."
 
-Version 1.0.4 - get it here (https://www.nuget.org/packages/StatePrinter/)
+# Version 1.0.5 just released! - get it here (https://www.nuget.org/packages/StatePrinter/)
+
+Version History: http://github.com/kbilsted/StatePrinter/blob/master/VersionHistory.md9
 
 Requires C# 3.5 or newer
 
