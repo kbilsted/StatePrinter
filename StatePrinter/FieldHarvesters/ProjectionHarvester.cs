@@ -125,7 +125,7 @@ namespace StatePrinter.FieldHarvesters
     {
       PreConditionToAdd<TTarget>(Strategy.Filter);
 
-      filters.Add(new Implementation(typeof (TTarget), filter));
+      filters.Add(new Implementation(typeof(TTarget), filter));
       return this;
     }
 
@@ -168,7 +168,7 @@ namespace StatePrinter.FieldHarvesters
 
     void PreConditionToAdd<TTarget>(Strategy addingStrategy)
     {
-      if(addingStrategy != Strategy.Excluder)
+      if (addingStrategy != Strategy.Excluder)
         if (excluders.Select(x => x.Selector).Contains(typeof(TTarget)))
           throw new ArgumentException(string.Format("Type {0} has already been configured as an excluder.", typeof(TTarget).Name));
 
@@ -181,7 +181,7 @@ namespace StatePrinter.FieldHarvesters
           throw new ArgumentException(string.Format("Type {0} has already been configured as a filter.", typeof(TTarget).Name));
     }
 
-    void ExcludeField<TTarget,TAny>(Expression<Func<TTarget, TAny>> fieldSpecification)
+    void ExcludeField<TTarget, TAny>(Expression<Func<TTarget, TAny>> fieldSpecification)
     {
       var name = GetFieldNameFromExpression(fieldSpecification);
       excluders.Add(new Implementation(typeof(TTarget), x => x.Where(y => y.SanitizedName != name)));
@@ -190,21 +190,11 @@ namespace StatePrinter.FieldHarvesters
     string GetFieldNameFromExpression<TTarget, TAny>(Expression<Func<TTarget, TAny>> fieldSpecification)
     {
       const string error = "Field specification must refer to a field";
-      //Console.WriteLine("!"+fieldSpecification.Body.GetType().ToString());
+      // Console.WriteLine("!"+fieldSpecification.Body.GetType().ToString());
       if (fieldSpecification.Body is UnaryExpression)
       {
         var body = Cast<UnaryExpression>(fieldSpecification.Body, error);
         return GetNameFromMemberExpression<TTarget>(body.Operand, error);
-        //var field = Cast<MemberExpression>(body.Operand, error);
-        //var target = typeof(TTarget);
-
-        //if (field.Member.DeclaringType != target)
-        //  throw new ArgumentException(string.Format("Field '{0}' is declared on type '{1}' not on argument: '{2}'",
-        //      field.Member.Name,
-        //      field.Member.DeclaringType.Name,
-        //      target.Name));
-
-        //return field.Member.Name;
       }
 
       if (fieldSpecification.Body is MemberExpression)
@@ -216,7 +206,7 @@ namespace StatePrinter.FieldHarvesters
       string error)
     {
       var field = Cast<MemberExpression>(fieldSpecification, error);
-      var target = typeof (TTarget);
+      var target = typeof(TTarget);
 
       if (field.Member.DeclaringType.IsAssignableFrom(target))
         return field.Member.Name;
@@ -231,7 +221,7 @@ namespace StatePrinter.FieldHarvesters
     T Cast<T>(object objectToCast, string errorMessage) where T : class
     {
       T x = objectToCast as T;
-      if(x == null)
+      if (x == null)
         throw new ArgumentException(errorMessage);
       return x;
     }

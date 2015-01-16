@@ -87,7 +87,7 @@ namespace StatePrinter.Introspection
     private bool SeenObjectBefore(object source, Field field)
     {
       Reference reference;
-      if(seenBefore.TryGetValue(source, out reference))
+      if (seenBefore.TryGetValue(source, out reference))
       {
         tokens.Add(Token.SeenBefore(field, reference));
         return true;
@@ -159,7 +159,7 @@ namespace StatePrinter.Introspection
       if (source == null)
         return false;
 
-      if(sourceType.GetGenericArguments().Length != 2)
+      if (sourceType.GetGenericArguments().Length != 2)
         return false;
 
       IValueConverter handler;

@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,9 +22,11 @@ using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Configurations
 {
+  /// <summary>
+  /// Helper for configuration
+  /// </summary>
   public static class ConfigurationHelper
   {
-
     /// <summary>
     /// Return a configuration which covers most usages.
     /// The configuration returned can be further remolded by adding additional handlers. 

@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -29,7 +29,7 @@ using StatePrinter.ValueConverters;
 namespace StatePrinter.Configurations
 {
   /// <summary>
-  /// The configuration for the object printer. We implement <see cref="ICloneable"/> as 
+  /// The configuration for the object printer. We implement <see cref="ICloneable"/> as
   /// we want to clone at the start of printing state to ensure the configuration is unchaned whilst printing.
   /// </summary>
   public class Configuration : ICloneable
@@ -37,12 +37,18 @@ namespace StatePrinter.Configurations
     public const string DefaultIndention = "    "; 
 
     /// <summary>
-    /// Specifies how indentation is done. 
+    /// Specifies the indentation size.
     /// </summary>
     public readonly string IndentIncrement;
 
+    /// <summary>
+    /// The culture to use when generating string output
+    /// </summary>
     public CultureInfo Culture = CultureInfo.CurrentCulture;
 
+    /// <summary>
+    /// Ctor
+    /// </summary>
     public Configuration(IEnumerable<IFieldHarvester> fieldHarvesters, 
       IEnumerable<IValueConverter> valueConverters, 
       string indentIncrement, 
@@ -56,6 +62,9 @@ namespace StatePrinter.Configurations
       Culture = culture;
     }
 
+    /// <summary>
+    /// Ctor
+    /// </summary>
     public Configuration(string indentIncrement = DefaultIndention)
     {
       IndentIncrement = indentIncrement;
@@ -126,6 +135,9 @@ namespace StatePrinter.Configurations
       return result != null;
     }
 
+    /// <summary>
+    /// Clone
+    /// </summary>
     public object Clone()
     {
       var res = new Configuration(fieldHarvesters, valueConverters, IndentIncrement, OutputFormatter, Culture);

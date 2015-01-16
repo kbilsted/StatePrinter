@@ -25,6 +25,9 @@ namespace StatePrinter.Introspection
   {
     public readonly int Number;
 
+    /// <summary>
+    /// ctor
+    /// </summary>
     public Reference(int number)
     {
       Number = number;
