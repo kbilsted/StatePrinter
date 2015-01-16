@@ -5,7 +5,7 @@
 
 # Version 1.0.5 just released! - get it here (https://www.nuget.org/packages/StatePrinter/)
 
-Version History: http://github.com/kbilsted/StatePrinter/blob/master/VersionHistory.md9
+Version History: http://github.com/kbilsted/StatePrinter/blob/master/VersionHistory.md
 
 Requires C# 3.5 or newer
 
