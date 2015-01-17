@@ -112,7 +112,7 @@ namespace StatePrinter.Tests.IntegrationTests
     }
 
     [Test]
-    public void xml_Dictionary_person_address()
+    public void Xml_Dictionary_person_address()
     {
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle("   ");

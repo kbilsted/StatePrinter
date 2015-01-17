@@ -111,7 +111,7 @@ namespace StatePrinter.Tests.PerformanceTests
     }
 
 
-    private long time(Action a)
+    private long Time(Action a)
     {
       var watch = new Stopwatch();
       watch.Start();

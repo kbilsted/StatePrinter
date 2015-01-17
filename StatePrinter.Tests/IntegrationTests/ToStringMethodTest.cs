@@ -51,7 +51,7 @@ namespace StatePrinter.Tests.IntegrationTests
   class AClassWithToString
   {
     string B = "hello";
-    int[] C = {5,4,3,2,1};
+    int[] C = { 5, 4, 3, 2, 1 };
     static readonly Stateprinter printer = new Stateprinter();
 
     public override string ToString()
