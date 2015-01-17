@@ -47,7 +47,7 @@ namespace StatePrinter.Tests.PerformanceTests
       var printer = new Stateprinter();
 
       printer.PrintObject(toPrint);
-      var mills = time(
+      var mills = Time(
         () =>
           {
             for (int i = 0; i < N; i++) 
@@ -90,7 +90,7 @@ namespace StatePrinter.Tests.PerformanceTests
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var mills = time(() =>
+      var mills = Time(() =>
                        {
                          var printer = new Stateprinter(cfg);
                          printer.PrintObject(x);
