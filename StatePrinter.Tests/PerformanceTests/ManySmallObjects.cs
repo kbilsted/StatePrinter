@@ -101,7 +101,7 @@ namespace StatePrinter.Tests.PerformanceTests
 
     internal class Base
     {
-      internal string Boo;
+      internal string Boo = null;
     }
 
 
