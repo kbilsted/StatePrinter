@@ -32,6 +32,7 @@ namespace StatePrinter.FieldHarvesters
   /// </summary>
   public class AllFieldsHarvester : IFieldHarvester
   {
+    readonly HarvestHelper harvestHelper = new HarvestHelper();
     public bool CanHandleType(Type type)
     {
       return true;
@@ -43,7 +44,7 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public List<SanitiedFieldInfo> GetFields(Type type)
     {
-      return new HarvestHelper().GetFields(type);
+      return harvestHelper.GetFields(type);
     }
   }
 }
