@@ -97,18 +97,20 @@ namespace StatePrinter.Configurations
     /// Add a configuration. Adding will override the existing behaviour only when the
     /// added handler handles a type that is already handleable by the current configuration.
     /// </summary>
-    public void Add(IValueConverter handler)
+    public Configuration Add(IValueConverter handler)
     {
       valueConverters.Insert(0, handler);
+      return this;
     }
 
     /// <summary>
     /// Add a configuration. Adding will override the existing behaviour only when the
     /// added handler handles a type that is already handleable by the current configuration.
     /// </summary>
-    public void Add(IFieldHarvester handler)
+    public Configuration Add(IFieldHarvester handler)
     {
       fieldHarvesters.Insert(0, handler);
+      return this;
     }
 
     readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>();
