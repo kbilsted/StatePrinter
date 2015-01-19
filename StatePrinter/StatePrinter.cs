@@ -19,6 +19,7 @@
 using System;
 
 using StatePrinter.Configurations;
+using StatePrinter.FieldHarvesters;
 using StatePrinter.Introspection;
 
 namespace StatePrinter
@@ -36,7 +37,11 @@ namespace StatePrinter
   public class Stateprinter
   {
     readonly Configuration configuration;
-    static readonly HarvestInfoCache harvestCache = new HarvestInfoCache();
+
+    /// <summary>
+    /// The cache cannot be static since we have many different harvesters, and potentially many different usages of <see cref="ProjectionHarvester"/>
+    /// </summary>
+    readonly HarvestInfoCache harvestCache = new HarvestInfoCache(); 
 
     /// <summary>
     /// Create an state printer using the supplied configuration.
