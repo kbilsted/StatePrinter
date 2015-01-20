@@ -36,9 +36,23 @@ namespace StatePrinter.FieldHarvesters
     Dictionary<Type, bool> cache = new Dictionary<Type, bool>();
     Dictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
 
+    public ToStringAwareHarvester()
+    {
+    }
+
     public bool CanHandleType(Type type)
     {
-      return true;
+      bool hasToString;
+      if (!cache.TryGetValue(type, out hasToString))
+      {
+        var methodInfo = GetMethodInfo(type);
+        hasToString = methodInfo != null;
+        cache[type] = hasToString;
+        if (hasToString)
+          methodInfos[type] = methodInfo;
+      }
+
+      return hasToString;
     }
 
     /// <summary>
@@ -47,22 +61,25 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public List<SanitiedFieldInfo> GetFields(Type type)
     {
-      bool hasToString;
-      if (!cache.TryGetValue(type, out hasToString))
-      {
-        var methodInfo = type.GetMethod("ToString");
-        hasToString = methodInfo.DeclaringType == type;
-        cache[type] = hasToString;
-        if (hasToString) methodInfos[type] = methodInfo;
-      }
-
-      if (!hasToString) 
-        return new HarvestHelper().GetFields(type);
-
-      Func<object, object> valueProvider = o => methodInfos[type].Invoke(o, new object[0]);
+      Func<object, object> valueProvider = (o) => methodInfos[type].Invoke(o, new object[0]);
       var syntesizedField = new SanitiedFieldInfo(null, "ToString()", valueProvider);
 
       return new List<SanitiedFieldInfo>() { syntesizedField };
+    }
+
+    /// <summary>
+    /// This more thorough way to avoid the "Ambiguous match found" exception while retrieving the ToString method
+    /// Explained here http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
+    /// </summary>
+    MethodInfo GetMethodInfo(Type type)
+    {
+      var methodInfo = type.GetMethod(
+        "ToString",
+        BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly,
+        null,
+        new Type[] { }, // Method ToString() without parameters
+        null);
+      return methodInfo;
     }
   }
 }
