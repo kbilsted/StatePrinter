@@ -53,4 +53,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]     // NEVER CHANGE THIS
-[assembly: AssemblyFileVersion("1.0.0.5")] // Bump this at every release
+[assembly: AssemblyFileVersion("1.0.0.6")] // Bump this at every release
