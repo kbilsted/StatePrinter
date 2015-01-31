@@ -21,24 +21,24 @@ using System.Linq;
 
 namespace StatePrinter.OutputFormatters
 {
-  public static class OutputFormatterHelpers
-  {
-    /// <summary>
-    /// Convert a type into a human readable string
-    /// </summary>
-    public static string MakeReadable(Type type)
+    public static class OutputFormatterHelpers
     {
-      if(type == null)
-        throw new ArgumentNullException("type");
+        /// <summary>
+        /// Convert a type into a human readable string
+        /// </summary>
+        public static string MakeReadable(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
 
-      if (!type.IsGenericType) 
-        return type.Name;
-      
-      var typename = type.Name.Split('`')[0];
-      var genericName = type.GetGenericArguments().Select(x => MakeReadable(x)).ToArray();
-      string generictypes = string.Join(", ", genericName);
+            if (!type.IsGenericType)
+                return type.Name;
 
-      return String.Format("{0}<{1}>", typename, generictypes);
+            var typename = type.Name.Split('`')[0];
+            var genericName = type.GetGenericArguments().Select(x => MakeReadable(x)).ToArray();
+            string generictypes = string.Join(", ", genericName);
+
+            return String.Format("{0}<{1}>", typename, generictypes);
+        }
     }
-  }
 }

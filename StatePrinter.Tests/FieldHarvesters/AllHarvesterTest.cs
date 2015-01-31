@@ -24,33 +24,33 @@ using StatePrinter.Tests.IntegrationTests;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {
-  [TestFixture]
-  class AllHarvesterTest
-  {
-    HarvestHelper helper = new HarvestHelper();
-
-    [Test]
-    public void AllFieldsHarvestTest()
+    [TestFixture]
+    class AllHarvesterTest
     {
-      var harvester = new AllFieldsHarvester();
+        HarvestHelper helper = new HarvestHelper();
 
-      var fields = harvester.GetFields(typeof (Car)).Select(x => x.SanitizedName).ToArray();
-      CollectionAssert.AreEquivalent(new[] { "StereoAmplifiers", "steeringWheel", "Brand" }, fields);
+        [Test]
+        public void AllFieldsHarvestTest()
+        {
+            var harvester = new AllFieldsHarvester();
 
-      fields = harvester.GetFields(typeof (SteeringWheel)).Select(x => x.SanitizedName).ToArray();
-      CollectionAssert.AreEquivalent(new[] { "Size", "Grip", "Weight" }, fields);
+            var fields = harvester.GetFields(typeof(Car)).Select(x => x.SanitizedName).ToArray();
+            CollectionAssert.AreEquivalent(new[] { "StereoAmplifiers", "steeringWheel", "Brand" }, fields);
+
+            fields = harvester.GetFields(typeof(SteeringWheel)).Select(x => x.SanitizedName).ToArray();
+            CollectionAssert.AreEquivalent(new[] { "Size", "Grip", "Weight" }, fields);
+        }
+
+        [Test]
+        public void PublicFieldsHarvesterTest()
+        {
+            var harvester = new PublicFieldsHarvester();
+
+            var fields = harvester.GetFields(typeof(Car)).Select(x => x.SanitizedName).ToArray();
+            CollectionAssert.AreEquivalent(new[] { "Brand" }, fields);
+
+            fields = harvester.GetFields(typeof(SteeringWheel)).Select(x => x.SanitizedName).ToArray();
+            CollectionAssert.AreEquivalent(new string[0] { }, fields);
+        }
     }
-
-    [Test]
-    public void PublicFieldsHarvesterTest()
-    {
-      var harvester = new PublicFieldsHarvester();
-
-      var fields = harvester.GetFields(typeof(Car)).Select(x => x.SanitizedName).ToArray();
-      CollectionAssert.AreEquivalent(new[] { "Brand" }, fields);
-
-      fields = harvester.GetFields(typeof(SteeringWheel)).Select(x => x.SanitizedName).ToArray();
-      CollectionAssert.AreEquivalent(new string[0] { }, fields);
-    }
-  }
 }

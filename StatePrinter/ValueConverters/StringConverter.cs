@@ -21,19 +21,19 @@ using System;
 
 namespace StatePrinter.ValueConverters
 {
-  /// <summary>
-  /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>
-  /// </summary>
-  public class StringConverter : IValueConverter
-  {
-    public bool CanHandleType(Type t)
+    /// <summary>
+    /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>
+    /// </summary>
+    public class StringConverter : IValueConverter
     {
-      return t == typeof (string);
-    }
+        public bool CanHandleType(Type t)
+        {
+            return t == typeof(string);
+        }
 
-    public string Convert(object source)
-    {
-      return string.Format(@"""{0}""", source);
+        public string Convert(object source)
+        {
+            return string.Format(@"""{0}""", source);
+        }
     }
-  }
 }

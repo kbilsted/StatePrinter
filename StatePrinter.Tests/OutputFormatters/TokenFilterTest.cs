@@ -23,61 +23,61 @@ using StatePrinter.Introspection;
 
 namespace StatePrinter.Tests.OutputFormatters
 {
-  [TestFixture]
-  class TokenFilterTest
-  {
-
-    [Test]
-    public void GetHashcode()
+    [TestFixture]
+    class TokenFilterTest
     {
-      var sut = new Token(TokenType.FieldnameWithTypeAndReference, null, null, null, null);
-      Assert.AreEqual(-1280274074, sut.GetHashCode());
-    }
 
-    [Test]
-    public void Transform_noncycle()
-    {
-      var nonCycleTokens = new List<Token>()
+        [Test]
+        public void GetHashcode()
+        {
+            var sut = new Token(TokenType.FieldnameWithTypeAndReference, null, null, null, null);
+            Assert.AreEqual(-1280274074, sut.GetHashCode());
+        }
+
+        [Test]
+        public void Transform_noncycle()
+        {
+            var nonCycleTokens = new List<Token>()
                            {
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", new Reference(1), typeof(string) ),
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(2), typeof(string)),
                            };
 
-      var filter = new UnusedReferencesTokenFilter();
-      var newlist = filter.FilterUnusedReferences(nonCycleTokens);
+            var filter = new UnusedReferencesTokenFilter();
+            var newlist = filter.FilterUnusedReferences(nonCycleTokens);
 
-      // test
-      var expected = new List<Token>()
+            // test
+            var expected = new List<Token>()
                            {
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", null, typeof(string)),
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", null, typeof(string)),
                            };
 
-      CollectionAssert.AreEqual(expected, newlist);
-    }
+            CollectionAssert.AreEqual(expected, newlist);
+        }
 
-    [Test]
-    public void Transform_cycle()
-    {
-      var nonCycleTokens = new List<Token>()
+        [Test]
+        public void Transform_cycle()
+        {
+            var nonCycleTokens = new List<Token>()
                            {
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", new Reference(0), typeof(string)),
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(1), typeof(int)),
                              Token.SeenBefore(new Field("FieldB"), new Reference(1)),
                            };
 
-      var filter = new UnusedReferencesTokenFilter();
-      var newlist = filter.FilterUnusedReferences(nonCycleTokens);
+            var filter = new UnusedReferencesTokenFilter();
+            var newlist = filter.FilterUnusedReferences(nonCycleTokens);
 
-      // test
-      var expected = new List<Token>()
+            // test
+            var expected = new List<Token>()
                            {
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldA"), "value1", null, typeof(string)),
                              new Token(TokenType.FieldnameWithTypeAndReference, new Field("fieldB"), "value2", new Reference(0), typeof(int)),
                              Token.SeenBefore(new Field("FieldB"), new Reference(0)),
                            };
 
-      CollectionAssert.AreEqual(expected, newlist);
+            CollectionAssert.AreEqual(expected, newlist);
+        }
     }
-  }
 }

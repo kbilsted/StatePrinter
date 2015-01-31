@@ -22,42 +22,42 @@ using StatePrinter.Configurations;
 
 namespace StatePrinter.ValueConverters
 {
-  /// <summary>
-  /// Handles the printing of
-  /// Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, 
-  /// Double, Single, decimal, Guid 
-  /// </summary>
-  public class StandardTypesConverter : IValueConverter
-  {
-    readonly Configuration configuration;
-
-    public StandardTypesConverter(Configuration configuration)
-    { 
-      this.configuration = configuration;
-    }
-
-    public bool CanHandleType(Type t)
+    /// <summary>
+    /// Handles the printing of
+    /// Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, 
+    /// Double, Single, decimal, Guid 
+    /// </summary>
+    public class StandardTypesConverter : IValueConverter
     {
-      // Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
-      if (t.IsPrimitive)
-        return true;
+        readonly Configuration configuration;
 
-      if (t == typeof(decimal) || t == typeof(Guid))
-        return true;
+        public StandardTypesConverter(Configuration configuration)
+        {
+            this.configuration = configuration;
+        }
 
-      return false;
+        public bool CanHandleType(Type t)
+        {
+            // Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
+            if (t.IsPrimitive)
+                return true;
+
+            if (t == typeof(decimal) || t == typeof(Guid))
+                return true;
+
+            return false;
+        }
+
+        public string Convert(object source)
+        {
+            if (source is float)
+                return ((float)source).ToString(configuration.Culture);
+            if (source is double)
+                return ((double)source).ToString(configuration.Culture);
+            if (source is decimal)
+                return ((decimal)source).ToString(configuration.Culture);
+
+            return source.ToString();
+        }
     }
-
-    public string Convert(object source)
-    {
-      if (source is float)
-        return ((float)source).ToString(configuration.Culture);
-      if (source is double)
-        return ((double)source).ToString(configuration.Culture);
-      if (source is decimal)
-        return ((decimal)source).ToString(configuration.Culture);
-
-      return source.ToString();
-    }
-  }
 }

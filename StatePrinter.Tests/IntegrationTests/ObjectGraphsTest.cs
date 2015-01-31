@@ -25,27 +25,27 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  [TestFixture]
-  class ObjectGraphsTest
-  {
-    Stateprinter printer;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    class ObjectGraphsTest
     {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new Stateprinter(cfg);
-    }
+        Stateprinter printer;
 
-    [Test]
-    public void ThreeLinkedGraph()
-    {
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      car.Brand = "Toyota";
+        [SetUp]
+        public void Setup()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            printer = new Stateprinter(cfg);
+        }
 
-      var expected =
-@"new Car()
+        [Test]
+        public void ThreeLinkedGraph()
+        {
+            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+            car.Brand = "Toyota";
+
+            var expected =
+      @"new Car()
 {
     StereoAmplifiers = null
     steeringWheel = new SteeringWheel()
@@ -60,22 +60,22 @@ namespace StatePrinter.Tests.IntegrationTests
     Brand = ""Toyota""
 }
 ";
-      Assert.AreEqual(expected, printer.PrintObject(car));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(car));
+        }
 
 
-    [Test]
-    public void ThreeLinkedGraph_json()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
+        [Test]
+        public void ThreeLinkedGraph_json()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            var printer = new Stateprinter(cfg);
 
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      car.Brand = "Toyota";
+            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+            car.Brand = "Toyota";
 
-      var expected =
-@"
+            var expected =
+      @"
 {
     ""StereoAmplifiers"" : null,
     ""steeringWheel"" :
@@ -91,20 +91,20 @@ namespace StatePrinter.Tests.IntegrationTests
 }
 ";
 
-      Assert.AreEqual(expected, printer.PrintObject(car));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(car));
+        }
 
-    [Test]
-    public void ThreeLinkedGraph_xmlstyle()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      car.Brand = "Toyota";
+        [Test]
+        public void ThreeLinkedGraph_xmlstyle()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+            var printer = new Stateprinter(cfg);
+            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+            car.Brand = "Toyota";
 
-      var expected =
-@"<ROOT type='Car'>
+            var expected =
+      @"<ROOT type='Car'>
     <StereoAmplifiers>null</StereoAmplifiers>
     <steeringWheel type='SteeringWheel'>
         <Size>3</Size>
@@ -116,19 +116,19 @@ namespace StatePrinter.Tests.IntegrationTests
     <Brand>""Toyota""</Brand>
 </ROOT>
 ";
-      Assert.AreEqual(expected, printer.PrintObject(car));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(car));
+        }
 
 
-    [Test]
-    public void CyclicGraph_curly()
-    {
-      var course = new Course();
-      course.Members.Add(new Student("Stan", course));
-      course.Members.Add(new Student("Richy", course));
+        [Test]
+        public void CyclicGraph_curly()
+        {
+            var course = new Course();
+            course.Members.Add(new Student("Stan", course));
+            course.Members.Add(new Student("Richy", course));
 
-      var expected =
-@"new Course(), ref: 0
+            var expected =
+      @"new Course(), ref: 0
 {
     Members = new List<Student>()
     Members[0] = new Student()
@@ -143,23 +143,23 @@ namespace StatePrinter.Tests.IntegrationTests
     }
 }
 ";
-      Assert.AreEqual(expected, printer.PrintObject(course));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(course));
+        }
 
 
-    [Test]
-    public void CyclicGraph_Json()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
+        [Test]
+        public void CyclicGraph_Json()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            var printer = new Stateprinter(cfg);
 
-      var course = new Course();
-      course.Members.Add(new Student("Stan", course));
-      course.Members.Add(new Student("Richy", course));
+            var course = new Course();
+            course.Members.Add(new Student("Stan", course));
+            course.Members.Add(new Student("Richy", course));
 
-      var expected =
-@"
+            var expected =
+      @"
 {
     ""Members"" :
     [
@@ -174,17 +174,17 @@ namespace StatePrinter.Tests.IntegrationTests
     ]
 }
 ";
-      Assert.AreEqual(expected, printer.PrintObject(course));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(course));
+        }
 
 
-    [Test]
-    public void MegaCyclicGraph_Curlybrace()
-    {
-      var mother = MakeFamily();
+        [Test]
+        public void MegaCyclicGraph_Curlybrace()
+        {
+            var mother = MakeFamily();
 
-      var expected =
-        @"new Human(), ref: 0
+            var expected =
+              @"new Human(), ref: 0
 {
     Name = ""Mom""
     Mother = new Human()
@@ -222,23 +222,23 @@ namespace StatePrinter.Tests.IntegrationTests
     Father =  -> 2
 }
 ";
-      //Console.WriteLine(printer.PrintObject(mother));
-      Assert.AreEqual(expected, printer.PrintObject(mother));
-    }
+            //Console.WriteLine(printer.PrintObject(mother));
+            Assert.AreEqual(expected, printer.PrintObject(mother));
+        }
 
 
-    [Test]
-    public void MegaCyclicGraph_Json()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
+        [Test]
+        public void MegaCyclicGraph_Json()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            var printer = new Stateprinter(cfg);
 
 
-      var mother = MakeFamily();
+            var mother = MakeFamily();
 
-      var expected =
-@"
+            var expected =
+      @"
 {
     ""Name"" : ""Mom"",
     ""Mother"" :
@@ -280,52 +280,52 @@ namespace StatePrinter.Tests.IntegrationTests
     ""Father"" :  root.Children[0].Father
 }
 ";
-      var actual = printer.PrintObject(mother);
-      Assert.AreEqual(expected, actual);
-    }
+            var actual = printer.PrintObject(mother);
+            Assert.AreEqual(expected, actual);
+        }
 
 
-    /// <summary>
-    ///   grandMom <---+ +---> grandDad
-    ///                | |     ^      ^
-    ///                | |     |      | 
-    ///                | |     |      |
-    ///                Mom<--- son    |
-    ///                  ^            |    
-    ///                  |            |    
-    ///                  +--------- daughter
-    /// </summary>
-    Human MakeFamily()
-    {
-      var grandDad = new Human("grandDad");
-      var grandMom = new Human("grandMom");
+        /// <summary>
+        ///   grandMom <---+ +---> grandDad
+        ///                | |     ^      ^
+        ///                | |     |      | 
+        ///                | |     |      |
+        ///                Mom<--- son    |
+        ///                  ^            |    
+        ///                  |            |    
+        ///                  +--------- daughter
+        /// </summary>
+        Human MakeFamily()
+        {
+            var grandDad = new Human("grandDad");
+            var grandMom = new Human("grandMom");
 
-      var mother = new Human("Mom", grandDad, grandMom);
-      grandDad.Children.Add(mother);
-      grandMom.Children.Add(mother);
+            var mother = new Human("Mom", grandDad, grandMom);
+            grandDad.Children.Add(mother);
+            grandMom.Children.Add(mother);
 
-      var son = new Human("son", grandDad, mother);
-      grandDad.Children.Add(son);
-      mother.Children.Add(son);
+            var son = new Human("son", grandDad, mother);
+            grandDad.Children.Add(son);
+            mother.Children.Add(son);
 
-      var daughter = new Human("daughter", grandDad, mother);
-      grandDad.Children.Add(daughter);
-      mother.Children.Add(daughter);
-      return mother;
-    }
+            var daughter = new Human("daughter", grandDad, mother);
+            grandDad.Children.Add(daughter);
+            mother.Children.Add(daughter);
+            return mother;
+        }
 
-    [Test]
-    public void CyclicGraph_xmlstyle()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
-      var course = new Course();
-      course.Members.Add(new Student("Stan", course));
-      course.Members.Add(new Student("Richy", course));
+        [Test]
+        public void CyclicGraph_xmlstyle()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+            var printer = new Stateprinter(cfg);
+            var course = new Course();
+            course.Members.Add(new Student("Stan", course));
+            course.Members.Add(new Student("Richy", course));
 
-      var expected =
-@"<ROOT type='Course' ref='0'>
+            var expected =
+      @"<ROOT type='Course' ref='0'>
     <Members type='List(Student)'>
         <Enumeration>
         <Members type='Student'>
@@ -340,84 +340,84 @@ namespace StatePrinter.Tests.IntegrationTests
     </Members>
 </ROOT>
 ";
-      Assert.AreEqual(expected, printer.PrintObject(course));
+            Assert.AreEqual(expected, printer.PrintObject(course));
+        }
     }
-  }
 
-  #region car
-  class Car
-  {
-    protected int? StereoAmplifiers = null;
-    private SteeringWheel steeringWheel;
-    public string Brand { get; set; }
-    public Car(SteeringWheel steeringWheel)
+    #region car
+    class Car
     {
-      this.steeringWheel = steeringWheel;
+        protected int? StereoAmplifiers = null;
+        private SteeringWheel steeringWheel;
+        public string Brand { get; set; }
+        public Car(SteeringWheel steeringWheel)
+        {
+            this.steeringWheel = steeringWheel;
+        }
     }
-  }
 
-  internal class SteeringWheel
-  {
-    internal int Size = 3;
-    protected FoamGrip Grip;
-  
-    public SteeringWheel(FoamGrip grip)
+    internal class SteeringWheel
     {
-      Grip = grip;
+        internal int Size = 3;
+        protected FoamGrip Grip;
+
+        public SteeringWheel(FoamGrip grip)
+        {
+            Grip = grip;
+        }
+        internal int Weight = 525;
+
     }
-    internal int Weight = 525;
 
-  }
-
-  class FoamGrip
-  {
-    private string Material;
-    public FoamGrip(string material)
+    class FoamGrip
     {
-      Material = material;
+        private string Material;
+        public FoamGrip(string material)
+        {
+            Material = material;
+        }
     }
-  }
-  #endregion
+    #endregion
 
 
-  #region cyclic graph
-  class Course
-  {
-    public List<Student> Members = new List<Student>();
-  }
-
-
-  internal class Student
-  {
-    public Student(string name, Course course)
+    #region cyclic graph
+    class Course
     {
-      this.name = name;
-      this.course = course;
+        public List<Student> Members = new List<Student>();
     }
 
-    internal string name;
-    private Course course;
-  }
-#endregion
 
-
-#region even more cyclic job
-
-  class Human
-  {
-    readonly public string Name;
-    readonly public Human Mother;
-    readonly public List<Human> Children = new List<Human>();
-    readonly public Human Father;
-
-    public Human(string name, Human father = null, Human mother = null)
+    internal class Student
     {
-      Name = name;
-      Father = father;
-      Mother = mother;
-    }
-  }
+        public Student(string name, Course course)
+        {
+            this.name = name;
+            this.course = course;
+        }
 
-#endregion
+        internal string name;
+        private Course course;
+    }
+    #endregion
+
+
+    #region even more cyclic job
+
+    class Human
+    {
+        readonly public string Name;
+        readonly public Human Mother;
+        readonly public List<Human> Children = new List<Human>();
+        readonly public Human Father;
+
+        public Human(string name, Human father = null, Human mother = null)
+        {
+            Name = name;
+            Father = father;
+            Mother = mother;
+        }
+    }
+
+    #endregion
 
 }

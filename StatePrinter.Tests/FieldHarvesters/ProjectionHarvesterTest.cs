@@ -25,235 +25,235 @@ using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {
-  /// <summary>
-  /// Shows how the <see cref="ProjectionHarvester"/> can be utilized in unit tests
-  /// </summary>
-  [TestFixture]
-  class ProjectionHarvesterTest
-  {
-    class A
-    {
-      public DateTime X;
-      public DateTime Y { get; set; }
-      public string Name;
-    }
-
-
-    class B : A
-    {
-      public int Age;
-    }
-
-
-    class C
-    {
-      public DateTime X;
-    }
-
-    [SetCulture("da-DK")]
-    [Test]
-    public void TestFluintInterface()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
-      var printer = new Stateprinter(cfg);
-
-      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
-
-      state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
-      Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
-
-      state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
-      Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
-    }
-
-    [SetCulture("da-DK")]
-    [Test]
-    public void UserStory()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester()
-        .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
-
-      var printer = new Stateprinter(cfg);
-
-      var state = printer.PrintObject(new A {X = DateTime.Now, Name = "Charly"});
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
-
-      state = printer.PrintObject(new B {X = DateTime.Now, Name = "Charly", Age = 43});
-      Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
-
-      state = printer.PrintObject(new C {X = new DateTime(2010, 9, 8)});
-      Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
-    }
-
-
+    /// <summary>
+    /// Shows how the <see cref="ProjectionHarvester"/> can be utilized in unit tests
+    /// </summary>
     [TestFixture]
-    class AddFilter
+    class ProjectionHarvesterTest
     {
-      [Test]
-      public void ExcludeFilter_ForTypesAndSubtypes()
-      {
-        var selective = new ProjectionHarvester();
-        selective.AddFilter<A>(
-          x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+        class A
+        {
+            public DateTime X;
+            public DateTime Y { get; set; }
+            public string Name;
+        }
 
-        Asserts(selective);
-      }
 
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage = "Type A has already been configured as an excluder.")]
-      public void AddFilter_OnAlreadyExclude_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<A>(x => x.X);
-        harvester.AddFilter<A>(x => null);
-      }
+        class B : A
+        {
+            public int Age;
+        }
 
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage = "Type A has already been configured as an includer.")]
-      public void AddFilter_OnAlreadyInclude_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Include<A>(x => x.X);
-        harvester.AddFilter<A>(x => null);
-      }
+
+        class C
+        {
+            public DateTime X;
+        }
+
+        [SetCulture("da-DK")]
+        [Test]
+        public void TestFluintInterface()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+            cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
+            var printer = new Stateprinter(cfg);
+
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+
+            state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
+
+            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
+        }
+
+        [SetCulture("da-DK")]
+        [Test]
+        public void UserStory()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+            cfg.Projectionharvester()
+              .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+
+            var printer = new Stateprinter(cfg);
+
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+
+            state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
+
+            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
+        }
+
+
+        [TestFixture]
+        class AddFilter
+        {
+            [Test]
+            public void ExcludeFilter_ForTypesAndSubtypes()
+            {
+                var selective = new ProjectionHarvester();
+                selective.AddFilter<A>(
+                  x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+
+                Asserts(selective);
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage = "Type A has already been configured as an excluder.")]
+            public void AddFilter_OnAlreadyExclude_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<A>(x => x.X);
+                harvester.AddFilter<A>(x => null);
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage = "Type A has already been configured as an includer.")]
+            public void AddFilter_OnAlreadyInclude_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Include<A>(x => x.X);
+                harvester.AddFilter<A>(x => null);
+            }
+        }
+
+
+
+
+        [TestFixture]
+        class Exclude
+        {
+            [Test]
+            public void WrongSpec_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                var ex =
+                  Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => Math.Min(3, 3)));
+                Assert.AreEqual("Field specification must refer to a field", ex.Message);
+
+                ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => 1));
+                Assert.AreEqual("Field specification must refer to a field", ex.Message);
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage =
+                "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
+            public void AddExclude_FieldOnDifferentType_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<A>(x => x.X.Year);
+            }
+
+
+            [Test]
+            public void Fields_WorksForTypesAndSubtypes()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<A>(x => x.X)
+                  .Exclude<A>(x => x.Y);
+
+                Asserts(harvester);
+            }
+
+            [Test]
+            public void Fieldsarr_WorksForTypesAndSubtypes()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<A>(x => x.X, x => x.Y);
+
+                Asserts(harvester);
+            }
+
+            [Test]
+            public void Exclude_FieldInSuperclass_WorksForTypesAndSubtypes()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<B>(x => x.Name);
+
+                IFieldHarvester fh = (IFieldHarvester)harvester;
+                Assert.IsFalse(fh.CanHandleType(typeof(A)));
+
+                Assert.IsTrue(fh.CanHandleType(typeof(B)));
+                var fields = fh.GetFields(typeof(B)).Select(x => x.SanitizedName);
+                CollectionAssert.AreEquivalent(new[] { "X", "Y", "Age" }, fields);
+
+                Assert.IsFalse(fh.CanHandleType(typeof(C)));
+            }
+
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage = "Type A has already been configured as a filter.")]
+            public void Exclude_OnAlreadyFilter_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.AddFilter<A>(x => null);
+                harvester.Exclude<A>(x => x.X);
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage = "Type A has already been configured as an includer.")]
+            public void Exclude_OnAlreadyInclude_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Include<A>(x => x.X);
+                harvester.Exclude<A>(x => x.X);
+            }
+        }
+
+
+
+        [TestFixture]
+        class Include
+        {
+            [Test]
+            public void Include_Fieldsarr_WorksForTypesAndSubtypes()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Include<B>(x => x.Name, x => x.Age);
+
+
+                IFieldHarvester fh = (IFieldHarvester)harvester;
+                Assert.IsFalse(fh.CanHandleType(typeof(A)));
+                Assert.IsTrue(fh.CanHandleType(typeof(B)));
+                var fields = fh.GetFields(typeof(B)).Select(x => x.SanitizedName);
+                CollectionAssert.AreEquivalent(new[] { "Name", "Age" }, fields);
+
+                Assert.IsFalse(fh.CanHandleType(typeof(C)));
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException),
+              ExpectedMessage = "Type A has already been configured as an excluder.")]
+            public void Include_OnAlreadyInclude_Fail()
+            {
+                var harvester = new ProjectionHarvester();
+                harvester.Exclude<A>(x => x.X);
+                harvester.Include<A>(x => x.X);
+            }
+        }
+
+        static void Asserts(ProjectionHarvester harvester)
+        {
+            IFieldHarvester fh = (IFieldHarvester)harvester;
+            Assert.IsTrue(fh.CanHandleType(typeof(A)));
+            var fields = fh.GetFields(typeof(A)).Select(x => x.SanitizedName);
+            CollectionAssert.AreEquivalent(new[] { "Name" }, fields);
+
+            Assert.IsTrue(fh.CanHandleType(typeof(B)));
+            fields = fh.GetFields(typeof(B)).Select(x => x.SanitizedName);
+            CollectionAssert.AreEquivalent(new[] { "Name", "Age" }, fields);
+
+            Assert.IsFalse(fh.CanHandleType(typeof(C)));
+        }
+
     }
-
-
-
-
-    [TestFixture]
-    class Exclude
-    {
-      [Test]
-      public void WrongSpec_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        var ex =
-          Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => Math.Min(3, 3)));
-        Assert.AreEqual("Field specification must refer to a field", ex.Message);
-
-        ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => 1));
-        Assert.AreEqual("Field specification must refer to a field", ex.Message);
-      }
-
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage =
-          "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
-      public void AddExclude_FieldOnDifferentType_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<A>(x => x.X.Year);
-      }
-
-
-      [Test]
-      public void Fields_WorksForTypesAndSubtypes()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<A>(x => x.X)
-          .Exclude<A>(x => x.Y);
-
-        Asserts(harvester);
-      }
-
-      [Test]
-      public void Fieldsarr_WorksForTypesAndSubtypes()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<A>(x => x.X, x => x.Y);
-
-        Asserts(harvester);
-      }
-
-      [Test]
-      public void Exclude_FieldInSuperclass_WorksForTypesAndSubtypes()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<B>(x => x.Name);
-
-        IFieldHarvester fh = (IFieldHarvester) harvester;
-        Assert.IsFalse(fh.CanHandleType(typeof (A)));
-
-        Assert.IsTrue(fh.CanHandleType(typeof (B)));
-        var fields = fh.GetFields(typeof (B)).Select(x => x.SanitizedName);
-        CollectionAssert.AreEquivalent(new[] {"X", "Y", "Age"}, fields);
-
-        Assert.IsFalse(fh.CanHandleType(typeof (C)));
-      }
-
-
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage = "Type A has already been configured as a filter.")]
-      public void Exclude_OnAlreadyFilter_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.AddFilter<A>(x => null);
-        harvester.Exclude<A>(x => x.X);
-      }
-
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage = "Type A has already been configured as an includer.")]
-      public void Exclude_OnAlreadyInclude_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Include<A>(x => x.X);
-        harvester.Exclude<A>(x => x.X);
-      }
-    }
-
-
-
-    [TestFixture]
-    class Include
-    {
-      [Test]
-      public void Include_Fieldsarr_WorksForTypesAndSubtypes()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Include<B>(x => x.Name, x => x.Age);
-
-
-        IFieldHarvester fh = (IFieldHarvester) harvester;
-        Assert.IsFalse(fh.CanHandleType(typeof (A)));
-        Assert.IsTrue(fh.CanHandleType(typeof (B)));
-        var fields = fh.GetFields(typeof (B)).Select(x => x.SanitizedName);
-        CollectionAssert.AreEquivalent(new[] {"Name", "Age"}, fields);
-
-        Assert.IsFalse(fh.CanHandleType(typeof (C)));
-      }
-
-      [Test]
-      [ExpectedException(typeof (ArgumentException),
-        ExpectedMessage = "Type A has already been configured as an excluder.")]
-      public void Include_OnAlreadyInclude_Fail()
-      {
-        var harvester = new ProjectionHarvester();
-        harvester.Exclude<A>(x => x.X);
-        harvester.Include<A>(x => x.X);
-      }
-    }
-
-    static void Asserts(ProjectionHarvester harvester)
-    {
-      IFieldHarvester fh = (IFieldHarvester) harvester;
-      Assert.IsTrue(fh.CanHandleType(typeof (A)));
-      var fields = fh.GetFields(typeof (A)).Select(x => x.SanitizedName);
-      CollectionAssert.AreEquivalent(new[] {"Name"}, fields);
-
-      Assert.IsTrue(fh.CanHandleType(typeof (B)));
-      fields = fh.GetFields(typeof (B)).Select(x => x.SanitizedName);
-      CollectionAssert.AreEquivalent(new[] {"Name", "Age"}, fields);
-
-      Assert.IsFalse(fh.CanHandleType(typeof (C)));
-    }
-
-  }
 }

@@ -26,33 +26,33 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  [TestFixture]
-  class DictionaryTest
-  {
-    Stateprinter printer;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    class DictionaryTest
     {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new Stateprinter(cfg);
-    }
+        Stateprinter printer;
+
+        [SetUp]
+        public void Setup()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            printer = new Stateprinter(cfg);
+        }
 
 
-    [Test]
-    public void Dictionary_int_int()
-    {
-      var d = new Dictionary<int, int> {{1, 2}, {2, 4}, {3, 6}};
-      Assert.AreEqual("[1] = 2\r\n[2] = 4\r\n[3] = 6\r\n", printer.PrintObject(d));
-    }
+        [Test]
+        public void Dictionary_int_int()
+        {
+            var d = new Dictionary<int, int> { { 1, 2 }, { 2, 4 }, { 3, 6 } };
+            Assert.AreEqual("[1] = 2\r\n[2] = 4\r\n[3] = 6\r\n", printer.PrintObject(d));
+        }
 
-    [Test]
-    public void IDictionary_untyped_int_int()
-    {
-      IDictionary d = new Hashtable() { { 1, 2 }, { 2, 4 }, { 3, 6 } };
-      Assert.AreEqual(
-@"new Hashtable()
+        [Test]
+        public void IDictionary_untyped_int_int()
+        {
+            IDictionary d = new Hashtable() { { 1, 2 }, { 2, 4 }, { 3, 6 } };
+            Assert.AreEqual(
+      @"new Hashtable()
 [0] = new DictionaryEntry()
 {
     _key = 3
@@ -69,7 +69,7 @@ namespace StatePrinter.Tests.IntegrationTests
     _value = 2
 }
 ", printer.PrintObject(d));
-    }
+        }
 
-  }
+    }
 }

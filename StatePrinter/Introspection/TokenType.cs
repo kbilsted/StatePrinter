@@ -18,14 +18,14 @@
 // under the License.
 namespace StatePrinter.Introspection
 {
-  public enum TokenType
-  {
-    StartScope, 
-    EndScope,
-    StartEnumeration,
-    EndEnumeration,
-    SeenBeforeWithReference, 
-    SimpleFieldValue, 
-    FieldnameWithTypeAndReference,
-  }
+    public enum TokenType
+    {
+        StartScope,
+        EndScope,
+        StartEnumeration,
+        EndEnumeration,
+        SeenBeforeWithReference,
+        SimpleFieldValue,
+        FieldnameWithTypeAndReference,
+    }
 }

@@ -21,19 +21,19 @@ using System;
 
 namespace StatePrinter.ValueConverters
 {
-  /// <summary>
-  /// Handles enums and prints their programatic name
-  /// </summary>
-  public class EnumConverter : IValueConverter
-  {
-    public bool CanHandleType(Type t)
+    /// <summary>
+    /// Handles enums and prints their programatic name
+    /// </summary>
+    public class EnumConverter : IValueConverter
     {
-      return t.IsEnum;
-    }
+        public bool CanHandleType(Type t)
+        {
+            return t.IsEnum;
+        }
 
-    public string Convert(object source)
-    {
-      return System.Enum.GetName(source.GetType(), source);
+        public string Convert(object source)
+        {
+            return System.Enum.GetName(source.GetType(), source);
+        }
     }
-  }
 }

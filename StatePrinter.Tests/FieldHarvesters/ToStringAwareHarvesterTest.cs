@@ -23,58 +23,58 @@ using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {
-  /// <summary>
-  /// Shows how the <see cref="ToStringAwareHarvester"/> can be used
-  /// </summary>
-  [TestFixture]
-  class ToStringAwareHarvesterTest
-  {
-    class A
+    /// <summary>
+    /// Shows how the <see cref="ToStringAwareHarvester"/> can be used
+    /// </summary>
+    [TestFixture]
+    class ToStringAwareHarvesterTest
     {
-      public int X;
+        class A
+        {
+            public int X;
 
-      int somePrivateVariable;
-          //should not be printed since the PublicFieldsHarvester should be used if there is no explicit ToString()
+            int somePrivateVariable;
+            //should not be printed since the PublicFieldsHarvester should be used if there is no explicit ToString()
 
-      public B b = new B() { Age = 2 };
-    }
+            public B b = new B() { Age = 2 };
+        }
 
-    class B
-    {
-      public int Age;
+        class B
+        {
+            public int Age;
 
-      public override string ToString()
-      {
-        return "My age is " + Age;
-      }
-    }
+            public override string ToString()
+            {
+                return "My age is " + Age;
+            }
+        }
 
-    class C : B
-    {
-      public C()
-      {
-        Age = 42;
-      }
-    }
+        class C : B
+        {
+            public C()
+            {
+                Age = 42;
+            }
+        }
 
-    [Test]
-    public void Userstory_PrintUseToString_WhenDirectlyAvailable()
-    {
-      var sut = CreatePrinter();
-      var expected = @"new B()
+        [Test]
+        public void Userstory_PrintUseToString_WhenDirectlyAvailable()
+        {
+            var sut = CreatePrinter();
+            var expected = @"new B()
 {
  ToString() = ""My age is 1""
 }
 ";
-      var actual = sut.PrintObject(new B { Age = 1 });
-      Assert.AreEqual(expected, actual);
-    }
+            var actual = sut.PrintObject(new B { Age = 1 });
+            Assert.AreEqual(expected, actual);
+        }
 
-    [Test]
-    public void Userstory_PrintUseToString_WhenAvailable()
-    {
-      var sut = CreatePrinter();
-      var expected = @"new A()
+        [Test]
+        public void Userstory_PrintUseToString_WhenAvailable()
+        {
+            var sut = CreatePrinter();
+            var expected = @"new A()
 {
  X = 1
  b = new B()
@@ -83,17 +83,17 @@ namespace StatePrinter.Tests.FieldHarvesters
  }
 }
 ";
-      var actual = sut.PrintObject(new A { X = 1 });
-      Assert.AreEqual(expected, actual);
-    }
+            var actual = sut.PrintObject(new A { X = 1 });
+            Assert.AreEqual(expected, actual);
+        }
 
 
 
-    [Test]
-    public void Userstory_PrintDontUseToString_WhenInherited()
-    {
-      var sut = CreatePrinter();
-      var expected = @"new A()
+        [Test]
+        public void Userstory_PrintDontUseToString_WhenInherited()
+        {
+            var sut = CreatePrinter();
+            var expected = @"new A()
 {
  X = 1
  b = new C()
@@ -102,18 +102,18 @@ namespace StatePrinter.Tests.FieldHarvesters
  }
 }
 ";
-      var actual = sut.PrintObject(new A { X = 1, b = new C()});
-      Assert.AreEqual(expected, actual);
-    }
+            var actual = sut.PrintObject(new A { X = 1, b = new C() });
+            Assert.AreEqual(expected, actual);
+        }
 
-    Stateprinter CreatePrinter()
-    {
-      Configuration cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Add(new PublicFieldsHarvester());
-      cfg.Add(new ToStringAwareHarvester());
+        Stateprinter CreatePrinter()
+        {
+            Configuration cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+            cfg.Add(new PublicFieldsHarvester());
+            cfg.Add(new ToStringAwareHarvester());
 
-      var sut = new Stateprinter(cfg);
-      return sut;
+            var sut = new Stateprinter(cfg);
+            return sut;
+        }
     }
-  }
 }

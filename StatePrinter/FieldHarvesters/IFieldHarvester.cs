@@ -22,13 +22,13 @@ using System.Collections.Generic;
 
 namespace StatePrinter.FieldHarvesters
 {
-  /// <summary>
-  /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
-  /// </summary>
-  public interface IFieldHarvester
-  {
-    bool CanHandleType(Type type);
+    /// <summary>
+    /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
+    /// </summary>
+    public interface IFieldHarvester
+    {
+        bool CanHandleType(Type type);
 
-    List<SanitiedFieldInfo> GetFields(Type type);
-  }
+        List<SanitiedFieldInfo> GetFields(Type type);
+    }
 }

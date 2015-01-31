@@ -22,34 +22,34 @@ using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Configurations
 {
-  /// <summary>
-  /// Helper for configuration
-  /// </summary>
-  public static class ConfigurationHelper
-  {
     /// <summary>
-    /// Return a configuration which covers most usages.
-    /// The configuration returned can be further remolded by adding additional handlers. 
-    /// 
-    /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
+    /// Helper for configuration
     /// </summary>
-    public static Configuration GetStandardConfiguration(string indentIncrement = Configuration.DefaultIndention)
+    public static class ConfigurationHelper
     {
-      var cfg = new Configuration(indentIncrement);
+        /// <summary>
+        /// Return a configuration which covers most usages.
+        /// The configuration returned can be further remolded by adding additional handlers. 
+        /// 
+        /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
+        /// </summary>
+        public static Configuration GetStandardConfiguration(string indentIncrement = Configuration.DefaultIndention)
+        {
+            var cfg = new Configuration(indentIncrement);
 
-      // valueconverters
-      cfg.Add(new StandardTypesConverter(cfg));
-      cfg.Add(new StringConverter());
-      cfg.Add(new DateTimeConverter(cfg));
-      cfg.Add(new EnumConverter());
-      
-      // harvesters
-      cfg.Add(new AllFieldsHarvester());
+            // valueconverters
+            cfg.Add(new StandardTypesConverter(cfg));
+            cfg.Add(new StringConverter());
+            cfg.Add(new DateTimeConverter(cfg));
+            cfg.Add(new EnumConverter());
 
-      // outputformatters
-      cfg.OutputFormatter = new CurlyBraceStyle(indentIncrement);
-      
-      return cfg;
+            // harvesters
+            cfg.Add(new AllFieldsHarvester());
+
+            // outputformatters
+            cfg.OutputFormatter = new CurlyBraceStyle(indentIncrement);
+
+            return cfg;
+        }
     }
-  }
 }

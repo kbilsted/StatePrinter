@@ -22,8 +22,8 @@ using StatePrinter.Introspection;
 
 namespace StatePrinter.OutputFormatters
 {
-  public interface IOutputFormatter
-  {
-    string Print(List<Token> tokens);
-  }
+    public interface IOutputFormatter
+    {
+        string Print(List<Token> tokens);
+    }
 }

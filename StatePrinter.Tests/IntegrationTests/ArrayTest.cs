@@ -22,21 +22,21 @@ using NUnit.Framework;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  [TestFixture]
-  class ArrayTest
-  {
-    [Test]
-    public void TwoDimArray()
+    [TestFixture]
+    class ArrayTest
     {
-      int[,] twoDimArray = {{1, 2}, {3, 4}};
-      var printer = new Stateprinter();
+        [Test]
+        public void TwoDimArray()
+        {
+            int[,] twoDimArray = { { 1, 2 }, { 3, 4 } };
+            var printer = new Stateprinter();
 
-      Assert.AreEqual(@"new Int32[,]()
+            Assert.AreEqual(@"new Int32[,]()
 [0] = 1
 [1] = 2
 [2] = 3
 [3] = 4
 ", printer.PrintObject(twoDimArray, ""));
+        }
     }
-  }
 }

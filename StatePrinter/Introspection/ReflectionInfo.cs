@@ -24,18 +24,18 @@ using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.Introspection
 {
-  /// <summary>
-  /// For each type we print, we hold the reflected and the readable version of the fields
-  /// </summary>
-  class ReflectionInfo
-  {
-    public readonly List<Field> Fields;
-    public readonly List<Func<object, object>> ValueProviders;
-
-    public ReflectionInfo(List<SanitiedFieldInfo> rawReflectedFields)
+    /// <summary>
+    /// For each type we print, we hold the reflected and the readable version of the fields
+    /// </summary>
+    class ReflectionInfo
     {
-      Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToList();
-      ValueProviders = rawReflectedFields.Select(x => x.ValueProvider).ToList();
+        public readonly List<Field> Fields;
+        public readonly List<Func<object, object>> ValueProviders;
+
+        public ReflectionInfo(List<SanitiedFieldInfo> rawReflectedFields)
+        {
+            Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToList();
+            ValueProviders = rawReflectedFields.Select(x => x.ValueProvider).ToList();
+        }
     }
-  }
 }

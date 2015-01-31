@@ -23,32 +23,32 @@ using System.Linq;
 
 namespace StatePrinter.FieldHarvesters
 {
-  /// <summary>
-  /// Harvest only public fields and properties from types.
-  /// 
-  /// We ignore the types from the following namespaces
-  /// <see cref="System.Reflection"/> 
-  /// <see cref="System.Runtime"/>
-  /// <see cref="System.Func"/>
-  /// </summary>
-  public class PublicFieldsHarvester : IFieldHarvester
-  {
-    public bool CanHandleType(Type type)
-    {
-      return true;
-    }
-
     /// <summary>
-    /// We ignore all properties as they, in the end, will only point to some computed state or other fields.
-    /// Hence they do not provide information about the actual state of the object.
+    /// Harvest only public fields and properties from types.
+    /// 
+    /// We ignore the types from the following namespaces
+    /// <see cref="System.Reflection"/> 
+    /// <see cref="System.Runtime"/>
+    /// <see cref="System.Func"/>
     /// </summary>
-    public List<SanitiedFieldInfo> GetFields(Type type)
+    public class PublicFieldsHarvester : IFieldHarvester
     {
-      // we need all fields in order to get the private backing field of public properties
-      var fields = new HarvestHelper().GetFields(type);
-      var res = fields.Where(x => x.FieldInfo.IsPublic || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
+        public bool CanHandleType(Type type)
+        {
+            return true;
+        }
 
-      return res.ToList();
+        /// <summary>
+        /// We ignore all properties as they, in the end, will only point to some computed state or other fields.
+        /// Hence they do not provide information about the actual state of the object.
+        /// </summary>
+        public List<SanitiedFieldInfo> GetFields(Type type)
+        {
+            // we need all fields in order to get the private backing field of public properties
+            var fields = new HarvestHelper().GetFields(type);
+            var res = fields.Where(x => x.FieldInfo.IsPublic || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
+
+            return res.ToList();
+        }
     }
-  }
 }

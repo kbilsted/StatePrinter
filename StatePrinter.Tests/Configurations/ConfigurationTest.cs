@@ -24,36 +24,36 @@ using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Tests.Configurations
 {
-  [TestFixture]
-  class ConfigurationTest
-  {
-    [Test]
-    public void AddInReverse()
+    [TestFixture]
+    class ConfigurationTest
     {
-      var config = new Configuration();
-     
-      var handler1 = new EnumConverter();
-      config.Add(handler1);
-      Assert.AreEqual(1, config.ValueConverters.Count);
-      Assert.AreEqual(0, config.FieldHarvesters.Count);
-      Assert.AreEqual(handler1, config.ValueConverters.First());
+        [Test]
+        public void AddInReverse()
+        {
+            var config = new Configuration();
 
-      var handler2 = new EnumConverter(); 
-      config.Add(handler2);
-      Assert.AreEqual(2, config.ValueConverters.Count);
-      Assert.AreEqual(0, config.FieldHarvesters.Count);
-      Assert.AreEqual(handler2, config.ValueConverters.First());
-    }
+            var handler1 = new EnumConverter();
+            config.Add(handler1);
+            Assert.AreEqual(1, config.ValueConverters.Count);
+            Assert.AreEqual(0, config.FieldHarvesters.Count);
+            Assert.AreEqual(handler1, config.ValueConverters.First());
 
-    [Test]
-    public void TryFind()
-    {
-      var config = new Configuration();
-      config.Add(new StandardTypesConverter(null));
-      
-      IValueConverter h;
-      Assert.IsTrue(config.TryGetValueConverter(typeof(decimal), out h));
-      Assert.IsTrue(h is StandardTypesConverter);
+            var handler2 = new EnumConverter();
+            config.Add(handler2);
+            Assert.AreEqual(2, config.ValueConverters.Count);
+            Assert.AreEqual(0, config.FieldHarvesters.Count);
+            Assert.AreEqual(handler2, config.ValueConverters.First());
+        }
+
+        [Test]
+        public void TryFind()
+        {
+            var config = new Configuration();
+            config.Add(new StandardTypesConverter(null));
+
+            IValueConverter h;
+            Assert.IsTrue(config.TryGetValueConverter(typeof(decimal), out h));
+            Assert.IsTrue(h is StandardTypesConverter);
+        }
     }
-  }
 }

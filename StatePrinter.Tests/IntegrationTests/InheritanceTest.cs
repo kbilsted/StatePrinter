@@ -23,44 +23,44 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  class A
-  {
-    public int SomeFieldOnlyInA;
-    public string SameFieldInAB;
-  }
-
-
-  class B : A
-  {
-    public int SomeFieldOnlyInB;
-    public new string SameFieldInAB;
-  }
-
-
-  [TestFixture]
-  class InheritanceTest
-  {
-    Stateprinter printer;
-
-    [SetUp]
-    public void Setup()
+    class A
     {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new Stateprinter(cfg);
+        public int SomeFieldOnlyInA;
+        public string SameFieldInAB;
     }
 
-    [Test]
-    public void StringArray()
-    {
-      B b = new B();
-      ((A)b).SomeFieldOnlyInA = 1;
-      ((A)b).SameFieldInAB = "A part";
-      b.SomeFieldOnlyInB = 2;
-      b.SameFieldInAB = "B part";
 
-      Assert.AreEqual(
-@"new B()
+    class B : A
+    {
+        public int SomeFieldOnlyInB;
+        public new string SameFieldInAB;
+    }
+
+
+    [TestFixture]
+    class InheritanceTest
+    {
+        Stateprinter printer;
+
+        [SetUp]
+        public void Setup()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            printer = new Stateprinter(cfg);
+        }
+
+        [Test]
+        public void StringArray()
+        {
+            B b = new B();
+            ((A)b).SomeFieldOnlyInA = 1;
+            ((A)b).SameFieldInAB = "A part";
+            b.SomeFieldOnlyInB = 2;
+            b.SameFieldInAB = "B part";
+
+            Assert.AreEqual(
+      @"new B()
 {
     SomeFieldOnlyInA = 1
     SameFieldInAB = ""A part""
@@ -68,6 +68,6 @@ namespace StatePrinter.Tests.IntegrationTests
     SameFieldInAB = ""B part""
 }
 ", printer.PrintObject(b));
+        }
     }
-  }
 }

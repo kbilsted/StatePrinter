@@ -22,29 +22,29 @@ using System.Collections.Generic;
 
 namespace StatePrinter.FieldHarvesters
 {
-  /// <summary>
-  /// Harvest all fields, public and private. 
-  /// 
-  /// We ignore the types from the following namespaces
-  /// <see cref="System.Reflection"/> 
-  /// <see cref="System.Runtime"/>
-  /// <see cref="System.Func"/>
-  /// </summary>
-  public class AllFieldsHarvester : IFieldHarvester
-  {
-    readonly HarvestHelper harvestHelper = new HarvestHelper();
-    public bool CanHandleType(Type type)
-    {
-      return true;
-    }
-
     /// <summary>
-    ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
-    ///   Hence they do not provide information about the actual state of the object.
+    /// Harvest all fields, public and private. 
+    /// 
+    /// We ignore the types from the following namespaces
+    /// <see cref="System.Reflection"/> 
+    /// <see cref="System.Runtime"/>
+    /// <see cref="System.Func"/>
     /// </summary>
-    public List<SanitiedFieldInfo> GetFields(Type type)
+    public class AllFieldsHarvester : IFieldHarvester
     {
-      return harvestHelper.GetFields(type);
+        readonly HarvestHelper harvestHelper = new HarvestHelper();
+        public bool CanHandleType(Type type)
+        {
+            return true;
+        }
+
+        /// <summary>
+        ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
+        ///   Hence they do not provide information about the actual state of the object.
+        /// </summary>
+        public List<SanitiedFieldInfo> GetFields(Type type)
+        {
+            return harvestHelper.GetFields(type);
+        }
     }
-  }
 }

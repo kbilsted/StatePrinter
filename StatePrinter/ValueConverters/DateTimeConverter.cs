@@ -22,32 +22,32 @@ using StatePrinter.Configurations;
 
 namespace StatePrinter.ValueConverters
 {
-  /// <summary>
-  /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>
-  /// </summary>
-  public class DateTimeConverter : IValueConverter
-  {
-    readonly Configuration configuration;
-    
-    public DateTimeConverter(Configuration configuration)
+    /// <summary>
+    /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>
+    /// </summary>
+    public class DateTimeConverter : IValueConverter
     {
-      this.configuration = configuration;
-    }
+        readonly Configuration configuration;
 
-    public bool CanHandleType(Type t)
-    {
-      return t == typeof(DateTime) || t == typeof(DateTimeOffset);
-    }
+        public DateTimeConverter(Configuration configuration)
+        {
+            this.configuration = configuration;
+        }
 
-    public string Convert(object source)
-    {
-      if (source is DateTime)
-        return ((DateTime)source).ToString(configuration.Culture);
-      
-      if (source is DateTimeOffset)
-        return ((DateTimeOffset)source).ToString(configuration.Culture);
+        public bool CanHandleType(Type t)
+        {
+            return t == typeof(DateTime) || t == typeof(DateTimeOffset);
+        }
 
-      throw new Exception("We should never reach here");
+        public string Convert(object source)
+        {
+            if (source is DateTime)
+                return ((DateTime)source).ToString(configuration.Culture);
+
+            if (source is DateTimeOffset)
+                return ((DateTimeOffset)source).ToString(configuration.Culture);
+
+            throw new Exception("We should never reach here");
+        }
     }
-  }
 }

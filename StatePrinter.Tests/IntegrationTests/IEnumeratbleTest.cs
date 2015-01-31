@@ -24,64 +24,64 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  [TestFixture]
-  class IEnumeratbleTest
-  {
-    Stateprinter printer;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    class IEnumeratbleTest
     {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      printer = new Stateprinter(cfg);
-    }
+        Stateprinter printer;
+
+        [SetUp]
+        public void Setup()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            printer = new Stateprinter(cfg);
+        }
 
 
-    [Test]
-    public void EmptyIntArray()
-    {
-      Assert.AreEqual("new Int32[]()\r\n", printer.PrintObject(new int[0]));
-    }
+        [Test]
+        public void EmptyIntArray()
+        {
+            Assert.AreEqual("new Int32[]()\r\n", printer.PrintObject(new int[0]));
+        }
 
 
-    [Test]
-    public void EmptyIntArray_json()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+        [Test]
+        public void EmptyIntArray_json()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
 
-      printer = new Stateprinter(cfg);
-      Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
-    }
+            printer = new Stateprinter(cfg);
+            Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
+        }
 
-    [Test]
-    public void IntArray()
-    {
-      Assert.AreEqual(
-@"new Int32[]()
+        [Test]
+        public void IntArray()
+        {
+            Assert.AreEqual(
+      @"new Int32[]()
 [0] = 1
 [1] = 2
 [2] = 3
 ", printer.PrintObject(new int[] { 1, 2, 3 }));
-    }
+        }
 
-    [Test]
-    public void StringArrayWithNulls()
-    {
-      Assert.AreEqual(
-@"new String[]()
+        [Test]
+        public void StringArrayWithNulls()
+        {
+            Assert.AreEqual(
+      @"new String[]()
 [0] = """"
 [1] = null
 [2] = ""42""
-", printer.PrintObject(new [] { "", null, "42" }));
-    }
+", printer.PrintObject(new[] { "", null, "42" }));
+        }
 
 
-    [Test]
-    public void Dictionary_person_address()
-    {
-      var d = new Dictionary<Person, Address>
+        [Test]
+        public void Dictionary_person_address()
+        {
+            var d = new Dictionary<Person, Address>
               {
                 {
                   new Person {Age = 37, FirstName = "Klaus", LastName = "Meyer"},
@@ -89,8 +89,8 @@ namespace StatePrinter.Tests.IntegrationTests
                 },
               };
 
-      var expected =
-@"new Dictionary<Person, Address>()
+            var expected =
+      @"new Dictionary<Person, Address>()
 [0] = new KeyValuePair<Person, Address>()
 {
     key = new Person()
@@ -108,17 +108,17 @@ namespace StatePrinter.Tests.IntegrationTests
     }
 }
 ";
-      Assert.AreEqual(expected, printer.PrintObject(d));
-    }
+            Assert.AreEqual(expected, printer.PrintObject(d));
+        }
 
-    [Test]
-    public void Xml_Dictionary_person_address()
-    {
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new XmlStyle("   ");
+        [Test]
+        public void Xml_Dictionary_person_address()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.OutputFormatter = new XmlStyle("   ");
 
-      printer = new Stateprinter(cfg);
-      var d = new Dictionary<Person, Address>
+            printer = new Stateprinter(cfg);
+            var d = new Dictionary<Person, Address>
               {
                 {
                   new Person {Age = 37, FirstName = "Klaus", LastName = "Meyer"},
@@ -126,8 +126,8 @@ namespace StatePrinter.Tests.IntegrationTests
                 },
               };
 
-      var expected =
-@"<ROOT type='Dictionary(Person, Address)'>
+            var expected =
+      @"<ROOT type='Dictionary(Person, Address)'>
    <Enumeration>
    <ROOT type='KeyValuePair(Person, Address)'>
       <key type='Person'>
@@ -146,29 +146,29 @@ namespace StatePrinter.Tests.IntegrationTests
 </ROOT>
 ";
 
-      Assert.AreEqual(expected, printer.PrintObject(d));
+            Assert.AreEqual(expected, printer.PrintObject(d));
+        }
+
+
+        class Person
+        {
+            public int Age;
+            public string FirstName, LastName;
+        }
+
+
+        class Address
+        {
+            public string Street;
+            public int StreetNumber;
+            public string Zip;
+            public Country Country;
+        }
+
+
+        enum Country
+        {
+            Denmark, USA,
+        }
     }
-
-
-    class Person
-    {
-      public int Age;
-      public string FirstName, LastName;
-    }
-
-
-    class Address
-    {
-      public string Street;
-      public int StreetNumber;
-      public string Zip;
-      public Country Country;
-    }
-
-
-    enum Country
-    {
-      Denmark, USA,
-    }
-  }
 }

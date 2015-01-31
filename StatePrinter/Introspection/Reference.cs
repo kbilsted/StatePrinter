@@ -18,36 +18,36 @@
 // under the License.
 namespace StatePrinter.Introspection
 {
-  /// <summary>
-  /// A numeric value denoting an already outputted object that is referred to by current object
-  /// </summary>
-  public class Reference
-  {
-    public readonly int Number;
-
     /// <summary>
-    /// ctor
+    /// A numeric value denoting an already outputted object that is referred to by current object
     /// </summary>
-    public Reference(int number)
+    public class Reference
     {
-      Number = number;
-    }
+        public readonly int Number;
 
-    public override bool Equals(object obj)
-    {
-      var other = obj as Reference;
-      if (other == null) return false;
-      return Number == other.Number;
-    }
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public Reference(int number)
+        {
+            Number = number;
+        }
 
-    public override int GetHashCode()
-    {
-      return Number;
-    }
+        public override bool Equals(object obj)
+        {
+            var other = obj as Reference;
+            if (other == null) return false;
+            return Number == other.Number;
+        }
 
-    public override string ToString()
-    {
-      return Number.ToString();
+        public override int GetHashCode()
+        {
+            return Number;
+        }
+
+        public override string ToString()
+        {
+            return Number.ToString();
+        }
     }
-  }
 }

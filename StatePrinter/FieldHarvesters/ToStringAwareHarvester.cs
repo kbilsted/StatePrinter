@@ -23,63 +23,63 @@ using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
 {
-  /// <summary>
-  /// Harvest all fields, public and private. Or use the ToString() if such is implemented on the class.
-  /// 
-  /// We ignore the types from the following namespaces
-  /// <see cref="System.Reflection"/> 
-  /// <see cref="System.Runtime"/>
-  /// <see cref="System.Func"/>
-  /// </summary>
-  public class ToStringAwareHarvester : IFieldHarvester
-  {
-    Dictionary<Type, bool> cache = new Dictionary<Type, bool>();
-    Dictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
-
-    public ToStringAwareHarvester()
-    {
-    }
-
-    public bool CanHandleType(Type type)
-    {
-      bool hasToString;
-      if (!cache.TryGetValue(type, out hasToString))
-      {
-        var methodInfo = GetMethodInfo(type);
-        hasToString = methodInfo != null;
-        cache[type] = hasToString;
-        if (hasToString)
-          methodInfos[type] = methodInfo;
-      }
-
-      return hasToString;
-    }
-
     /// <summary>
-    ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
-    ///   Hence they do not provide information about the actual state of the object.
+    /// Harvest all fields, public and private. Or use the ToString() if such is implemented on the class.
+    /// 
+    /// We ignore the types from the following namespaces
+    /// <see cref="System.Reflection"/> 
+    /// <see cref="System.Runtime"/>
+    /// <see cref="System.Func"/>
     /// </summary>
-    public List<SanitiedFieldInfo> GetFields(Type type)
+    public class ToStringAwareHarvester : IFieldHarvester
     {
-      Func<object, object> valueProvider = (o) => methodInfos[type].Invoke(o, new object[0]);
-      var syntesizedField = new SanitiedFieldInfo(null, "ToString()", valueProvider);
+        Dictionary<Type, bool> cache = new Dictionary<Type, bool>();
+        Dictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
 
-      return new List<SanitiedFieldInfo>() { syntesizedField };
-    }
+        public ToStringAwareHarvester()
+        {
+        }
 
-    /// <summary>
-    /// This more thorough way to avoid the "Ambiguous match found" exception while retrieving the ToString method
-    /// Explained here http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
-    /// </summary>
-    MethodInfo GetMethodInfo(Type type)
-    {
-      var methodInfo = type.GetMethod(
-        "ToString",
-        BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly,
-        null,
-        new Type[] { }, // Method ToString() without parameters
-        null);
-      return methodInfo;
+        public bool CanHandleType(Type type)
+        {
+            bool hasToString;
+            if (!cache.TryGetValue(type, out hasToString))
+            {
+                var methodInfo = GetMethodInfo(type);
+                hasToString = methodInfo != null;
+                cache[type] = hasToString;
+                if (hasToString)
+                    methodInfos[type] = methodInfo;
+            }
+
+            return hasToString;
+        }
+
+        /// <summary>
+        ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
+        ///   Hence they do not provide information about the actual state of the object.
+        /// </summary>
+        public List<SanitiedFieldInfo> GetFields(Type type)
+        {
+            Func<object, object> valueProvider = (o) => methodInfos[type].Invoke(o, new object[0]);
+            var syntesizedField = new SanitiedFieldInfo(null, "ToString()", valueProvider);
+
+            return new List<SanitiedFieldInfo>() { syntesizedField };
+        }
+
+        /// <summary>
+        /// This more thorough way to avoid the "Ambiguous match found" exception while retrieving the ToString method
+        /// Explained here http://stackoverflow.com/questions/11443707/getproperty-reflection-results-in-ambiguous-match-found-on-new-property
+        /// </summary>
+        MethodInfo GetMethodInfo(Type type)
+        {
+            var methodInfo = type.GetMethod(
+              "ToString",
+              BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly,
+              null,
+              new Type[] { }, // Method ToString() without parameters
+              null);
+            return methodInfo;
+        }
     }
-  }
 }

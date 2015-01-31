@@ -21,18 +21,18 @@ using NUnit.Framework;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-  /// <summary>
-  /// An example of using the state printer as a generic ToString() implementation.
-  /// </summary>
-  [TestFixture]
-  class ToStringMethodTest
-  {
-    [Test]
-    public void TestToStringMethod()
+    /// <summary>
+    /// An example of using the state printer as a generic ToString() implementation.
+    /// </summary>
+    [TestFixture]
+    class ToStringMethodTest
     {
-      var a = new AClassWithToString();
-      string expected = 
-@"new AClassWithToString()
+        [Test]
+        public void TestToStringMethod()
+        {
+            var a = new AClassWithToString();
+            string expected =
+      @"new AClassWithToString()
 {
     B = ""hello""
     C = new Int32[]()
@@ -43,20 +43,20 @@ namespace StatePrinter.Tests.IntegrationTests
     C[4] = 1
 }
 ";
-      Assert.AreEqual(expected, a.ToString());
+            Assert.AreEqual(expected, a.ToString());
+        }
     }
-  }
 
 
-  class AClassWithToString
-  {
-    string B = "hello";
-    int[] C = { 5, 4, 3, 2, 1 };
-    static readonly Stateprinter printer = new Stateprinter();
-
-    public override string ToString()
+    class AClassWithToString
     {
-      return printer.PrintObject(this);
+        string B = "hello";
+        int[] C = { 5, 4, 3, 2, 1 };
+        static readonly Stateprinter printer = new Stateprinter();
+
+        public override string ToString()
+        {
+            return printer.PrintObject(this);
+        }
     }
-  }
 }

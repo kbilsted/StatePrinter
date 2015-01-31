@@ -21,19 +21,19 @@ using System;
 
 namespace StatePrinter.ValueConverters
 {
-  /// <summary>
-  /// A handler that is able to convert a value of specific types to on a single line string.
-  /// </summary>
-  public interface IValueConverter
-  {
     /// <summary>
-    /// Is the type covered by this handler.
+    /// A handler that is able to convert a value of specific types to on a single line string.
     /// </summary>
-    bool CanHandleType(Type type);
+    public interface IValueConverter
+    {
+        /// <summary>
+        /// Is the type covered by this handler.
+        /// </summary>
+        bool CanHandleType(Type type);
 
-    /// <summary>
-    /// Convert objects of handled types into a simple one-line representation.
-    /// </summary>
-    string Convert(object source);
-  }
+        /// <summary>
+        /// Convert objects of handled types into a simple one-line representation.
+        /// </summary>
+        string Convert(object source);
+    }
 }
