@@ -16,8 +16,12 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+using System;
+
 using StatePrinter.FieldHarvesters;
 using StatePrinter.OutputFormatters;
+using StatePrinter.TestAssistance;
 using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Configurations
@@ -33,9 +37,27 @@ namespace StatePrinter.Configurations
         /// 
         /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
         /// </summary>
-        public static Configuration GetStandardConfiguration(string indentIncrement = Configuration.DefaultIndention)
+        public static Configuration GetStandardConfiguration(
+            TestFrameworkAreEqualsMethod areEqualsMethod)
         {
-            var cfg = new Configuration(indentIncrement);
+            if (areEqualsMethod == null) throw new ArgumentNullException("areEqualsMethod");
+
+            return GetStandardConfiguration(
+                Configuration.DefaultIndention,
+                areEqualsMethod: areEqualsMethod);
+        }
+
+        /// <summary>
+        /// Return a configuration which covers most usages.
+        /// The configuration returned can be further remolded by adding additional handlers. 
+        /// 
+        /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
+        /// </summary>
+        public static Configuration GetStandardConfiguration(
+            string indentIncrement = Configuration.DefaultIndention,
+            TestFrameworkAreEqualsMethod areEqualsMethod = null)
+        {
+            var cfg = new Configuration(indentIncrement, areEqualsMethod);
 
             // valueconverters
             cfg.Add(new StandardTypesConverter(cfg));

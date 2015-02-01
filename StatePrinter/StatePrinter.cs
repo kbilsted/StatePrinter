@@ -21,6 +21,7 @@ using System;
 using StatePrinter.Configurations;
 using StatePrinter.FieldHarvesters;
 using StatePrinter.Introspection;
+using StatePrinter.TestAssistance;
 
 namespace StatePrinter
 {
@@ -37,6 +38,7 @@ namespace StatePrinter
     public class Stateprinter
     {
         readonly Configuration configuration;
+        Asserter asserter;
 
         /// <summary>
         /// The cache cannot be static since we have many different harvesters, and potentially many different usages of <see cref="ProjectionHarvester"/>
@@ -51,15 +53,14 @@ namespace StatePrinter
             if (configuration == null)
                 throw new ArgumentNullException("configuration");
 
-            this.configuration = (Configuration)configuration.Clone();
+            this.configuration = configuration;
         }
 
         /// <summary>
         /// Create an state printer using the <see cref="ConfigurationHelper.GetStandardConfiguration"/>
         /// </summary>
-        public Stateprinter()
+        public Stateprinter() : this(ConfigurationHelper.GetStandardConfiguration())
         {
-            configuration = ConfigurationHelper.GetStandardConfiguration();
         }
 
         /// <summary>
@@ -76,22 +77,29 @@ namespace StatePrinter
 
             return formatter.Print(tokens);
         }
-    }
 
-    /// <summary>
-    /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="Stateprinter"/>
-    /// </summary>
-    [Obsolete]
-    public class StatePrinter : Stateprinter
-    {
-        public StatePrinter()
-            : base()
+        public Asserter Assert
         {
+            get
+            {
+                // lazy fetch so not to require people to set up an asserter when it is not used
+                if (asserter == null)
+                {
+                    if (configuration.AreEqualsMethod == null)
+                    {
+                        var message =
+                            "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
+                            + "e.g. use the value: 'Assert.AreEqual' "
+                            + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
+                            + "Parameter name: Configuration.AreEqualsMethod";
+                        throw new ArgumentNullException("Configuration.AreEqualsMethod", message);
+                    }
+                    asserter = new Asserter(configuration.AreEqualsMethod);
+                }
+
+                return asserter;
+            }
         }
 
-        public StatePrinter(Configuration configuration)
-            : base(configuration)
-        {
-        }
     }
 }

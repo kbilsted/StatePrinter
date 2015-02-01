@@ -24,15 +24,15 @@ using System.Globalization;
 using System.Linq;
 using StatePrinter.FieldHarvesters;
 using StatePrinter.OutputFormatters;
+using StatePrinter.TestAssistance;
 using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Configurations
 {
     /// <summary>
-    /// The configuration for the object printer. We implement <see cref="ICloneable"/> as
-    /// we want to clone at the start of printing state to ensure the configuration is unchaned whilst printing.
+    /// The configuration for the object printer.
     /// </summary>
-    public class Configuration : ICloneable
+    public class Configuration
     {
         public const string DefaultIndention = "    ";
 
@@ -47,28 +47,15 @@ namespace StatePrinter.Configurations
         public CultureInfo Culture = CultureInfo.CurrentCulture;
 
         /// <summary>
-        /// Ctor
+        /// Instantiate using the <see cref="DefaultIndention"/> and the <see cref="CurlyBraceStyle"/>
         /// </summary>
-        public Configuration(IEnumerable<IFieldHarvester> fieldHarvesters,
-          IEnumerable<IValueConverter> valueConverters,
-          string indentIncrement,
-          IOutputFormatter outputFormatter,
-          CultureInfo culture)
-        {
-            this.valueConverters = valueConverters.ToList();
-            this.fieldHarvesters = fieldHarvesters.ToList();
-            IndentIncrement = indentIncrement;
-            OutputFormatter = outputFormatter;
-            Culture = culture;
-        }
-
-        /// <summary>
-        /// Ctor
-        /// </summary>
-        public Configuration(string indentIncrement = DefaultIndention)
+        public Configuration(
+            string indentIncrement = DefaultIndention, 
+            TestFrameworkAreEqualsMethod areEqualsMethod = null)
         {
             IndentIncrement = indentIncrement;
             OutputFormatter = new CurlyBraceStyle(indentIncrement);
+            AreEqualsMethod = areEqualsMethod;
         }
 
         public IOutputFormatter OutputFormatter;
@@ -136,16 +123,6 @@ namespace StatePrinter.Configurations
             result = fieldHarvesters.FirstOrDefault(x => x.CanHandleType(source));
             return result != null;
         }
-
-        /// <summary>
-        /// Clone
-        /// </summary>
-        public object Clone()
-        {
-            var res = new Configuration(fieldHarvesters, valueConverters, IndentIncrement, OutputFormatter, Culture);
-            return res;
-        }
-
         #region unit testing support
 
         ProjectionHarvester projection;
@@ -158,6 +135,11 @@ namespace StatePrinter.Configurations
             return projection ?? (projection = new ProjectionHarvester(this));
         }
 
+        /// <summary>
+        /// Configure how to call AreEquals in the unit testing framework of your choice. 
+        /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
+        /// </summary>
+        public TestFrameworkAreEqualsMethod AreEqualsMethod;
         #endregion
     }
 }

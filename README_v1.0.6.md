@@ -3,7 +3,7 @@
 
 # StatePrinter - "The automatic ".ToString()" utility."
 
-### Version 1.0.6 just released! 
+## Version 1.0.6 just released! 
 - get it here (https://www.nuget.org/packages/StatePrinter/)
 
 * Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
@@ -11,7 +11,6 @@
 * Test coverage of 97%
 * Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
 
-This file describes the latest pushed changes. For documentation of releases see: xxx
 
 # 1. Introduction
 
@@ -442,50 +441,119 @@ Now, there are situations where there are fields in your business objects that a
 * They may hold uninteresting values polute the assert
 * They may even change value from execution to execution
 
-We can easilty remedy this situation using the FieldHarvester abstraction described above, however, we do not feel inclined to create an implementation of the harvesting interface pr. class to be tested. The `ProjectiveHarvester` has a wealth of possibilities to transform (project) a type into another. That is, only include certain fields, only exclude certain fields, or create a filter programatically. 
+We can easilty remedy this situation using the FieldHarvester abstraction described above, however, we do not feel inclined to create an implementation of the harvesting interface pr. class to be tested. Instead, a generic implementation can be made that operates on `Func`'s and thus is more light-weigt. 
 
-given
 
 ```C#
-    class A
+ public class SelectiveHarvester : IFieldHarvester
+ {
+    Implementation selected = null;
+    readonly List<Implementation> implementations = new List<Implementation>(); 
+
+    public bool CanHandleType(Type type)
     {
-      public DateTime X;
-      public DateTime Y { get; set; }
-      public string Name;
+      selected = implementations.FirstOrDefault(x => x.Selector.IsAssignableFrom(type));
+      return selected != null;
     }
+
+    public List<FieldInfo> GetFields(Type type)
+    {
+      var fields = new HarvestHelper().GetFields(type);
+      return selected.Filter(fields).ToList();
+    }
+
+    public void Add(Type selector, Func<List<FieldInfo>, IEnumerable<FieldInfo>> filter)
+    {
+      implementations.Add(new Implementation(selector, filter));
+    }
+
+
+    class Implementation
+    {
+      public readonly Type Selector;
+      public readonly Func<List<FieldInfo>, IEnumerable<FieldInfo>> Filter;
+
+      public Implementation(Type selector, Func<List<FieldInfo>, IEnumerable<FieldInfo>> filter)
+      {
+        Selector = selector;
+        Filter = filter;
+      }
+    }
+  }
+}
 ```
 
-You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties fieldharvester so it will by default include more than what you might be used to from using the normal field processor.
+in fact this implementation will be included in the next release.
+
+You can now easily configure what to dump when testing
+
+### 3.1.1 Example
+
+First we define 3 business classes. Where `X` in the classes `A` and `B` is a unwanted property with respect to testing. For `C` instances, however, we do want to print the state of `X` since it holds a different meaning despite the naming coincidence.
 
 ```C#
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
-      var printer = new Stateprinter(cfg);
+class A
+{
+  public DateTime X;
+  public string Name;
+}
 
-      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+class B : A
+{
+  public int Age;
+}
+
+class C
+{
+  public DateTime X;
+}
 ```
 
-and
+
+A normal test would look like
+
 
 ```C#
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester().Include<A>(x => x.Name);
-      var printer = new Stateprinter(cfg);
+[Test]
+public void UserStory()
+{
+  var cfg = ConfigurationHelper.GetStandardConfiguration();
+  var printer = new StatePrinter(cfg);
 
-      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly"});
+  ...
+}
 ```
 
-or programmatically
+but this will dump `X`. Thus we need to configure	
+
 
 ```C#
- var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester()
-        .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+var harvester = new SelectiveHarvester();
+harvester.Add(typeof(A), x => x.Where(y => y.Name != "X"));
+
+cfg.Add(harvester);
 ```
 
-You can now easily configure what to dump when testing. 
+And the end result looks like
+
+
+```C#
+[Test]
+public void UserStory()
+{
+  var cfg = ConfigurationHelper.GetStandardConfiguration();
+
+  var harvester = new SelectiveHarvester();
+  harvester.Add(typeof(A), x => x.Where(y => y.Name != "X"));
+  cfg.Add(harvester);
+  
+  var printer = new StatePrinter(cfg);
+
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly"});
+  Assert.AreEqual(@"new A(){    Name = ""Charly""}", state.Replace("\r\n", ""));
+}
+```
 
 
 
