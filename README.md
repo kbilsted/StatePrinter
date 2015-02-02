@@ -15,20 +15,20 @@ Get it here (https://www.nuget.org/packages/StatePrinter/)
 This file describes the latest pushed changes. For documentation of releases see: xxx
 
 Table of content
-* [1. Introduction](1-introduction)
- * [1.1 Simple example usage](11-simple-example-usage)
- * [1.2 Generic ToString() usage](12-generic-tostring-usage)
+* [1. Introduction](#1-introduction)
+ * [1.1 Simple example usage](#11-simple-example-usage)
+ * [1.2 Generic ToString() usage](#12-generic-tostring-usage)
 * [2. Configuration](#2-configuration)
- * [2.1 Stacked configuration principle](21-stacked-configuration-principle)
- * [2.2 Simple changes](22-simple-changes)
- * [2.3 Culture specific printing](23-culture-specific-printing)
- * [2.4 Output as a single line](24-output-as-a-single-line)
- * [2.5 Field harvesting](25-field-harvesting)
- * [2.6 Simple value printing](26-simple-value-printing)
- * [2.7 Output formatting](27-output-formatting)
-* [3. Unit testing](3-unit-testing)  
- * [3.1 Restricting fields harvested](31-restricting-fields-harvested)
-*  [4. License](4-license)
+ * [2.1 Stacked configuration principle](#21-stacked-configuration-principle)
+ * [2.2 Simple changes](#22-simple-changes)
+ * [2.3 Culture specific printing](#23-culture-specific-printing)
+ * [2.4 Output as a single line](#24-output-as-a-single-line)
+ * [2.5 Field harvesting](#25-field-harvesting)
+ * [2.6 Simple value printing](#26-simple-value-printing)
+ * [2.7 Output formatting](#27-output-formatting)
+* [3. Unit testing](#3-unit-testing)  
+ * [3.1 Restricting fields harvested](#31-restricting-fields-harvested)
+*  [4. License](#4-license)
 
 
 # 1. Introduction
