@@ -46,16 +46,16 @@ namespace StatePrinter.TestAssistance
         /// </summary>
         public void AreEqual(string expected, string actual)
         {
-            var message = string.Format("{0}{0}Actual output is:{0}{1}", Environment.NewLine, Escape(actual));
+            var message = string.Format("{0}{0}Proposed output for unit test:{0}{1}{0}", Environment.NewLine, Escape(actual));
             assert(expected, actual, message);
         }
 
         string Escape(string actual)
         {
-            var needEscaping = actual.Contains("\"");
+            var needEscaping = actual.Contains("\"") || actual.Contains("\n");
             if(needEscaping)
                return string.Format("@\"{0}\"", actual.Replace("\"", "\"\""));
-           return string.Format("{0}", actual);
+            return string.Format("\"{0}\"", actual);
         }
 
         /// <summary>
