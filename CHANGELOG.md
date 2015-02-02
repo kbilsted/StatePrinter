@@ -2,6 +2,13 @@
 
 # Version history
 
+## v. next version
+* Configurable output as a single line.
+* Improved unit test experience with the new `Stateprinter.Assert.AreEqual` and `Stateprinter.Assert.That`.
+* Added a `AllFieldsAndPropertiesHarvester` which is able to harvest properties and fields.
+* BREAKING CHANGE: Projective harvester is now using the `AllFieldsAndPropertiesHarvester` rather instead of the `FieldHarvester`.
+* BREAKING CHANGE: The deprecated type `StatePrinter` is now deleted. Use `Stateprinter` instead.
+
 
 ## v1.0.6
 
