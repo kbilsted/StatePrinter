@@ -1,9 +1,11 @@
 ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
 
 
-# StatePrinter - "The automatic ".ToString()" utility."
+# StatePrinter 
+## "The automatic ".ToString()" utility."
+### Like a JSON serializer on drugs
 
-### Version 1.0.6 just released! 
+#### Version 1.0.6 just released! 
 - get it here (https://www.nuget.org/packages/StatePrinter/)
 
 * Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
@@ -13,6 +15,13 @@
 
 This file describes the latest pushed changes. For documentation of releases see: xxx
 
+Table of content
+* [1. Introduction](1-introduction)
+ * [Simple example usage](#simple-example-usage)
+* [2. Configuration](#2-configuration)  
+* [3. Unit testing](#3-unit-testing)  
+ 
+ 
 # 1. Introduction
 
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
@@ -25,7 +34,7 @@ Why you should take StatePrinter for a spin
 * Very very configurable both in terms of what to harvest, and in terms of how to output.
 
 
-### 1.1 Simple usage
+### 1.1 Simple example usage
 
 To dump an object graph all you need to do is first to create an object graph
 
@@ -37,7 +46,7 @@ car.Brand = "Toyota";
 then print it
 
 ```C#
-StatePrinter printer = new StatePrinter();
+Stateprinter printer = new Stateprinter();
 Console.WriteLine(printer.PrintObject(car));
 ```
 
@@ -101,7 +110,7 @@ class AClassWithToString
   int[] C = {5,4,3,2,1};
 
   // Nice stuff ahead!
-  static readonly StatePrinter printer = new StatePrinter();
+  static readonly Stateprinter printer = new Stateprinter();
   public override string ToString()
   {
     return printer.PrintObject(this);
@@ -146,14 +155,14 @@ Finally, culture specific printing of dates and numbers are supported.
 The Stateprinter has a configuration object that for the most cases be initialized with default behaviour. Don't worry about what they are, since you can easily re-configure the before use. This is due to the FILO principle. The StatePrinter retrieved configuration items in the reverse order they are added and stops when the first match has been found. The defaults are thus a cushion, a nice set of fall-back values.
 
 ```C#
-var printer = new StatePrinter();
+var printer = new Stateprinter();
 ```
 
 is equivalent to
 
 ```
 var cfg = ConfigurationHelper.GetStandardConfiguration();
-var printer = new StatePrinter(cfg);
+var printer = new Stateprinter(cfg);
 ```
 
 which really means
@@ -191,7 +200,7 @@ The `Configuration` class should be rather self-documenting. We can change the p
 var cfg = ConfigurationHelper.GetStandardConfiguration();
 cfg.IndentIncrement = " ";
    
-var printer = new StatePrinter(cfg);
+var printer = new Stateprinter(cfg);
 ```
 
 
@@ -206,7 +215,7 @@ First the us culture
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.Culture = new CultureInfo("en-US");
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
 
       Assert.AreEqual("12345.343\r\n", printer.PrintObject(decimalNumber));
       Assert.AreEqual("2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
@@ -215,7 +224,7 @@ The same input with a different culture
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.Culture = new CultureInfo("da-DK");
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       Assert.AreEqual("12345,343\r\n", printer.PrintObject(decimalNumber));
       Assert.AreEqual("28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
 
@@ -232,7 +241,7 @@ The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester`
 var cfg = ConfigurationHelper.GetStandardConfiguration();
 cfg.Add(new PublicFieldsHarvester());
 
-var printer = new StatePrinter(cfg);
+var printer = new Stateprinter(cfg);
 ```
 
 
@@ -296,7 +305,7 @@ then we add it to the configuration before usage
 var cfg = ConfigurationHelper.GetStandardConfiguration();
 cfg.Add(new StringToPlingConverter());
 
-var printer = new StatePrinter(cfg);
+var printer = new Stateprinter(cfg);
 ```
 
 Due to the FILO principle (First In Last Out) our valueconverter is consulted before the standard implementation.
@@ -337,7 +346,7 @@ The curly style is reminiscent for C# code
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       
       var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
       
@@ -368,7 +377,7 @@ The JSon style follows the JSon format and describe cyclic references as paths f
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       
       var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
       
@@ -399,7 +408,7 @@ The Xml style is the most verbose
 
       var cfg = ConfigurationHelper.GetStandardConfiguration();
       cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new StatePrinter(cfg);
+      var printer = new Stateprinter(cfg);
       
       var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
       
