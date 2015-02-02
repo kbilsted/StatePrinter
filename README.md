@@ -6,9 +6,8 @@
 ### Like a JSON serializer on drugs
 
 #### Version 1.0.6 just released! 
-- get it here (https://www.nuget.org/packages/StatePrinter/)
+Get it here (https://www.nuget.org/packages/StatePrinter/)
 
-* Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
 * Requires C# 3.5 or newer
 * Test coverage of 97%
 * Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
@@ -17,11 +16,21 @@ This file describes the latest pushed changes. For documentation of releases see
 
 Table of content
 * [1. Introduction](1-introduction)
- * [Simple example usage](#simple-example-usage)
-* [2. Configuration](#2-configuration)  
-* [3. Unit testing](#3-unit-testing)  
- 
- 
+ * [1.1 Simple example usage](11-simple-example-usage)
+ * [1.2 Generic ToString() usage](12-generic-tostring-usage)
+* [2. Configuration](#2-configuration)
+ * [2.1 Stacked configuration principle](21-stacked-configuration-principle)
+ * [2.2 Simple changes](22-simple-changes)
+ * [2.3 Culture specific printing](23-culture-specific-printing)
+ * [2.4 Output as a single line](24-output-as-a-single-line)
+ * [2.5 Field harvesting](25-field-harvesting)
+ * [2.6 Simple value printing](26-simple-value-printing)
+ * [2.7 Output formatting](27-output-formatting)
+* [3. Unit testing](3-unit-testing)  
+ * [3.1 Restricting fields harvested](31-restricting-fields-harvested)
+*  [4. License](4-license)
+
+
 # 1. Introduction
 
 The StatePrinter is a free, highly configurable, thread safe utility that can turn any object-graph to a string representation. 
@@ -32,6 +41,8 @@ Why you should take StatePrinter for a spin
 * It becomes much easier to write unit tests. No more screens full of asserts. Especially testing against object-graphs is a bliss. 
 * It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
 * Very very configurable both in terms of what to harvest, and in terms of how to output.
+
+Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
 
 
 ### 1.1 Simple example usage
@@ -191,6 +202,8 @@ public static Configuration GetStandardConfiguration()
 
 Once the StatePrinter has been initialized you should not change the configuration. A shallow clone of the configuration is made in the constructor to prevent you from shooting youself in the foot.
 
+Like wise, when implementing harvesters, outputformatters, etc. Do not worry about the stack of the configuration. Simply, through the interface you implement, return only the types you support. In case of an unsupported type, an automatic fall through mechanism will activate the next entity on the stack.
+
 
 ## 2.2 Simple changes
 
@@ -199,7 +212,8 @@ The `Configuration` class should be rather self-documenting. We can change the p
 ```C#
 var cfg = ConfigurationHelper.GetStandardConfiguration();
 cfg.IndentIncrement = " ";
-   
+cfg.OutputAsSingleLine = true;
+
 var printer = new Stateprinter(cfg);
 ```
 
@@ -230,10 +244,13 @@ The same input with a different culture
 
 
 
+## 2.4 Output as a single line
+
+When printing very small objects, it is some times preferable to print the state as a sinle line. Set the `Configuration.OutputAsSingleLine = true` to achieve this.
 
 
 
-## 2.4 Field harvesting
+## 2.5 Field harvesting
 
 The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester` and `PublicFieldsHarvester`. By default we harvest all fields, but you can use whatever implementation you want.
 
@@ -276,7 +293,7 @@ public bool CanHandleType(Type type)
 
 
 
-## 2.5 Simple value printing
+## 2.6 Simple value printing
 
 After we have harvested the fields of the object graph, we may desire to turn a complex object into a simple value. That is one that doesn't hold any nested structure. You'd be surprised of the amount of "garbage" values we would print if we revealed the whole state of the string or decimal instances. If you have any interest in such fields, feel free to supply your own implementation.
 
@@ -311,7 +328,7 @@ var printer = new Stateprinter(cfg);
 Due to the FILO principle (First In Last Out) our valueconverter is consulted before the standard implementation.
 
 
-## 2.6 Output formatting
+## 2.7 Output formatting
 
 the `IOutputFormatter` only contains a single method
 
@@ -444,7 +461,7 @@ When unit testing, you often have to write a ton of asserts to check the state o
 When using the StatePrinter these problems are mitigated as you are asserting against a easily read string representation. You know all fields are covered, as all fields are printed. When the object changes in the future, so will its string representation, and thus your tests fail.
 
 
-## 3.1 Restricting fields when dumping
+## 3.1 Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
