@@ -75,7 +75,16 @@ namespace StatePrinter
 
             var formatter = configuration.OutputFormatter;
 
-            return formatter.Print(tokens);
+            var result = formatter.Print(tokens);
+
+            if (configuration.OutputAsSingleLine) 
+                result = result
+                    .Replace("\r\n", " ")
+                    .Replace("\r", " ")
+                    .Replace("\n", " ")
+                    .TrimEnd();
+
+            return result;
         }
 
         public Asserter Assert

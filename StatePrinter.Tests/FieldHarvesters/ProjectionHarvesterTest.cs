@@ -20,8 +20,8 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using StatePrinter.Configurations;
 using StatePrinter.FieldHarvesters;
+using StatePrinter.Tests.TestingAssistance;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {
@@ -54,38 +54,38 @@ namespace StatePrinter.Tests.FieldHarvesters
         [Test]
         public void TestFluintInterface()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+            var cfg = TestHelper.CreateTestConfiguration();
             cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
             var printer = new Stateprinter(cfg);
 
-            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-            Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+            var actual = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            printer.Assert.AreEqual(@"new A() { Name = ""Charly"" }", actual);
 
-            state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
-            Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
+            actual = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            printer.Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", actual);
 
-            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
-            Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
+            actual = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            printer.Assert.AreEqual("new C() { X = 08-09-2010 00:00:00 }", actual);
         }
 
         [SetCulture("da-DK")]
         [Test]
         public void UserStory()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+            var cfg = TestHelper.CreateTestConfiguration();
             cfg.Projectionharvester()
               .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
             var printer = new Stateprinter(cfg);
 
-            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-            Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+            var actual = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            printer.Assert.AreEqual(@"new A() { Name = ""Charly"" }", actual);
 
-            state = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
-            Assert.AreEqual(@"new B(){ Name = ""Charly"" Age = 43}", state.Replace("\r\n", ""));
+            actual = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            printer.Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", actual);
 
-            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
-            Assert.AreEqual(@"new C(){ X = 08-09-2010 00:00:00}", state.Replace("\r\n", ""));
+            actual = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            printer.Assert.AreEqual("new C() { X = 08-09-2010 00:00:00 }", actual);
         }
 
 

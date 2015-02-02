@@ -47,6 +47,11 @@ namespace StatePrinter.Configurations
         public CultureInfo Culture = CultureInfo.CurrentCulture;
 
         /// <summary>
+        /// For small objects, the assert may be better presented on a single line rather than multiple lines.
+        /// </summary>
+        public bool OutputAsSingleLine { get; set; }
+
+        /// <summary>
         /// Instantiate using the <see cref="DefaultIndention"/> and the <see cref="CurlyBraceStyle"/>
         /// </summary>
         public Configuration(
