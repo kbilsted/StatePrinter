@@ -34,6 +34,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
             cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            cfg.AreEqualsMethod = Assert.AreEqual;
             printer = new Stateprinter(cfg);
         }
 
@@ -53,6 +54,13 @@ namespace StatePrinter.Tests.IntegrationTests
 
             printer = new Stateprinter(cfg);
             Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
+        }
+
+        [Test]
+        public void IntArray_oneline()
+        {
+            printer.configuration.OutputAsSingleLine = true;
+            printer.Assert.AreEqual("new Int32[]() [0] = 1 [1] = 2 [2] = 3", printer.PrintObject(new[] { 1, 2, 3 }));
         }
 
         [Test]

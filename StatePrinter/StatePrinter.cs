@@ -37,8 +37,12 @@ namespace StatePrinter
     /// </summary>
     public class Stateprinter
     {
-        readonly Configuration configuration;
         Asserter asserter;
+
+        /// <summary>
+        /// Get the configuration for further fine-tuning
+        /// </summary>
+        public readonly Configuration configuration;
 
         /// <summary>
         /// The cache cannot be static since we have many different harvesters, and potentially many different usages of <see cref="ProjectionHarvester"/>

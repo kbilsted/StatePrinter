@@ -63,7 +63,7 @@
     <Compile Include="PerformanceTests\ManySmallObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestingAssistance\TestHelper.cs" />
-    <Compile Include="TestingAssistance\USerStory.cs" />
+    <Compile Include="TestingAssistance\UserStory.cs" />
     <Compile Include="TestingAssistance\TestingAssistanceTest.cs" />
   </ItemGroup>
   <ItemGroup>
