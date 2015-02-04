@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -31,17 +31,17 @@ namespace StatePrinter.FieldHarvesters
     {
         internal const string BackingFieldSuffix = ">k__BackingField";
 
+        const BindingFlags flags = BindingFlags.Public
+                            | BindingFlags.NonPublic
+                            | BindingFlags.Instance
+                            | BindingFlags.DeclaredOnly;
+
         /// <summary>
         /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
         /// Hence they do not provide information about the actual state of the object.
         /// </summary>
         public List<SanitiedFieldInfo> GetFields(Type type)
         {
-            const BindingFlags flags = BindingFlags.Public
-                                  | BindingFlags.NonPublic
-                                  | BindingFlags.Instance
-                                  | BindingFlags.DeclaredOnly;
-
             return GetFields(type, flags)
               .Select(x => new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), (object o) => x.GetValue(o)))
               .ToList();
@@ -61,6 +61,60 @@ namespace StatePrinter.FieldHarvesters
 
             return GetFields(type.BaseType, flags).Concat(type.GetFields(flags));
         }
+
+    public List<SanitiedFieldInfo> GetFieldsAndProperties(Type type)
+    {
+      return GetFieldsAndProperties(type, flags)
+        .Select(
+        x =>
+          {
+            Func<object, object> valueFetcher;
+            switch (x.MemberType)
+            {
+              case MemberTypes.Field:
+                valueFetcher = o => ((FieldInfo)x).GetValue(o);
+                break;
+              case MemberTypes.Property:
+                valueFetcher = o => ((PropertyInfo)x).GetValue(o, null);
+                break;
+              default:
+                throw new Exception("Membertype not supported.");
+            }
+            return new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), valueFetcher);
+          })
+          .ToList();
+    }
+
+    /// <summary>
+    /// Returns all Membertype.Field and Membertype.Property except backing-fields
+    /// </summary>
+    public IEnumerable<MemberInfo> GetFieldsAndProperties(Type type, BindingFlags flags)
+    {
+      if (type == null)
+        return Enumerable.Empty<MemberInfo>();
+
+      if (!IsHarvestable(type))
+        return Enumerable.Empty<MemberInfo>();
+
+      return
+        GetFieldsAndProperties(type.BaseType, flags)
+          .Concat(type.GetMembers(flags))
+          .Where(x => NonBackingFieldFilter(x) || IndexerFilter(x)); 
+    }
+
+    static bool NonBackingFieldFilter(MemberInfo x)
+    {
+      return x.MemberType == MemberTypes.Field 
+        && !x.Name.EndsWith(BackingFieldSuffix);
+    }
+
+    static bool IndexerFilter(MemberInfo x)
+    {
+      var p = x as PropertyInfo;
+      return x.MemberType == MemberTypes.Property //
+        && p.GetIndexParameters().Length == 0 // no indexed properties
+        && p.GetGetMethod(true) != null;  // must have getter
+    }
 
         /// <summary>
         /// Tell if the type makes any sense to dump
@@ -84,32 +138,6 @@ namespace StatePrinter.FieldHarvesters
             return fieldName.StartsWith("<")
               ? fieldName.Substring(1).Replace(BackingFieldSuffix, "")
               : fieldName;
-        }
-    }
-
-    /// <summary>
-    /// For each type we print, we hold the reflected and the readable version of the fields
-    /// </summary>
-    public class SanitiedFieldInfo
-    {
-        public readonly FieldInfo FieldInfo;
-
-        /// <summary>
-        /// The sanitized name is the name the user would expect.
-        /// E.g. the field 'X' has the value 'X' and the property 'Y' has the value 'Y' rather than the value '&lt;Y&gt;k__BackingField'.
-        /// </summary>
-        public readonly string SanitizedName;
-
-        /// <summary>
-        /// Functionality to fetch the value of the field.
-        /// </summary>
-        public readonly Func<object, object> ValueProvider;
-
-        public SanitiedFieldInfo(FieldInfo fieldInfo, string sanitizedName, Func<object, object> valueProvider)
-        {
-            FieldInfo = fieldInfo;
-            SanitizedName = sanitizedName;
-            ValueProvider = valueProvider;
         }
     }
 }

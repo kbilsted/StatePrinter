@@ -51,6 +51,8 @@
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />
+    <Compile Include="IntegrationTests\PublicPropertiesTest.cs" />
+    <Compile Include="IntegrationTests\PropertiesTest.cs" />
     <Compile Include="IntegrationTests\ArrayTest.cs" />
     <Compile Include="IntegrationTests\CultureTests.cs" />
     <Compile Include="IntegrationTests\DictionaryTest.cs" />

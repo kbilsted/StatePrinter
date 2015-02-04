@@ -20,6 +20,8 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+
+using StatePrinter.Configurations;
 using StatePrinter.FieldHarvesters;
 using StatePrinter.Tests.TestingAssistance;
 
@@ -34,7 +36,9 @@ namespace StatePrinter.Tests.FieldHarvesters
         class A
         {
             public DateTime X;
+
             public DateTime Y { get; set; }
+
             public string Name;
         }
 
@@ -52,20 +56,40 @@ namespace StatePrinter.Tests.FieldHarvesters
 
         [SetCulture("da-DK")]
         [Test]
-        public void TestFluintInterface()
+        public void TestFluintInterface_exclude()
         {
             var cfg = TestHelper.CreateTestConfiguration();
             cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
             var printer = new Stateprinter(cfg);
 
-            var actual = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-            printer.Assert.AreEqual(@"new A() { Name = ""Charly"" }", actual);
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A() { Name = ""Charly"" }", state);
 
-            actual = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
-            printer.Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", actual);
+            state =
+                printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", state);
 
-            actual = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
-            printer.Assert.AreEqual("new C() { X = 08-09-2010 00:00:00 }", actual);
+            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            Assert.AreEqual(@"new C() { X = 08-09-2010 00:00:00 }", state);
+        }
+
+        [SetCulture("da-DK")]
+        [Test]
+        public void TestFluintInterface_Include()
+        {
+            var cfg = TestHelper.CreateTestConfiguration();
+            cfg.Projectionharvester().Include<A>(x => x.Name);
+            var printer = new Stateprinter(cfg);
+
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A() { Name = ""Charly"" }", state);
+
+            state =
+                printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            Assert.AreEqual(@"new B() { Name = ""Charly"" }", state);
+
+            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            Assert.AreEqual(@"new C() { X = 08-09-2010 00:00:00 }", state);
         }
 
         [SetCulture("da-DK")]
@@ -74,18 +98,20 @@ namespace StatePrinter.Tests.FieldHarvesters
         {
             var cfg = TestHelper.CreateTestConfiguration();
             cfg.Projectionharvester()
-              .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+                .AddFilter<A>(
+                    x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
             var printer = new Stateprinter(cfg);
 
-            var actual = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-            printer.Assert.AreEqual(@"new A() { Name = ""Charly"" }", actual);
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A() { Name = ""Charly"" }", state);
 
-            actual = printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
-            printer.Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", actual);
+            state =
+                printer.PrintObject(new B { X = DateTime.Now, Name = "Charly", Age = 43 });
+            Assert.AreEqual(@"new B() { Name = ""Charly"" Age = 43 }", state);
 
-            actual = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
-            printer.Assert.AreEqual("new C() { X = 08-09-2010 00:00:00 }", actual);
+            state = printer.PrintObject(new C { X = new DateTime(2010, 9, 8) });
+            Assert.AreEqual(@"new C() { X = 08-09-2010 00:00:00 }", state);
         }
 
 
@@ -97,14 +123,14 @@ namespace StatePrinter.Tests.FieldHarvesters
             {
                 var selective = new ProjectionHarvester();
                 selective.AddFilter<A>(
-                  x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+                    x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
                 Asserts(selective);
             }
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage = "Type A has already been configured as an excluder.")]
+                ExpectedMessage = "Type A has already been configured as an excluder.")]
             public void AddFilter_OnAlreadyExclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
@@ -114,7 +140,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage = "Type A has already been configured as an includer.")]
+                ExpectedMessage = "Type A has already been configured as an includer.")]
             public void AddFilter_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
@@ -134,7 +160,8 @@ namespace StatePrinter.Tests.FieldHarvesters
             {
                 var harvester = new ProjectionHarvester();
                 var ex =
-                  Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => Math.Min(3, 3)));
+                    Assert.Throws<ArgumentException>(
+                        () => harvester.Exclude<A>(x => Math.Min(3, 3)));
                 Assert.AreEqual("Field specification must refer to a field", ex.Message);
 
                 ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => 1));
@@ -143,8 +170,8 @@ namespace StatePrinter.Tests.FieldHarvesters
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage =
-                "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
+                ExpectedMessage =
+                    "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
             public void AddExclude_FieldOnDifferentType_Fail()
             {
                 var harvester = new ProjectionHarvester();
@@ -156,8 +183,7 @@ namespace StatePrinter.Tests.FieldHarvesters
             public void Fields_WorksForTypesAndSubtypes()
             {
                 var harvester = new ProjectionHarvester();
-                harvester.Exclude<A>(x => x.X)
-                  .Exclude<A>(x => x.Y);
+                harvester.Exclude<A>(x => x.X).Exclude<A>(x => x.Y);
 
                 Asserts(harvester);
             }
@@ -190,7 +216,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage = "Type A has already been configured as a filter.")]
+                ExpectedMessage = "Type A has already been configured as a filter.")]
             public void Exclude_OnAlreadyFilter_Fail()
             {
                 var harvester = new ProjectionHarvester();
@@ -200,7 +226,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage = "Type A has already been configured as an includer.")]
+                ExpectedMessage = "Type A has already been configured as an includer.")]
             public void Exclude_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
@@ -208,7 +234,6 @@ namespace StatePrinter.Tests.FieldHarvesters
                 harvester.Exclude<A>(x => x.X);
             }
         }
-
 
 
         [TestFixture]
@@ -219,7 +244,6 @@ namespace StatePrinter.Tests.FieldHarvesters
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Include<B>(x => x.Name, x => x.Age);
-
 
                 IFieldHarvester fh = (IFieldHarvester)harvester;
                 Assert.IsFalse(fh.CanHandleType(typeof(A)));
@@ -232,12 +256,84 @@ namespace StatePrinter.Tests.FieldHarvesters
 
             [Test]
             [ExpectedException(typeof(ArgumentException),
-              ExpectedMessage = "Type A has already been configured as an excluder.")]
+                ExpectedMessage = "Type A has already been configured as an excluder.")]
             public void Include_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Exclude<A>(x => x.X);
                 harvester.Include<A>(x => x.X);
+            }
+
+            class F
+            {
+                public int i, j, k;
+
+                public int Sum
+                {
+                    get
+                    {
+                        return i + j;
+                    }
+                }
+            }
+
+            [Test]
+            public void IncludeGetter()
+            {
+                F f = new F() { i = 1, j = 2, k = 4 };
+
+                var stateprinter =
+                    new Stateprinter(
+                        TestHelper.CreateTestConfiguration()
+                            .Add(
+                                new ProjectionHarvester().Include<F>(x => x.i, x => x.Sum)));
+
+                var expected = @"new F() { i = 1 Sum = 3 }";
+                var actual = stateprinter.PrintObject(f);
+                Console.WriteLine(actual);
+                Assert.AreEqual(expected, actual);
+
+            }
+
+            [Test]
+            public void IncludeSubsetOfFields()
+            {
+                B b1 = new B() { Age = 1, Name = "m", X = DateTime.Now, Y = DateTime.Now };
+
+                var stateprinter =
+                    new Stateprinter(
+                        ConfigurationHelper.GetStandardConfiguration()
+                            .Add(
+                                new ProjectionHarvester().Include<B>(
+                                    x => x.Name,
+                                    x => x.Age)));
+                stateprinter.configuration.AreEqualsMethod = Assert.AreEqual;
+
+                var expected = @"new B()
+{
+    Name = ""m""
+    Age = 1
+}
+";
+                var actual = stateprinter.PrintObject(b1);
+                stateprinter.Assert.AreEqual(expected, actual);
+
+                // in array
+                expected = @"new B[]()
+[0] = new B()
+{
+    Name = ""m""
+    Age = 1
+}
+[1] = new B()
+{
+    Name = ""a""
+    Age = 2
+}
+";
+                B b2 = new B() { Age = 2, Name = "a", X = DateTime.Now, Y = DateTime.Now };
+                actual = stateprinter.PrintObject(new[] { b1, b2 });
+                stateprinter.Assert.AreEqual(expected, actual);
             }
         }
 
@@ -256,4 +352,5 @@ namespace StatePrinter.Tests.FieldHarvesters
         }
 
     }
+
 }

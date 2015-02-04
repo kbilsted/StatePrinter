@@ -57,12 +57,15 @@
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationHelper.cs" />
+    <Compile Include="FieldHarvesters\AllFieldsAndPropertiesHarvester.cs" />
+    <Compile Include="FieldHarvesters\PublicFieldsHarvester.cs" />
+    <Compile Include="FieldHarvesters\SanitiedFieldInfo.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvester.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvester.cs" />
     <Compile Include="FieldHarvesters\AllFieldsHarvester.cs" />
     <Compile Include="FieldHarvesters\HarvestHelper.cs" />
     <Compile Include="FieldHarvesters\IFieldHarvester.cs" />
-    <Compile Include="FieldHarvesters\PublicFieldsHarvester .cs" />
+    <Compile Include="FieldHarvesters\PublicFieldsAndPropertiesHarvester .cs" />
     <Compile Include="Introspection\HarvestInfoCache.cs" />
     <Compile Include="Introspection\IntroSpector.cs" />
     <Compile Include="Introspection\Reference.cs" />
