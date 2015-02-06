@@ -89,7 +89,7 @@ namespace StatePrinter.Tests.PerformanceTests
                 x.Add(new ToDump());
 
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new JsonStyle(cfg);
             var mills = Time(() =>
                              {
                                  var printer = new Stateprinter(cfg);

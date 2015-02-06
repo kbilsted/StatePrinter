@@ -19,20 +19,21 @@
 
 using System;
 using System.Text;
-using StatePrinter.Configurations;
 
 namespace StatePrinter.OutputFormatters
 {
     class IndentingStringBuilder
     {
-        readonly StringBuilder sb = new StringBuilder();
+        public readonly StringBuilder sb = new StringBuilder();
         readonly string IndentIncrement;
+        readonly string NewLineDefinition;
 
         string indent = "";
 
-        public IndentingStringBuilder(string indentIncrement = Configuration.DefaultIndention)
+        public IndentingStringBuilder(string indentIncrement, string newLineDefinition)
         {
             IndentIncrement = indentIncrement;
+            NewLineDefinition = newLineDefinition;
         }
 
         public void Indent()
@@ -49,12 +50,20 @@ namespace StatePrinter.OutputFormatters
         {
             sb.Append(indent);
             sb.AppendFormat(format, args);
-            sb.Append(Environment.NewLine);
+            sb.Append(NewLineDefinition);
         }
 
         public override string ToString()
         {
             return sb.ToString();
+        }
+
+        public void TrimLast()
+        {
+            int trim = new StringBuilderTrimmer().TrimLast(sb);
+            if(trim > 0)
+                sb.Remove(sb.Length - trim, trim);
+        
         }
     }
 }

@@ -290,8 +290,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 
                 var expected = @"new F() { i = 1 Sum = 3 }";
                 var actual = stateprinter.PrintObject(f);
-                Console.WriteLine(actual);
-                Assert.AreEqual(expected, actual);
+                stateprinter.Assert.AreEqual(expected, actual);
 
             }
 
@@ -307,7 +306,7 @@ namespace StatePrinter.Tests.FieldHarvesters
                                 new ProjectionHarvester().Include<B>(
                                     x => x.Name,
                                     x => x.Age)));
-                stateprinter.configuration.AreEqualsMethod = Assert.AreEqual;
+                stateprinter.configuration.SetAreEqualsMethod(Assert.AreEqual);
 
                 var expected = @"new B()
 {

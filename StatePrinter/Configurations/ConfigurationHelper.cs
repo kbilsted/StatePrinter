@@ -69,7 +69,7 @@ namespace StatePrinter.Configurations
             cfg.Add(new AllFieldsHarvester());
 
             // outputformatters
-            cfg.OutputFormatter = new CurlyBraceStyle(indentIncrement);
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
 
             return cfg;
         }

@@ -81,13 +81,6 @@ namespace StatePrinter
 
             var result = formatter.Print(tokens);
 
-            if (configuration.OutputAsSingleLine) 
-                result = result
-                    .Replace("\r\n", " ")
-                    .Replace("\r", " ")
-                    .Replace("\n", " ")
-                    .TrimEnd();
-
             return result;
         }
 

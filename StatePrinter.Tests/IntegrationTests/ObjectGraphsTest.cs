@@ -34,7 +34,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Setup()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
             printer = new Stateprinter(cfg);
         }
 
@@ -68,7 +68,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void ThreeLinkedGraph_json()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new JsonStyle(cfg);
             var printer = new Stateprinter(cfg);
 
             var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
@@ -98,7 +98,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void ThreeLinkedGraph_xmlstyle()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new XmlStyle(cfg);
             var printer = new Stateprinter(cfg);
             var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
             car.Brand = "Toyota";
@@ -151,7 +151,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void CyclicGraph_Json()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new JsonStyle(cfg);
             var printer = new Stateprinter(cfg);
 
             var course = new Course();
@@ -231,7 +231,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void MegaCyclicGraph_Json()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new JsonStyle(cfg);
             var printer = new Stateprinter(cfg);
 
 
@@ -318,7 +318,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void CyclicGraph_xmlstyle()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new XmlStyle(cfg);
             var printer = new Stateprinter(cfg);
             var course = new Course();
             course.Members.Add(new Student("Stan", course));

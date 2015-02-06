@@ -46,10 +46,27 @@ namespace StatePrinter.Configurations
         /// </summary>
         public CultureInfo Culture = CultureInfo.CurrentCulture;
 
+        ///// <summary>
+        ///// For small objects, the assert may be better presented on a single line rather than multiple lines.
+        ///// </summary>
+        //public bool OutputAsSingleLine { get; set; }
+
+        ///// <summary>
+        ///// For small objects, the assert may be better presented on a single line rather than multiple lines.
+        ///// </summary>
+        public string NewLineDefinition { get; private set; }
+
         /// <summary>
-        /// For small objects, the assert may be better presented on a single line rather than multiple lines.
+        /// Set the definition of the newline. The default configuration is a <see cref="Environment.NewLine"/>
         /// </summary>
-        public bool OutputAsSingleLine { get; set; }
+        public Configuration SetNewlineDefinition(string newlineCharacters)
+        {
+            if(newlineCharacters== null)
+                throw new ArgumentNullException("newlineCharacters");
+            NewLineDefinition = newlineCharacters;
+            
+            return this;
+        }
 
         /// <summary>
         /// Instantiate using the <see cref="DefaultIndention"/> and the <see cref="CurlyBraceStyle"/>
@@ -59,8 +76,9 @@ namespace StatePrinter.Configurations
             TestFrameworkAreEqualsMethod areEqualsMethod = null)
         {
             IndentIncrement = indentIncrement;
-            OutputFormatter = new CurlyBraceStyle(indentIncrement);
+            OutputFormatter = new CurlyBraceStyle(this);
             AreEqualsMethod = areEqualsMethod;
+            NewLineDefinition = Environment.NewLine;
         }
 
         public IOutputFormatter OutputFormatter;
@@ -128,8 +146,8 @@ namespace StatePrinter.Configurations
             result = fieldHarvesters.FirstOrDefault(x => x.CanHandleType(source));
             return result != null;
         }
-        #region unit testing support
 
+        #region unit testing support
         ProjectionHarvester projection;
 
         /// <summary>
@@ -144,7 +162,20 @@ namespace StatePrinter.Configurations
         /// Configure how to call AreEquals in the unit testing framework of your choice. 
         /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
         /// </summary>
-        public TestFrameworkAreEqualsMethod AreEqualsMethod;
+        public TestFrameworkAreEqualsMethod AreEqualsMethod { get; private set; }
+
+        /// <summary>
+        /// Configure how to call AreEquals in the unit testing framework of your choice. 
+        /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
+        /// </summary>
+        public Configuration SetAreEqualsMethod(TestFrameworkAreEqualsMethod areEqualsMethod)
+        {
+            if (areEqualsMethod == null)
+                throw new ArgumentNullException("areEqualsMethod");
+            AreEqualsMethod = areEqualsMethod;
+            
+            return this;
+        }
         #endregion
     }
 }

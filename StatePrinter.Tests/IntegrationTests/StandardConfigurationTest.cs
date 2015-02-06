@@ -34,7 +34,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Setup()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
             printer = new Stateprinter(cfg);
         }
 
@@ -95,7 +95,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Int_xml()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new XmlStyle(cfg);
             printer = new Stateprinter(cfg);
 
             Assert.AreEqual("<ROOT>-1</ROOT>\r\n", printer.PrintObject(-1f));
@@ -108,7 +108,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Int_json()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
+            cfg.OutputFormatter = new JsonStyle(cfg);
             printer = new Stateprinter(cfg);
 
             Assert.AreEqual("-1\r\n", printer.PrintObject(-1f));

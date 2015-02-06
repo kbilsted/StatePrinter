@@ -61,6 +61,7 @@
     <Compile Include="IntegrationTests\ObjectGraphsTest.cs" />
     <Compile Include="IntegrationTests\StandardConfigurationTest.cs" />
     <Compile Include="IntegrationTests\ToStringMethodTest.cs" />
+    <Compile Include="OutputFormatters\StringBuilderTrimmerTest.cs" />
     <Compile Include="OutputFormatters\TokenFilterTest.cs" />
     <Compile Include="PerformanceTests\ManySmallObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

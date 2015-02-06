@@ -54,7 +54,7 @@ namespace StatePrinter.TestAssistance
         {
             var needEscaping = actual.Contains("\"") || actual.Contains("\n");
             if(needEscaping)
-               return string.Format("@\"{0}\"", actual.Replace("\"", "\"\""));
+               return string.Format("@\"{0}\";", actual.Replace("\"", "\"\""));
             return string.Format("\"{0}\"", actual);
         }
 

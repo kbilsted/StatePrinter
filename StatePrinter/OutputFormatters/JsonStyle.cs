@@ -33,14 +33,11 @@ namespace StatePrinter.OutputFormatters
     /// </summary>
     public class JsonStyle : IOutputFormatter
     {
-        /// <summary>
-        /// Specifies how indentation is done.
-        /// </summary>
-        readonly string indentIncrement;
+        Configuration configuration;
 
-        public JsonStyle(string indentIncrement = Configuration.DefaultIndention)
+        public JsonStyle(Configuration configuration)
         {
-            this.indentIncrement = indentIncrement;
+            this.configuration = configuration;
         }
 
         public string Print(List<Token> tokens)
@@ -104,7 +101,7 @@ namespace StatePrinter.OutputFormatters
 
         string MakeString(List<Token> tokens, Dictionary<Reference, string> referencePaths)
         {
-            var sb = new IndentingStringBuilder(indentIncrement);
+            var sb = new IndentingStringBuilder(configuration.IndentIncrement, configuration.NewLineDefinition);
 
             for (int i = 0; i < tokens.Count; i++)
             {
@@ -112,6 +109,7 @@ namespace StatePrinter.OutputFormatters
                 i += skip;
             }
 
+            sb.TrimLast();
             return sb.ToString();
         }
 

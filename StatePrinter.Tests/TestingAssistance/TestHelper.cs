@@ -11,11 +11,21 @@ namespace StatePrinter.Tests.TestingAssistance
 {
     static class TestHelper
     {
+
+        public static Stateprinter CreateTestPrinter()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            cfg.SetAreEqualsMethod(Assert.AreEqual);
+            
+            return new Stateprinter(cfg);
+        }
+
         public static Configuration CreateTestConfiguration()
         {
-            var res = ConfigurationHelper.GetStandardConfiguration("");
-            res.OutputAsSingleLine = true;
-            res.AreEqualsMethod = Assert.AreEqual;
+            var res = ConfigurationHelper
+                .GetStandardConfiguration("")
+                .SetNewlineDefinition(" ")
+                .SetAreEqualsMethod(Assert.AreEqual);
 
             return res;
         }

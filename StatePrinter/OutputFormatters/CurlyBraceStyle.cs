@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+
+using StatePrinter.Configurations;
 using StatePrinter.Introspection;
 
 namespace StatePrinter.OutputFormatters
@@ -31,14 +33,11 @@ namespace StatePrinter.OutputFormatters
     /// </summary>
     public class CurlyBraceStyle : IOutputFormatter
     {
-        /// <summary>
-        /// Specifies how indentation is done. 
-        /// </summary>
-        readonly string IndentIncrement;
+        Configuration configuration;
 
-        public CurlyBraceStyle(string indentIncrement)
+        public CurlyBraceStyle(Configuration configuration)
         {
-            IndentIncrement = indentIncrement;
+            this.configuration = configuration;
         }
 
         public string Print(List<Token> tokens)
@@ -51,12 +50,14 @@ namespace StatePrinter.OutputFormatters
 
         string MakeString(IEnumerable<Token> tokens)
         {
-            var sb = new IndentingStringBuilder(IndentIncrement);
+            var sb = new IndentingStringBuilder(configuration.IndentIncrement, configuration.NewLineDefinition);
 
             foreach (var token in tokens)
             {
                 MakeTokenString(token, sb);
             }
+
+            sb.TrimLast();
 
             return sb.ToString();
         }
