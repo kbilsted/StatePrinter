@@ -2,15 +2,16 @@
 
 
 # StatePrinter 
-## "The automatic ".ToString()" utility."
-### Like a JSON serializer on drugs
 
-#### Version 1.0.6 just released! 
-Get it here (https://www.nuget.org/packages/StatePrinter/)
+"Automatic `Asser.AreEqual()` and automatic `ToString()`."
+Like a JSON serializer on drugs
 
+* Latest version: 1.0.6 (Get it [here](https://www.nuget.org/packages/StatePrinter/))
 * Requires C# 3.5 or newer
 * Test coverage of 97%
 * Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
+* Stats: <script type="text/javascript" src="http://www.openhub.net/p/715894/widgets/project_thin_badge.js"></script>
+
 
 This file describes the latest pushed changes. For documentation of releases see: xxx
 
