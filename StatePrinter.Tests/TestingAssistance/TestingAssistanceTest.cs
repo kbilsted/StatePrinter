@@ -71,26 +71,26 @@ namespace StatePrinter.Tests.TestingAssistance
             printer.Assert.AreEqual("a", "b");
             Assert.AreEqual("a", called_expected);
             Assert.AreEqual("b", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\"b\"\r\n", called_msg);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\nvar expected = \"b\";\r\n", called_msg);
 
             // with  "
             printer.Assert.AreEqual("c", "\"e\"");
             Assert.AreEqual("c", called_expected);
             Assert.AreEqual("\"e\"", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n@\"\"\"e\"\"\";\r\n", called_msg);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\nvar expected = @\"\"\"e\"\"\";\r\n", called_msg);
 
 
             // without "
             printer.Assert.That("aa", Is.EqualTo("bb"));
             Assert.AreEqual("bb", called_expected);
             Assert.AreEqual("aa", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\"aa\"\r\n", called_msg);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\nvar expected = \"aa\";\r\n", called_msg);
 
             // with  "
             printer.Assert.That("\"cc\"", Is.EqualTo("ee"));
             Assert.AreEqual("ee", called_expected);
             Assert.AreEqual("\"cc\"", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n@\"\"\"cc\"\"\";\r\n", called_msg);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\nvar expected = @\"\"\"cc\"\"\";\r\n", called_msg);
         }
 
     }

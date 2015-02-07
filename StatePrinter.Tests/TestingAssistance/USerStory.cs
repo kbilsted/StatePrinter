@@ -38,7 +38,6 @@ namespace StatePrinter.Tests.TestingAssistance
             printer.Assert.IsSame("a\r", "a\n");
             printer.Assert.IsSame("a\r", "a\r\n");
         }
-
     }
 
     [Ignore("Run these in order to see how Nunit integrates with the testing assistance")]
