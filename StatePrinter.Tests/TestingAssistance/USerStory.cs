@@ -24,11 +24,27 @@ using StatePrinter.Configurations;
 
 namespace StatePrinter.Tests.TestingAssistance
 {
+    [TestFixture]
+    class Userstory_nonexplicit
+    {
+        [Test]
+        public void AreEquals_differentNewlines()
+        {
+            var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
+            var printer = new Stateprinter(cfg);
+
+            printer.Assert.IsSame("a\n", "a\r\n");
+            printer.Assert.IsSame("a\r\n", "a\n");
+            printer.Assert.IsSame("a\r", "a\n");
+            printer.Assert.IsSame("a\r", "a\r\n");
+        }
+
+    }
+
     [Ignore("Run these in order to see how Nunit integrates with the testing assistance")]
     [TestFixture]
     class Userstory
     {
-
         [Test]
         public void AreEquals_without()
         {

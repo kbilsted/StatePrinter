@@ -27,7 +27,6 @@ namespace StatePrinter.TestAssistance
     /// </summary>
     public delegate void TestFrameworkAreEqualsMethod(string actual, string expected, string message);
 
-
     /// <summary>
     /// Helper class for writing asserts that help output the actual output in a c#-escaped format.
     /// This makes it easy in case of failed test to see locally what went wrong, and see/copy the actual output.
@@ -36,18 +35,42 @@ namespace StatePrinter.TestAssistance
     {
         readonly TestFrameworkAreEqualsMethod assert;
 
-        public Asserter(TestFrameworkAreEqualsMethod assert)
+        internal Asserter(TestFrameworkAreEqualsMethod assert)
         {
             this.assert = assert;
         }
 
         /// <summary>
-        /// Emulate Nunits Assert.AreEqual
+        /// Assert that two strings are the same using the configures asserter method. Upon a failure, a suggested string for correcting the test
+        /// is printed. 
         /// </summary>
         public void AreEqual(string expected, string actual)
         {
             var message = string.Format("{0}{0}Proposed output for unit test:{0}{1}{0}", Environment.NewLine, Escape(actual));
             assert(expected, actual, message);
+        }
+
+        /// <summary>
+        /// Assert that two strings are the "same" ignoring differences in line ending characters \r, \n. 
+        /// For all practical purposes, this method rectifies some of the many problems with source files stored in 
+        /// different methods on diffrent operating systems.
+        /// <para>
+        /// This method calls <see cref="AreEqual"/> after first unifiying the line endings. "\r" and "\r\n" are changed into "\n"
+        /// </para>
+        /// <para>
+        /// Upon a failure, a suggested string for correcting the test is printed.
+        /// </para>
+        /// </summary>
+        public void IsSame(string expected, string actual)
+        {
+            AreEqual(UnifyNewLines(expected), UnifyNewLines(actual));
+        }
+
+        string UnifyNewLines(string text)
+        {
+            return text
+                .Replace("\r\n", "\n")
+                .Replace("\r", "\n");
         }
 
         string Escape(string actual)
@@ -85,6 +108,9 @@ namespace StatePrinter
     /// </summary>
     public static class Is
     {
+        /// <summary>
+        /// Different syntax for calling Assert.AreEquals
+        /// </summary>
         public static Expected EqualTo(string exptected)
         {
             return new Expected() { ExpectedValue = exptected };
