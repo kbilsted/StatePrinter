@@ -9,7 +9,10 @@ Like a JSON serializer on drugs
 * Latest version: 1.0.6 (Get it [here](https://www.nuget.org/packages/StatePrinter/))
 * Requires C# 3.5 or newer
 * Test coverage of 97%
-* Build server status: [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
+
+[![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
+[![Nuget](https://img.shields.io/nuget/dt/stateprinter.svg)](http://nuget.org/packages/stateprinter)
+[![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 
 
 This file describes the latest pushed changes. For documentation of releases see: xxx
