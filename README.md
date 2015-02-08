@@ -4,7 +4,6 @@ A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToSt
 
 * Latest version: 1.0.6 (Get it [here](https://www.nuget.org/packages/StatePrinter/))
 * Requires C# 3.5 or newer
-* Test coverage of 97%
 
 [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
 [![Nuget](https://img.shields.io/nuget/dt/stateprinter.svg)](http://nuget.org/packages/stateprinter)
