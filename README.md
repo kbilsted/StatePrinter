@@ -1,7 +1,5 @@
-![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
+# StatePrinter  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png)
 
-
-# StatePrinter 
 
 "Automatic `Asser.AreEqual()` and automatic `ToString()`."
 Like a JSON serializer on drugs
