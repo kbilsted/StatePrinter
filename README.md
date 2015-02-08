@@ -1,6 +1,6 @@
 #  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter 
 
-A simple framework for automatic `Assert.AreEqual()` and `ToString()` - Like a JSON serializer on drugs.
+A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToString()` - Like a JSON serializer on drugs.
 
 * Latest version: 1.0.6 (Get it [here](https://www.nuget.org/packages/StatePrinter/))
 * Requires C# 3.5 or newer
