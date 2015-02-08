@@ -11,9 +11,12 @@ A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToSt
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 
 
-This file describes the latest pushed changes. For documentation of releases see: xxx
+This file describes the latest pushed changes. For documentation of earlier releases see:
+https://github.com/kbilsted/StatePrinter/blob/1.0.6/README.md
+https://github.com/kbilsted/StatePrinter/blob/1.0.5/README.md
+https://github.com/kbilsted/StatePrinter/blob/1.0.4/README.md
 
-Table of content
+**Table of content**
 * [1. Introduction](#1-introduction)
  * [1.1 Simple example usage](#11-simple-example-usage)
  * [1.2 Generic ToString() usage](#12-generic-tostring-usage)
