@@ -22,10 +22,17 @@ using System;
 namespace StatePrinter.ValueConverters
 {
     /// <summary>
-    /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>
+    /// Handles the printing of <see cref="string"/> 
     /// </summary>
     public class StringConverter : IValueConverter
     {
+        readonly string quoteSymbol;
+        
+        public StringConverter(string quoteSymbol = "\"")
+        {
+            this.quoteSymbol = quoteSymbol;
+        }
+        
         public bool CanHandleType(Type t)
         {
             return t == typeof(string);
@@ -33,7 +40,7 @@ namespace StatePrinter.ValueConverters
 
         public string Convert(object source)
         {
-            return string.Format(@"""{0}""", source);
+            return string.Format("{0}{1}{0}", quoteSymbol, source);
         }
     }
 }
