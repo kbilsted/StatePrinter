@@ -8,7 +8,7 @@
 * Added a `AllFieldsAndPropertiesHarvester` which is able to harvest properties and fields.
 * BREAKING CHANGE: Projective harvester is now using the `AllFieldsAndPropertiesHarvester` rather instead of the `FieldHarvester`. This means both fields and properties are now harvested.
 * BREAKING CHANGE: The deprecated type `StatePrinter` is now deleted. Use `Stateprinter` instead.
-
+* `StringConverter` is now configurable with respect to quote character.
 
 ## v1.0.6
 
