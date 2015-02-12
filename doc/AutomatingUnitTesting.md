@@ -4,8 +4,9 @@
 
 **Table of content**
 * [3. Unit testing](#3-unit-testing)  
- * [3.1 Restricting fields harvested](#31-restricting-fields-harvested)
-
+ * [3.1 Examples of hard to read unit tests](#31-examples-of-hard-to-read-unit-tests)
+ * [3.2 Restricting fields harvested](#32-restricting-fields-harvested)
+ * [3.3 Stateprinter asserts](#33-Stateprinter-asserts)
  
 # 3. Unit testing
 
@@ -23,9 +24,121 @@ When unit testing, you often have to write a ton of asserts to check the state o
 The introduction was a bit vague. You may not yet be convinced. Allow me to express concerns with typical issues I see in testing. Please feel contact me with more good examples.
 
 
+### 3.1.1 Example 1 - Testing against Xml
+
+```
+public void TestXML()
+{
+   XDocument doc  = XDocument.Parse(GetXML());
+
+   IEnumerable<XElement> customerElements = logic.GetCustomerElements(doc);
+   Assert.IsTrue(customerElements.Count() == 1);
+   XElement customerElement = customerElements.First();
+   Assert.IsNotNull(customerElement, "CustomerElements");
+   Assert.AreEqual(customerElement.Element(logic.NameSpace + "CustomerNumber").Value, testData.CustomerNumber);
+   Assert.AreEqual(customerElement.Element(logic.NameSpace + "AddressInformation").Element(logic.NameSpace + "FirstName").Value, testData.FirstName);
+   Assert.AreEqual(customerElement.Element(logic.NameSpace + "AddressInformation").Element(logic.NameSpace + "LastName").Value, testData.LastName);
+   Assert.AreEqual(customerElement.Element(logic.NameSpace + "AddressInformation").Element(logic.NameSpace + "Gender").Value, testData.Gender);
+...
+   XElement order = customerElement.Element(logic.NameSpace + "Orders").Element(logic.NameSpace + "Order");
+   Assert.AreEqual(order.Element(logic.NameSpace + "OrderNumber").Value, testData.orderNumber);
+```
+
+Gosh! I'm getting sick to my stomack. All that typing. But worse. Where is the overview!?
+
+How about just compare a string from StatePrinter
+
+```
+var expected = 
+@"<?xml version=""1.0"" encoding=""utf-8""?> 
+<ImportCustomers xmlns=""urn:boo"">
+<Customer>
+  <CustomerNumber>223</CustomerNumber>
+  <AddressInformation>
+    <FirstName>John</FirstName>
+    <LastName>Doe</LastName>
+    <Gender>M</Gender>
+  </AddressInformation>
+  <Orders>
+    <Order>
+      <OrderNumber>1</OrderNumber>
+        ...        
+    </Order>
+  </Orders>
+</Customer>"
+```
 
 
-## 3.1 Configuration - Restricting fields harvested
+### 3.1.2 Example 2 - Endless amounts of asserts
+
+```
+  var allocation = new allocationData
+  {
+      Premium = 22,
+      FixedCosts = 23,
+      PremiumCosts = 140,
+      Tax = 110
+   };
+
+    var sut = Allocator();
+    var allocateData = sut.CreateAllocation(allocation);
+
+    Assert.That(allocateData.Premium, Is.EqualTo(allocation.Premium));
+
+    Assert.That(allocateData.OriginalDueDate, Is.EqualTo(new DateTime(2010, 1, 1)));
+        
+    Assert.That(allocateData.Costs.MonthlyBillingFixedInternalCost, Is.EqualTo(38));
+    Assert.That(allocateData.Costs.BillingInternalCost, Is.EqualTo(55));
+    Assert.That(allocateData.Costs.MonthlyBillingFixedRunningRemuneration, Is.EqualTo(63));
+    Assert.That(allocateData.Costs.MonthlyBillingFixedEstablishment, Is.EqualTo(53));
+    Assert.That(allocateData.Costs.MonthlyBillingRegistration, Is.EqualTo(2));
+
+    Assert.That(allocateData.PremiumInternalCost, Is.EqualTo(1));
+    Assert.That(allocateData.PremiumRemuneration, Is.EqualTo(2));
+    Assert.That(allocateData.PremiumRegistration, Is.EqualTo(332));
+    Assert.That(allocateData.PremiumEstablishment, Is.EqualTo(14));
+
+    Assert.That(allocateData.PremiumInternalCostBeforeDiscount, Is.EqualTo(57));       
+    Assert.That(allocateData.PremiumInternalCostAfterDiscount, Is.EqualTo(37));       
+
+    Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
+ ```
+ 
+### 3.1.3 Example 3 - Asserting on lists and arrays
+
+```
+var vendorManager = new TaxvendorManager(products, vendors, year);
+
+vendorManager.AddVendor(JobType.JobType1, added1);
+vendorManager.AddVendor(JobType.JobType2, added2);
+vendorManager.AddVendor(JobType.JobType3, added3);
+
+Assert.That(vendorManager.VendorJobSplit[0], Is.EqualTo(consumption1 + added1));
+Assert.That(vendorManager.VendorJobSplit[0].Price, Is.EqualTo(fee + added1));
+Assert.That(vendorManager.VendorJobSplit[0].Share, Is.EqualTo(20);
+Assert.That(vendorManager.VendorJobSplit[1], Is.EqualTo(consumption2));
+Assert.That(vendorManager.VendorJobSplit[1].Price, Is.EqualTo(fee2 + consumption2));
+Assert.That(vendorManager.VendorJobSplit[1].Share, Is.EqualTo(30);
+Assert.That(vendorManager.VendorJobSplit[2], Is.EqualTo(added3));
+Assert.That(vendorManager.VendorJobSplit[2].Price, Is.EqualTo(added3.price));
+Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
+Assert.That(vendorManager.VendorJobSplit[3], Is.EqualTo(consumption2));
+Assert.That(vendorManager.VendorJobSplit[3].Price, Is.EqualTo(fconsumption3));
+Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
+```
+
+Now there are a little more pain with arrays and lists when asserting. Did you notice the following problems with the test?
+
+1. We are not sure that there are only 4 elements! And when there are less we get a nasty exception.
+2. Did you spot the mistaken `VendorJobSplit[2].Share` was never asserted?
+
+True, you can use `CollectionAssert` and the like. But it requires you to implement `Equals()` on all types. And when implementing that, best practice is to also implement `GetHashCode()`. Now you spend more time building needles infra structure, that testing and getting the job done!
+
+
+
+
+
+## 3.2 Configuration - Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -76,6 +189,18 @@ or programmatically
 ```
 
 You can now easily configure what to dump when testing. 
+
+
+
+## Stateprinter's assert helper methods
+
+Advantages of using stateprinter's assert methods
+
+* Hooks into any unit testing framework of your choice
+* Code generates your expected values. It is almost fully automatic to write your asserts and update them when the code is changed.
+* Handles newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling.
+
+Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
 
 
 
