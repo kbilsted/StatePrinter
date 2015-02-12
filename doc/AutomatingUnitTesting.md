@@ -6,7 +6,7 @@
 * [3. Unit testing](#3-unit-testing)  
  * [3.1 Examples of hard to read unit tests](#31-examples-of-hard-to-read-unit-tests)
  * [3.2 Restricting fields harvested](#32-restricting-fields-harvested)
- * [3.3 Stateprinter asserts](#33-Stateprinter-asserts)
+ * [3.3 Stateprinter.Assert](#33-Stateprinter-asserts)
  
 # 3. Unit testing
 
@@ -192,7 +192,7 @@ You can now easily configure what to dump when testing.
 
 
 
-## Stateprinter's assert helper methods
+## 3.3 Stateprinter.Assert
 
 Advantages of using stateprinter's assert methods
 
