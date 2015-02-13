@@ -12,16 +12,16 @@ Requires C# 3.5 or newer
 
 # What is Stateprinter
 
-StatePrinter is a simple little library that turn any object-graph into a string representation. It is mainly intended automating writing `ToString` methods and help automating aspects of writing unit tests. 
-
-This type of code is rather dreary and boring to write. Stateprinter is free, highly configurable and thread safe.  
+StatePrinter is a simple little library that turn any object-graph into a string representation. It is mainly intended automating writing `ToString` methods and help automating aspects of writing and maintaining unit tests. This type of code is rather dreary and boring to write. 
 
 Why you should take StatePrinter for a spin
 
 * *No more manual .ToString()* - it is much easier to write robus and self-sufficient `ToString()` methods. 
 * It becomes much easier to write unit tests. No more screens full of asserts. Especially testing against object-graphs is a bliss. 
-* Very very configurable both in terms of what to harvest, and in terms of how to output.
-* It is part of the back-end engine of the very nice ApprovalTests framework (http://approvaltests.sourceforge.net/).
+* Very very configurable and extensible.
+* Stateprinter is free, highly configurable and thread safe.  
+* It is part of the back-end engine of other projects
+  * The very nice [ApprovalTests framework](http://approvaltests.sourceforge.net/).
 
 
 
@@ -31,7 +31,6 @@ The short answer is
 
 ```C#
 var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-car.Brand = "Toyota";
 
 Stateprinter printer = new Stateprinter();
 
@@ -39,9 +38,9 @@ Console.WriteLine(printer.PrintObject(car));
 ```
 
 The documentation is split into
-* [automating ToStrings](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
-* [automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
-* [configuration](https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md) 
+* [Automating ToStrings](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
+* [Automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
+* [Configuration and exension](https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md) 
 
 
 # Where can I get it?
