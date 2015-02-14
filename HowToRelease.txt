@@ -8,3 +8,4 @@ Steps for creating a new release
 * Edit version number in CreateNuget.cmd
 * Run CreateNuget.cmd
 * Run DeployToNuget.cmd
+* Run openCover.cmd
