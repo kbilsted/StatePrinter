@@ -3,6 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/vx0nl4y4iins506u/branch/master?svg=true)](https://ci.appveyor.com/project/kbilsted/stateprinter/branch/master)
 [![Nuget](https://img.shields.io/nuget/dt/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
+[![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=feature%2Fcodecoverage)](https://coveralls.io/r/kbilsted/StatePrinter?branch=feature%2Fcodecoverage)
 
 
