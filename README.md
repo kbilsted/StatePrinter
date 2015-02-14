@@ -5,12 +5,10 @@
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=feature%2Fcodecoverage)](https://coveralls.io/r/kbilsted/StatePrinter?branch=feature%2Fcodecoverage)
 
-A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToString()` - Like a JSON serializer on drugs.
-
-Requires C# 3.5 or newer
 
 
 # What is Stateprinter
+A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToString()` 
 
 StatePrinter is a simple little library that turn any object-graph into a string representation. It is mainly intended automating writing `ToString` methods and help automating aspects of writing and maintaining unit tests. This type of code is rather dreary and boring to write. 
 
@@ -31,9 +29,7 @@ The short answer is
 
 ```C#
 var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-
 Stateprinter printer = new Stateprinter();
-
 Console.WriteLine(printer.PrintObject(car));
 ```
 
@@ -50,21 +46,34 @@ Install Stateprinter from the package manager console:
 PM> Install-Package StatePrinter
 ```
 
+And for pre-release versions
+
+```
+PM> Install-Package StatePrinter -Pre
+```
+
+
 # How can I get help?
 For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
-# History
 
+# History
 Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
 
 This file describes the latest pushed changes. For documentation of earlier releases see:
-[1.0.6](https://github.com/kbilsted/StatePrinter/blob/1.0.6/README.md) [1.0.5](https://github.com/kbilsted/StatePrinter/blob/1.0.5/README.md) [1.0.4](https://github.com/kbilsted/StatePrinter/blob/1.0.4/README.md)
+[1.0.6](https://github.com/kbilsted/StatePrinter/blob/1.0.6/README.md), [1.0.5](https://github.com/kbilsted/StatePrinter/blob/1.0.5/README.md), [1.0.4](https://github.com/kbilsted/StatePrinter/blob/1.0.4/README.md)
+
+
+
+
+# Requirements
+Requires C# 3.5 or newer
+
 
 
 
 # License
-
 Stateprinter is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
 
 

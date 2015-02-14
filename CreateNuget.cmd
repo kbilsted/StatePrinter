@@ -1,5 +1,14 @@
-set stateprinter_version=1.0.6
 if not exist .\nuget_packages mkdir nuget_packages
-del /Q .\nuget_packages\*.*
-.nuget\NuGet.exe pack StatePrinter\StatePrinter.csproj -OutputDirectory .\nuget_packages -Version %stateprinter_version% -symbols -Prop Platform=AnyCPU
-pause 
+if not exist .\distro mkdir distro
+xcopy StatePrinter\*.cs distro\src\ /Y /Q /E
+xcopy StatePrinter\bin\Debug\*.dll  distro\lib\net35\ /Q
+xcopy StatePrinter.nuspec           distro\ /Q
+cd distro
+
+..\.nuget\nuget.exe pack StatePrinter.nuspec -symbols -Prop Platform=AnyCPU
+
+xcopy *.nupkg ..\nuget_packages\ /Y /Q
+
+pause
+cd ..
+rmdir distro  /s /q
