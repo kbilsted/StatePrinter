@@ -3,30 +3,118 @@
 
 
 **Table of content**
-* [3. Unit testing](#3-unit-testing)  
- * [3.1 Examples of hard to read unit tests](#31-examples-of-hard-to-read-unit-tests)
- * [3.2 Restricting fields harvested](#32-restricting-fields-harvested)
- * [3.3 Stateprinter.Assert](#33-Stateprinter-asserts)
+* [3. Unit testing](#3-unit-testing)
+ * 3.1 Getting started
+ * 3.2 The problems with normal unit tests
+ * 3.3 Examples of hard to read and maintain unit tests
+ * 3.4 Integrating with your unit test framework
+ * 3.5 Configuration - Restricting fields harvested
+ * 3.6 Stateprinter.Assert
+
  
-# 3. Unit testing
+ 
+# 3. Unit tests
 
-When unit testing, you often have to write a ton of asserts to check the state of a business object. The problem with such an approach are many fold:
+When unit testing business code, I find myself often writing a ton of asserts to check the state of numerous fields. This is problematic for a number of reasons elaborated in 3.2. After a philosophical summary of the problems, we look at concrete examples in 3.3. Further down more examples on configurability.
 
-* *It is laborious*. When I type and re-type over and over again `Assert.This`, `Assert.That` I always wonder why the computer cannot automate this stuff. All that needles typing takes time and drains my energy.
-* *Code and test gets out of sync.*  When the code changes, say adding a field, you need to add asserts in some of your tests. Locating *where* is a manual process. On larger project where no one has the full overview, this is often neglected. Also when merging a bugfix or feature from a release branch to the development branch, people often forget to revisit and double the test suite to figure out if new tests on the development branch needs tweaking.
-* *Poor readability*. You come a long way with good naming of test classes, test methods and standard naming of test elements such as the `SUT` abbreviation. Still all those asserts clutter the view of whats important. Especially when you are dealing with object-graphs or lists of partial data.
-* *Poor convincibility*. When business objects grow large in number of fields, the opposite holds true for the convincibility of the tests. Are all fields covered? Are fields erroneously compared multiple times? You know the pain when you have to do 25 asserts on an object, and painstakingly ensure that correct fields are checked against correct fields. And then the reviewer has to go through the same exercise. Why isn't this automated?
+ 
+ 
+## 3.1 Getting started
 
-**When using the StatePrinter these problems are mitigated as you are asserting against a easily read string representation**. You know all fields are covered, as all fields are printed. When the object changes in the future, so will its string representation, and thus your tests fail. **When tests fail, StatePrinter will generate code and suggest you copy-paste it to rectify the situation**.
+To get started with the automatic asserting when unit testing, you first write your business code and an empty test similar to
 
-## 3.1 Examples of hard to read unit tests
+```C#
+[Test]
+public void GetDocumentWhenAllDataIsAvailable()
+{ 
+    var sut = new BusinessCode(a, b, ...);
+
+    var printer = Helper.GetPrinter();
+    var actual = printer.PrintObject(sut.Foo(c, d, ...));
+    
+    var expected = "";
+    printer.Assert.IsSame(expected, actual);    
+}
+```
+
+With a general helper method to retrieve a standard printer for unit testing
+
+```
+static class Helper
+{
+    public static StatePrinter CreatePrinter()
+    { 
+        var printer = new Stateprinter();
+        printer.Configuration.AreEqualsMethod = Assert.AreEquals;
+        
+        return printer;
+    }
+}
+```
+
+Running the test will FAIL. However, the error message will contain some C# code you can paste directly into the code:
+
+```C#
+Proposed output for unit test:
+var expected = @"new Order()
+{
+    OrderNo = 1
+    OrderName = ""X-mas present""
+}
+";
+
+  Expected string length 0 but was 127. Strings differ at index 0.
+  Expected: <string.Empty>
+  But was:  "new Order()\r\n{\r\n    OrderNo = 1\r\n    ..."
+  -----------^
+```
+
+Notice that StatePrinter will escape `"` so the code is ready for copy-pasting. When you print really small object you may prefer to use the `Configuration.SetNewlineDefinition("")` which will print the state on a single line.
+
+
+
+
+## 3.2 The problems with normal unit tests
+
+#### It is laborious. 
+
+When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needles typing takes time and drains my energy.
+
+//When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.//
+
+#### Code and test gets out of sync
+
+When the code changes, say by adding a field to a class, you need to add asserts in some of your tests. Locating  where, though, is an entirely manual process. On larger project where no one has the full overview of all classes, the needed changes are not performed in all the places it should. 
+
+A similar situation arises when merging code from one branch to another. Say you merge a bug fix or feature from a release branch to the development branch, what I observe over and over again is that the code gets merged, all the tests are run and then the merge is committed. People forget to revisit and double check the entire test suite to figure out there are tests existing on the development branch and not on the branch from where the merge occured, an adjust these accordingly.
+
+//When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.//
+
+
+#### Poor readability
+
+You come a long way with good naming of test classes, test methods and standard naming of test elements. However, no naming convention can make up for the visual clutter asserts creates. Further clutter is added when indexes are used to pick out elements from lists or dictionaries. And don't get me started when combining this with `for`, `foreach` loops or LINQ expressions.
+
+//When using StatePrinter, object graphs are compared rather than single fields. Thus there is no need for logic in the test to pick out data.//
+
+
+#### Poor convincibility
+
+When business objects grow large in number of fields, the opposite holds true for the convincibility of the tests. Are all fields covered? Are fields erroneously compared multiple times? Or against the wrong fields? You know the pain when you have to do 25 asserts on an object, and painstakingly ensure that correct fields are checked against correct fields. And then the reviewer has to go through the same exercise. Why isn't this automated?
+
+//When using StatePrinter, object graphs are compared rather than single fields. You know all fields are covered, as all fields are printed.//
+
+
+
+
+## 3.3 Examples of hard to read and maintain unit tests
 
 The introduction was a bit vague. You may not yet be convinced. Allow me to express concerns with typical issues I see in testing. Please feel contact me with more good examples.
 
 
-### 3.1.1 Example 1 - Testing against Xml
+### 3.3.1 Example 1 - Testing against Xml
 
-```
+```C#
 public void TestXML()
 {
    XDocument doc  = XDocument.Parse(GetXML());
@@ -69,9 +157,9 @@ var expected =
 ```
 
 
-### 3.1.2 Example 2 - Endless amounts of asserts
+### 3.3.2 Example 2 - Endless amounts of asserts
 
-```
+```C#
   var allocation = new allocationData
   {
       Premium = 22,
@@ -104,9 +192,9 @@ var expected =
     Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
  ```
  
-### 3.1.3 Example 3 - Asserting on lists and arrays
+### 3.3.3 Example 3 - Asserting on lists and arrays
 
-```
+```C#
 var vendorManager = new TaxvendorManager(products, vendors, year);
 
 vendorManager.AddVendor(JobType.JobType1, added1);
@@ -136,9 +224,24 @@ True, you can use `CollectionAssert` and the like. But it requires you to implem
 
 
 
+## 3.4 Integrating with your unit test framework
+
+Stateprinter is not dependent on any unit testing framework, but it will integrate with most if not all. Since unit testing frameworks do not share a common interface, instead, you have to configure StatePrinter to call your testing frameworks' assert method. For Nunit the below suffices:
+
+```C#
+var printer = new StatePrinter();
+printer.Configuration.AreEqualsMethod = Assert.AreEquals;
+```
+
+or 
+
+```C#
+var cfg = new Configuration().SetAreEqualsMethod(Assert.AreEquals);
+var printer = new StatePrinter(cfg);
+```
 
 
-## 3.2 Configuration - Restricting fields harvested
+## 3.5 Configuration - Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -192,13 +295,13 @@ You can now easily configure what to dump when testing.
 
 
 
-## 3.3 Stateprinter.Assert
+## 3.6 Stateprinter.Assert
 
-Advantages of using stateprinter's assert methods
+From v2.0, StatePrinter ships with assert methods accesible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
 
-* Hooks into any unit testing framework of your choice
-* Code generates your expected values. It is almost fully automatic to write your asserts and update them when the code is changed.
-* Handles newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling.
+* They wrap the current unit testing framework of your choice 
+* They code generates your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
+* Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling when copy/pasting.
 
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
 
