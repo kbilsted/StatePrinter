@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinter.Configurations;
 using StatePrinter.OutputFormatters;
-using StatePrinter.Tests.TestingAssistance;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
@@ -60,7 +59,7 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void IntArray_oneline()
         {
-            printer.configuration.SetNewlineDefinition(" ");
+            printer.Configuration.SetNewlineDefinition(" ");
             printer.Assert.AreEqual("new Int32[]() [0] = 1 [1] = 2 [2] = 3", printer.PrintObject(new[] { 1, 2, 3 }));
         }
 
@@ -124,7 +123,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Xml_Dictionary_person_address()
         {
             printer = TestHelper.CreateTestPrinter();
-            printer.configuration.OutputFormatter = new XmlStyle(printer.configuration);
+            printer.Configuration.OutputFormatter = new XmlStyle(printer.Configuration);
 
             var d = new Dictionary<Person, Address>
               {

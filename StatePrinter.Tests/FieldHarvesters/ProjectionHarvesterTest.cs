@@ -306,7 +306,7 @@ namespace StatePrinter.Tests.FieldHarvesters
                                 new ProjectionHarvester().Include<B>(
                                     x => x.Name,
                                     x => x.Age)));
-                stateprinter.configuration.SetAreEqualsMethod(Assert.AreEqual);
+                stateprinter.Configuration.SetAreEqualsMethod(Assert.AreEqual);
 
                 var expected = @"new B()
 {

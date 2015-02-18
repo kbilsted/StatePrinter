@@ -45,7 +45,8 @@ namespace StatePrinter.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
+            var cfg = ConfigurationHelper.GetStandardConfiguration()
+                    .SetAreEqualsMethod(Assert.AreEqual);
             cfg.OutputFormatter = new CurlyBraceStyle(cfg);
             printer = new Stateprinter(cfg);
         }
@@ -59,15 +60,14 @@ namespace StatePrinter.Tests.IntegrationTests
             b.SomeFieldOnlyInB = 2;
             b.SameFieldInAB = "B part";
 
-            Assert.AreEqual(
-      @"new B()
+            var expected = @"new B()
 {
     SomeFieldOnlyInA = 1
     SameFieldInAB = ""A part""
     SomeFieldOnlyInB = 2
     SameFieldInAB = ""B part""
 }
-", printer.PrintObject(b));
+"; printer.Assert.IsSame(expected, printer.PrintObject(b));
         }
     }
 }

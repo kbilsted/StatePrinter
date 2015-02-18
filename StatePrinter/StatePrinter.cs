@@ -42,7 +42,7 @@ namespace StatePrinter
         /// <summary>
         /// Get the configuration for further fine-tuning
         /// </summary>
-        public readonly Configuration configuration;
+        public readonly Configuration Configuration;
 
         /// <summary>
         /// The cache cannot be static since we have many different harvesters, and potentially many different usages of <see cref="ProjectionHarvester"/>
@@ -57,7 +57,7 @@ namespace StatePrinter
             if (configuration == null)
                 throw new ArgumentNullException("configuration");
 
-            this.configuration = configuration;
+            this.Configuration = configuration;
         }
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace StatePrinter
         /// <param name="rootname">The name of the root as it is printed.</param>
         public string PrintObject(object objectToPrint, string rootname = null)
         {
-            var introSpector = new IntroSpector(configuration, harvestCache);
+            var introSpector = new IntroSpector(Configuration, harvestCache);
             var tokens = introSpector.PrintObject(objectToPrint, rootname);
 
-            var formatter = configuration.OutputFormatter;
+            var formatter = Configuration.OutputFormatter;
 
             var result = formatter.Print(tokens);
 
@@ -91,7 +91,7 @@ namespace StatePrinter
                 // lazy fetch so not to require people to set up an asserter when it is not used
                 if (asserter == null)
                 {
-                    if (configuration.AreEqualsMethod == null)
+                    if (Configuration.AreEqualsMethod == null)
                     {
                         var message =
                             "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
@@ -100,7 +100,7 @@ namespace StatePrinter
                             + "Parameter name: Configuration.AreEqualsMethod";
                         throw new ArgumentNullException("Configuration.AreEqualsMethod", message);
                     }
-                    asserter = new Asserter(configuration.AreEqualsMethod);
+                    asserter = new Asserter(Configuration.AreEqualsMethod);
                 }
 
                 return asserter;
