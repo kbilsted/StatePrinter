@@ -32,10 +32,7 @@ namespace StatePrinter.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
-            cfg.SetAreEqualsMethod(Assert.AreEqual);
-            printer = new Stateprinter(cfg);
+            printer = TestHelper.CreateTestPrinter();
         }
 
 
@@ -49,10 +46,7 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void EmptyIntArray_json()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg);
-
-            printer = new Stateprinter(cfg);
+            printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
             Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
         }
 

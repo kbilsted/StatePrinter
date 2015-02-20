@@ -33,9 +33,8 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void CultureDependentPrinting_us()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.Culture = new CultureInfo("en-US");
-            var usPrinter = new Stateprinter(cfg);
+            var usPrinter = new Stateprinter();
+            usPrinter.Configuration.Culture = new CultureInfo("en-US");
 
             Assert.AreEqual("12345.343\r\n", usPrinter.PrintObject(DecimalNumber));
             Assert.AreEqual("12345.34\r\n", usPrinter.PrintObject((float)DecimalNumber));
@@ -45,9 +44,8 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void CultureDependentPrinting_dk()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.Culture = new CultureInfo("da-DK");
-            var dkPrinter = new Stateprinter(cfg);
+            var dkPrinter = new Stateprinter();
+            dkPrinter.Configuration.Culture = new CultureInfo("da-DK");
 
             Assert.AreEqual("12345,343\r\n", dkPrinter.PrintObject(DecimalNumber));
             Assert.AreEqual("12345,34\r\n", dkPrinter.PrintObject((float)DecimalNumber));

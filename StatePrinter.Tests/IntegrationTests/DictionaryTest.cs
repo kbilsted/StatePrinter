@@ -34,9 +34,8 @@ namespace StatePrinter.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
-            printer = new Stateprinter(cfg);
+            printer = new Stateprinter();
+            printer.Configuration.OutputFormatter = new CurlyBraceStyle(printer.Configuration);
         }
 
 
