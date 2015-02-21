@@ -6,7 +6,8 @@
     <description>
      An open source utility to turn object graphs into strings.
     </description>
-    <releaseNotes />
+    <releaseNotes>
+    </releaseNotes>
     <tags>UnitTest ToString Serialization Approvals</tags>
     <copyright>Copyright 2014-2015</copyright>
     <language>en-US</language>
@@ -14,7 +15,6 @@
     <projectUrl>https://github.com/kbilsted/StatePrinter</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <dependencies>
-    </dependencies>
+    <dependencies />
   </metadata>
 </package>

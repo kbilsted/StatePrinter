@@ -37,6 +37,10 @@ namespace StatePrinter.Tests.FieldHarvesters
             //should not be printed since the PublicFieldsHarvester should be used if there is no explicit ToString()
 
             public B b = new B() { Age = 2 };
+            public void Dummy()
+            {
+                somePrivateVariable++;
+            }
         }
 
         class B

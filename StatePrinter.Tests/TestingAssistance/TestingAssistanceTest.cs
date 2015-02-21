@@ -29,7 +29,7 @@ namespace StatePrinter.Tests.TestingAssistance
     [TestFixture]
     class TestingAssistanceTest
     {
-        const string expectedNonconfigured = 
+        const string ExpectedNonconfigured = 
                             "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
                             + "e.g. use the value: 'Assert.AreEqual' "
                             + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
@@ -41,7 +41,7 @@ namespace StatePrinter.Tests.TestingAssistance
         {
             var printer = new Stateprinter();
             var ex = Assert.Throws<ArgumentNullException>(() => printer.Assert.AreEqual("a", "b"));
-            Assert.AreEqual(expectedNonconfigured, ex.Message);
+            Assert.AreEqual(ExpectedNonconfigured, ex.Message);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace StatePrinter.Tests.TestingAssistance
         {
             var printer = new Stateprinter();
             var ex = Assert.Throws<ArgumentNullException>(() => printer.Assert.That("a", Is.EqualTo("b")));
-            Assert.AreEqual(expectedNonconfigured, ex.Message);
+            Assert.AreEqual(ExpectedNonconfigured, ex.Message);
         }
 
 

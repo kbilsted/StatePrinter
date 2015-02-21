@@ -58,5 +58,10 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             return printer.PrintObject(this);
         }
+
+        public void Dummy()
+        {
+            B = B + " ";
+        }
     }
 }

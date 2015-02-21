@@ -68,9 +68,9 @@ namespace StatePrinter.Tests.IntegrationTests
 
         class GetterSetter
         {
-            public int i { get; set; }
-            int j { get; set; }
-            int k { get; set; }
+            public int I { get; set; }
+            int J { get; set; }
+            int K { get; set; }
         }
 
         class GetterSetterExplicitBackingField
@@ -148,12 +148,12 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void GetterSetterOnly_IsIncluded()
         {
-            var sut = new GetterSetter() { i = 1 };
+            var sut = new GetterSetter() { I = 1 };
             var printer = CreatePrinter();
 
             Assert.AreEqual(@"new GetterSetter()
 {
-    i = 1
+    I = 1
 }
 ", printer.PrintObject(sut, ""));
         }
