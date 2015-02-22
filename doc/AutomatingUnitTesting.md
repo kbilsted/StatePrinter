@@ -21,7 +21,7 @@ When unit testing business code, I find myself often writing a ton of asserts to
  
 ## 3.1 Getting started
 
-To get started with the automatic asserting when unit testing, you first write your business code and an empty test similar to
+To get started with the automatic asserting when unit testing, you first write your business code and an *empty test* similar to
 
 ```C#
 [Test]
@@ -52,7 +52,7 @@ static class Helper
 }
 ```
 
-Running the test will FAIL. However, the error message will contain some C# code you can paste directly into the code:
+Running the test will *FAIL*. This is quite intentional! The error message will contain C# code you can paste directly into the code:
 
 ```C#
 Proposed output for unit test:
@@ -69,12 +69,35 @@ var expected = @"new Order()
   -----------^
 ```
 
-Notice that StatePrinter will escape `"` so the code is ready for copy-pasting. When you print really small object you may prefer to use the `Configuration.SetNewlineDefinition("")` which will print the state on a single line.
+Copy-paste the `expected` definition and your test becomes:
+
+```C#
+[Test]
+public void GetDocumentWhenAllDataIsAvailable()
+{ 
+    var sut = new BusinessCode(a, b, ...);
+
+    var printer = Helper.GetPrinter();
+    var actual = printer.PrintObject(sut.Foo(c, d, ...));
+    
+    var expected = @"new Order()
+    {
+       OrderNo = 1
+       OrderName = ""X-mas present""
+    }
+    printer.Assert.IsSame(expected, actual);    
+}
+```
+
+Not only did you get the assert creation for free, when the order-object gets extended in the future you will get those updates for free as well. If you dont like the format of the `expected` variable, check (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweak the output.
 
 
 
 
 ## 3.2 The problems with normal unit tests
+
+We've quickly looked at how you can automate your unit testing process. But so far, we have not looked at what the problems are with the traditional way of doing unit testing. Here are my current thoughts.
+
 
 #### It is laborious. 
 
