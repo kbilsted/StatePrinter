@@ -109,7 +109,9 @@ The same input with a different culture
 
 ## 2.4 Output as a single line
 
-When printing very small objects, it is some times preferable to print the state as a sinle line. Set the `Configuration.OutputAsSingleLine = true` to achieve this.
+When you print really small object you may prefer to use the  which will print the state on a single line.
+
+When printing very small objects, it is some times preferable to print the state as a sinle line. Use the  `Configuration.SetNewlineDefinition("")` to achieve this. However, the method is more generally applicable. Any sequence of characters can be used as new lines, for example to enforce `LF`+`CR`.
 
 
 
