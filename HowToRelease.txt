@@ -2,10 +2,8 @@ Steps for creating a new release
 --------------------------------
 
 * Edit Stateprinter/Properties/Assemblyinfo.cs
-* Copy readme.md to readme_v1.xx.md
-* Edit version number in readme.md at the top "vx.xx just released"
 * Update CHANGELOG.md
+* Update StatePrinter.nuspec
 * Edit version number in CreateNuget.cmd
 * Run CreateNuget.cmd
 * Run DeployToNuget.cmd
-* Run openCover.cmd
