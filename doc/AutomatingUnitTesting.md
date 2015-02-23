@@ -103,7 +103,7 @@ We've quickly looked at how you can automate your unit testing process. But so f
 
 When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needles typing takes time and drains my energy.
 
-//When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.//
+*When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.*
 
 #### Code and test gets out of sync
 
@@ -111,28 +111,28 @@ When the code changes, say by adding a field to a class, you need to add asserts
 
 A similar situation arises when merging code from one branch to another. Say you merge a bug fix or feature from a release branch to the development branch, what I observe over and over again is that the code gets merged, all the tests are run and then the merge is committed. People forget to revisit and double check the entire test suite to figure out there are tests existing on the development branch and not on the branch from where the merge occured, an adjust these accordingly.
 
-//When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.//
+*When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.*
 
 
 #### Poor readability
 
 You come a long way with good naming of test classes, test methods and standard naming of test elements. However, no naming convention can make up for the visual clutter asserts creates. Further clutter is added when indexes are used to pick out elements from lists or dictionaries. And don't get me started when combining this with `for`, `foreach` loops or LINQ expressions.
 
-//When using StatePrinter, object graphs are compared rather than single fields. Thus there is no need for logic in the test to pick out data.//
+*When using StatePrinter, object graphs are compared rather than single fields. Thus there is no need for logic in the test to pick out data.*
 
 
 #### Poor convincibility
 
 When business objects grow large in number of fields, the opposite holds true for the convincibility of the tests. Are all fields covered? Are fields erroneously compared multiple times? Or against the wrong fields? You know the pain when you have to do 25 asserts on an object, and painstakingly ensure that correct fields are checked against correct fields. And then the reviewer has to go through the same exercise. Why isn't this automated?
 
-//When using StatePrinter, object graphs are compared rather than single fields. You know all fields are covered, as all fields are printed.//
+*When using StatePrinter, object graphs are compared rather than single fields. You know all fields are covered, as all fields are printed.*
 
 
 
 
 ## 3.3 Examples of hard to read and maintain unit tests
 
-The introduction was a bit vague. You may not yet be convinced. Allow me to express concerns with typical issues I see in testing. Please feel contact me with more good examples.
+From the philosophical perspective to some concrete examples. Here we express concerns with typical issues I see in testing  especially enterprise applications. Please feel contact me with more good examples.
 
 
 ### 3.3.1 Example 1 - Testing against Xml
@@ -159,7 +159,7 @@ Gosh! I'm getting sick to my stomack. All that typing. But worse. Where is the o
 
 How about just compare a string from StatePrinter
 
-```
+```Xml
 var expected = 
 @"<?xml version=""1.0"" encoding=""utf-8""?> 
 <ImportCustomers xmlns=""urn:boo"">
@@ -183,37 +183,37 @@ var expected =
 ### 3.3.2 Example 2 - Endless amounts of asserts
 
 ```C#
-  var allocation = new allocationData
-  {
-      Premium = 22,
-      FixedCosts = 23,
-      PremiumCosts = 140,
-      Tax = 110
-   };
+var allocation = new allocationData
+{
+   Premium = 22,
+   FixedCosts = 23,
+   PremiumCosts = 140,
+   Tax = 110
+ };
 
-    var sut = Allocator();
-    var allocateData = sut.CreateAllocation(allocation);
+ var sut = Allocator();
+ var allocateData = sut.CreateAllocation(allocation);
 
-    Assert.That(allocateData.Premium, Is.EqualTo(allocation.Premium));
+ Assert.That(allocateData.Premium, Is.EqualTo(allocation.Premium));
 
-    Assert.That(allocateData.OriginalDueDate, Is.EqualTo(new DateTime(2010, 1, 1)));
-        
-    Assert.That(allocateData.Costs.MonthlyBillingFixedInternalCost, Is.EqualTo(38));
-    Assert.That(allocateData.Costs.BillingInternalCost, Is.EqualTo(55));
-    Assert.That(allocateData.Costs.MonthlyBillingFixedRunningRemuneration, Is.EqualTo(63));
-    Assert.That(allocateData.Costs.MonthlyBillingFixedEstablishment, Is.EqualTo(53));
-    Assert.That(allocateData.Costs.MonthlyBillingRegistration, Is.EqualTo(2));
+ Assert.That(allocateData.OriginalDueDate, Is.EqualTo(new DateTime(2010, 1, 1)));
+  
+ Assert.That(allocateData.Costs.MonthlyBillingFixedInternalCost, Is.EqualTo(38));
+ Assert.That(allocateData.Costs.BillingInternalCost, Is.EqualTo(55));
+ Assert.That(allocateData.Costs.MonthlyBillingFixedRunningRemuneration, Is.EqualTo(63));
+ Assert.That(allocateData.Costs.MonthlyBillingFixedEstablishment, Is.EqualTo(53));
+ Assert.That(allocateData.Costs.MonthlyBillingRegistration, Is.EqualTo(2));
 
-    Assert.That(allocateData.PremiumInternalCost, Is.EqualTo(1));
-    Assert.That(allocateData.PremiumRemuneration, Is.EqualTo(2));
-    Assert.That(allocateData.PremiumRegistration, Is.EqualTo(332));
-    Assert.That(allocateData.PremiumEstablishment, Is.EqualTo(14));
+ Assert.That(allocateData.PremiumInternalCost, Is.EqualTo(1));
+ Assert.That(allocateData.PremiumRemuneration, Is.EqualTo(2));
+ Assert.That(allocateData.PremiumRegistration, Is.EqualTo(332));
+ Assert.That(allocateData.PremiumEstablishment, Is.EqualTo(14));
 
-    Assert.That(allocateData.PremiumInternalCostBeforeDiscount, Is.EqualTo(57));       
-    Assert.That(allocateData.PremiumInternalCostAfterDiscount, Is.EqualTo(37));       
+ Assert.That(allocateData.PremiumInternalCostBeforeDiscount, Is.EqualTo(57));       
+ Assert.That(allocateData.PremiumInternalCostAfterDiscount, Is.EqualTo(37));       
 
-    Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
- ```
+ Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
+```
  
 ### 3.3.3 Example 3 - Asserting on lists and arrays
 
@@ -276,42 +276,42 @@ We can easily remedy this situation using the FieldHarvester abstraction describ
 given
 
 ```C#
-    class A
-    {
-      public DateTime X;
-      public DateTime Y { get; set; }
-      public string Name;
-    }
+ class A
+ {
+   public DateTime X;
+   public DateTime Y { get; set; }
+   public string Name;
+ }
 ```
 
 You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties fieldharvester so it will by default include more than what you might be used to from using the normal field processor.
 
 ```C#
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
-      var printer = new Stateprinter(cfg);
+  var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+  cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
+  var printer = new Stateprinter(cfg);
 
-      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
 ```
 
 and
 
 ```C#
-      var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester().Include<A>(x => x.Name);
-      var printer = new Stateprinter(cfg);
+  var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
+  cfg.Projectionharvester().Include<A>(x => x.Name);
+  var printer = new Stateprinter(cfg);
 
-      var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-      Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
 ```
 
 or programmatically
 
 ```C#
  var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-      cfg.Projectionharvester()
-        .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+ cfg.Projectionharvester()
+    .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 ```
 
 You can now easily configure what to dump when testing. 
