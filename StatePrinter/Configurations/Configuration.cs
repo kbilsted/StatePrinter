@@ -46,10 +46,18 @@ namespace StatePrinter.Configurations
         /// </summary>
         public CultureInfo Culture = CultureInfo.CurrentCulture;
 
-        ///// <summary>
-        ///// For small objects, the assert may be better presented on a single line rather than multiple lines.
-        ///// </summary>
-        //public bool OutputAsSingleLine { get; set; }
+        /// <summary>
+        /// Set the definition of the newline. The default configuration is a <see cref="Environment.NewLine"/>
+        /// </summary>
+        public Configuration SetCulture(CultureInfo culture)
+        {
+            if (culture == null)
+                throw new ArgumentNullException("culture");
+            Culture = culture;
+
+            return this;
+        }
+
 
         ///// <summary>
         ///// For small objects, the assert may be better presented on a single line rather than multiple lines.
@@ -67,6 +75,7 @@ namespace StatePrinter.Configurations
             
             return this;
         }
+
 
         /// <summary>
         /// Instantiate using the <see cref="DefaultIndention"/> and the <see cref="CurlyBraceStyle"/>

@@ -16,6 +16,9 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+using System.Globalization;
+
 using NUnit.Framework;
 
 using StatePrinter.Configurations;
@@ -27,9 +30,10 @@ namespace StatePrinter.Tests
 
         public static Stateprinter CreateTestPrinter()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.SetAreEqualsMethod(Assert.AreEqual);
-            
+            var cfg = ConfigurationHelper.GetStandardConfiguration()
+                .SetAreEqualsMethod(Assert.AreEqual)
+                .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"));
+
             return new Stateprinter(cfg);
         }
 
