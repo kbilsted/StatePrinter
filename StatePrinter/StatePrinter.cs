@@ -100,7 +100,7 @@ namespace StatePrinter
                             + "Parameter name: Configuration.AreEqualsMethod";
                         throw new ArgumentNullException("Configuration.AreEqualsMethod", message);
                     }
-                    asserter = new Asserter(Configuration.AreEqualsMethod);
+                    asserter = new Asserter(this);
                 }
 
                 return asserter;

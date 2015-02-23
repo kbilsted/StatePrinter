@@ -34,10 +34,12 @@ namespace StatePrinter.TestAssistance
     public class Asserter
     {
         readonly TestFrameworkAreEqualsMethod assert;
+        readonly Stateprinter printer;
 
-        internal Asserter(TestFrameworkAreEqualsMethod assert)
+        internal Asserter(Stateprinter printer)
         {
-            this.assert = assert;
+            this.assert = printer.Configuration.AreEqualsMethod;
+            this.printer = printer;
         }
 
         /// <summary>
@@ -64,6 +66,14 @@ namespace StatePrinter.TestAssistance
         public void IsSame(string expected, string actual)
         {
             AreEqual(UnifyNewLines(expected), UnifyNewLines(actual));
+        }
+
+        /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintIsSame(string expected, object objectToPrint)
+        {
+            IsSame(expected, printer.PrintObject(objectToPrint));
         }
 
         string UnifyNewLines(string text)

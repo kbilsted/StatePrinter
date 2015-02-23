@@ -2,14 +2,15 @@
 
 # Version history
 
-## 2.0.116-rc
-## 2.0.105-rc
+
+## 2.0.105-rc - 2.0.121-rc
 * Added configuration of how line-endings are generated during state printing. This is to mitigate problems due to different operating systems uses different line-endings.
-* Added assertion helper methods `Stateprinter.Assert.AreEqual`, `Stateprinter.Assert.IsSame` and `Stateprinter.Assert.That`.  Improves the unit test experience by printing a suggested expected string as C# code.
+* Added assertion helper methods `Stateprinter.Assert.AreEqual`, `Stateprinter.Assert.IsSame`, `Stateprinter.Assert.PrintIsSame` and `Stateprinter.Assert.That`.  Improves the unit test experience by printing a suggested expected string as C# code.
 * Added a `AllFieldsAndPropertiesHarvester` which is able to harvest properties and fields.
 * `StringConverter` is now configurable with respect to quote character.
 * BREAKING CHANGE: Projective harvester is now using the `AllFieldsAndPropertiesHarvester` rather instead of the `FieldHarvester`. This means both fields and properties are now harvested.
 * BREAKING CHANGE: The deprecated type `StatePrinter` is now deleted. Use `Stateprinter` instead.
+
 
 ## v1.0.6
 

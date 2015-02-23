@@ -9,7 +9,8 @@ install:
     
 build:
   project: StatePrinter.sln
-  verbosity: detailed
+  verbosity: minimal
+#  verbosity: detailed
 
 
 after_test: 

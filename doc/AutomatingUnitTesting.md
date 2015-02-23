@@ -89,6 +89,26 @@ public void GetDocumentWhenAllDataIsAvailable()
 }
 ```
 
+
+Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting. Thus we re-write the above simply as:
+
+
+```C#
+[Test]
+public void GetDocumentWhenAllDataIsAvailable()
+{ 
+    var sut = new BusinessCode(a, b, ...);
+    
+    var expected = @"new Order()
+    {
+       OrderNo = 1
+       OrderName = ""X-mas present""
+    }
+    Helper.GetPrinter().Assert.PrintIsSame(expected, sut.Foo(c, d, ...));    
+}
+```
+
+
 Not only did you get the assert creation for free, when the order-object gets extended in the future you will get those updates for free as well. If you dont like the format of the `expected` variable, check (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweak the output.
 
 
@@ -138,6 +158,7 @@ From the philosophical perspective to some concrete examples. Here we express co
 ### 3.3.1 Example 1 - Testing against Xml
 
 ```C#
+[Test]
 public void TestXML()
 {
    XDocument doc  = XDocument.Parse(GetXML());
@@ -159,83 +180,138 @@ Gosh! I'm getting sick to my stomack. All that typing. But worse. Where is the o
 
 How about just compare a string from StatePrinter
 
-```Xml
-var expected = 
-@"<?xml version=""1.0"" encoding=""utf-8""?> 
-<ImportCustomers xmlns=""urn:boo"">
-<Customer>
-  <CustomerNumber>223</CustomerNumber>
-  <AddressInformation>
-    <FirstName>John</FirstName>
-    <LastName>Doe</LastName>
-    <Gender>M</Gender>
-  </AddressInformation>
-  <Orders>
-    <Order>
-      <OrderNumber>1</OrderNumber>
-        ...        
-    </Order>
-  </Orders>
-</Customer>"
+```
+[Test]
+public void TestXML()
+{
+  XDocument doc  = XDocument.Parse(GetXML());
+  var customerElements = logic.GetCustomerElements(doc);
+
+  var expected = 
+  @"<?xml version=""1.0"" encoding=""utf-8""?> 
+  <ImportCustomers xmlns=""urn:boo"">
+  <Customer>
+    <CustomerNumber>223</CustomerNumber>
+    <AddressInformation>
+      <FirstName>John</FirstName>
+      <LastName>Doe</LastName>
+      <Gender>M</Gender>
+    </AddressInformation>
+    <Orders>
+      <Order>
+        <OrderNumber>1</OrderNumber>
+          ...        
+      </Order>
+    </Orders>
+  </Customer>";
+  
+  printer.Assert.PrintIsSame(expected, customerElements);
 ```
 
 
 ### 3.3.2 Example 2 - Endless amounts of asserts
 
 ```C#
-var allocation = new allocationData
+[Test]
+public void AllocationTest()
 {
-   Premium = 22,
-   FixedCosts = 23,
-   PremiumCosts = 140,
-   Tax = 110
- };
+  var allocation = new allocationData
+  {
+     Premium = 22,
+     FixedCosts = 23,
+     PremiumCosts = 140,
+     Tax = 110
+  };
 
- var sut = Allocator();
- var allocateData = sut.CreateAllocation(allocation);
+  var sut = new Allocator();
+  var allocateData = sut.CreateAllocation(allocation);
 
- Assert.That(allocateData.Premium, Is.EqualTo(allocation.Premium));
+  Assert.That(allocateData.Premium, Is.EqualTo(allocation.Premium));
 
- Assert.That(allocateData.OriginalDueDate, Is.EqualTo(new DateTime(2010, 1, 1)));
+  Assert.That(allocateData.OriginalDueDate, Is.EqualTo(new DateTime(2010, 1, 1)));
   
- Assert.That(allocateData.Costs.MonthlyBillingFixedInternalCost, Is.EqualTo(38));
- Assert.That(allocateData.Costs.BillingInternalCost, Is.EqualTo(55));
- Assert.That(allocateData.Costs.MonthlyBillingFixedRunningRemuneration, Is.EqualTo(63));
- Assert.That(allocateData.Costs.MonthlyBillingFixedEstablishment, Is.EqualTo(53));
- Assert.That(allocateData.Costs.MonthlyBillingRegistration, Is.EqualTo(2));
+  Assert.That(allocateData.Costs.MonthlyBillingFixedInternalCost, Is.EqualTo(38));
+  Assert.That(allocateData.Costs.BillingInternalCost, Is.EqualTo(55));
+  Assert.That(allocateData.Costs.MonthlyBillingFixedRunningRemuneration, Is.EqualTo(63));
+  Assert.That(allocateData.Costs.MonthlyBillingFixedEstablishment, Is.EqualTo(53));
+  Assert.That(allocateData.Costs.MonthlyBillingRegistration, Is.EqualTo(2));
 
- Assert.That(allocateData.PremiumInternalCost, Is.EqualTo(1));
- Assert.That(allocateData.PremiumRemuneration, Is.EqualTo(2));
- Assert.That(allocateData.PremiumRegistration, Is.EqualTo(332));
- Assert.That(allocateData.PremiumEstablishment, Is.EqualTo(14));
+  Assert.That(allocateData.PremiumInternalCost, Is.EqualTo(1));
+  Assert.That(allocateData.PremiumRemuneration, Is.EqualTo(2));
+  Assert.That(allocateData.PremiumRegistration, Is.EqualTo(332));
+  Assert.That(allocateData.PremiumEstablishment, Is.EqualTo(14));
 
- Assert.That(allocateData.PremiumInternalCostBeforeDiscount, Is.EqualTo(57));       
- Assert.That(allocateData.PremiumInternalCostAfterDiscount, Is.EqualTo(37));       
+  Assert.That(allocateData.PremiumInternalCostBeforeDiscount, Is.EqualTo(57));       
+  Assert.That(allocateData.PremiumInternalCostAfterDiscount, Is.EqualTo(37));       
 
- Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
+  Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
+```
+
+With Stateprinter
+
+```C#
+[Test]
+public void EndlessAssertsAlternative()
+{
+  var allocation = new AllocationData
+  {
+      Premium = 22,
+      FixedCosts = 23,
+      PremiumCosts = 140,
+      Tax = 110
+  };
+
+  var sut = new Allocator();
+  var allocateData = sut.CreateAllocation(allocation);
+  
+  var printer = TestHelper.CreateTestPrinter();
+  var expected = @"new AllocationDataResult()
+{
+    Premium = 22
+    OriginalDueDate = 01-01-2010 00:00:00
+    Costs = new CostData()
+    {
+        MonthlyBillingFixedInternalCost = 38
+        BillingInternalCost = 55
+        MonthlyBillingFixedRunningRemuneration = 63
+        MonthlyBillingFixedEstablishment = 53
+        MonthlyBillingRegistration = 2
+    }
+    PremiumInternalCost = 1
+    PremiumRemuneration = 2
+    PremiumRegistration = 332
+    PremiumEstablishment = 14
+    PremiumInternalCostBeforeDiscount = 57
+    PremiumInternalCostAfterDiscount = 37
+    Tax = 110
+}
+";
+  printer.Assert.PrintIsSame(expected, allocateData);
 ```
  
 ### 3.3.3 Example 3 - Asserting on lists and arrays
 
 ```C#
-var vendorManager = new TaxvendorManager(products, vendors, year);
+[Test]
+public void ExampleListAndArrays()
+{
+  var vendorManager = new TaxvendorManager(products, vendors, year);
+  vendorManager.AddVendor(JobType.JobType1, added1);
+  vendorManager.AddVendor(JobType.JobType2, added2);
+  vendorManager.AddVendor(JobType.JobType3, added3);
 
-vendorManager.AddVendor(JobType.JobType1, added1);
-vendorManager.AddVendor(JobType.JobType2, added2);
-vendorManager.AddVendor(JobType.JobType3, added3);
-
-Assert.That(vendorManager.VendorJobSplit[0], Is.EqualTo(consumption1 + added1));
-Assert.That(vendorManager.VendorJobSplit[0].Price, Is.EqualTo(fee + added1));
-Assert.That(vendorManager.VendorJobSplit[0].Share, Is.EqualTo(20);
-Assert.That(vendorManager.VendorJobSplit[1], Is.EqualTo(consumption2));
-Assert.That(vendorManager.VendorJobSplit[1].Price, Is.EqualTo(fee2 + consumption2));
-Assert.That(vendorManager.VendorJobSplit[1].Share, Is.EqualTo(30);
-Assert.That(vendorManager.VendorJobSplit[2], Is.EqualTo(added3));
-Assert.That(vendorManager.VendorJobSplit[2].Price, Is.EqualTo(added3.price));
-Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
-Assert.That(vendorManager.VendorJobSplit[3], Is.EqualTo(consumption2));
-Assert.That(vendorManager.VendorJobSplit[3].Price, Is.EqualTo(fconsumption3));
-Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
+  Assert.That(vendorManager.VendorJobSplit[0].Allocation, Is.EqualTo(consumption1 + added1));
+  Assert.That(vendorManager.VendorJobSplit[0].Price, Is.EqualTo(fee + added1));
+  Assert.That(vendorManager.VendorJobSplit[0].Share, Is.EqualTo(20);
+  Assert.That(vendorManager.VendorJobSplit[1].Allocation, Is.EqualTo(consumption2));
+  Assert.That(vendorManager.VendorJobSplit[1].Price, Is.EqualTo(fee2 + consumption2));
+  Assert.That(vendorManager.VendorJobSplit[1].Share, Is.EqualTo(30);
+  Assert.That(vendorManager.VendorJobSplit[2].Allocation, Is.EqualTo(added3));
+  Assert.That(vendorManager.VendorJobSplit[2].Price, Is.EqualTo(added3));
+  Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
+  Assert.That(vendorManager.VendorJobSplit[3].Allocation, Is.EqualTo(consumption2));
+  Assert.That(vendorManager.VendorJobSplit[3].Price, Is.EqualTo(consumption3));
+  Assert.That(vendorManager.VendorJobSplit[3].Share, Is.EqualTo(50);
 ```
 
 Now there are a little more pain with arrays and lists when asserting. Did you notice the following problems with the test?
@@ -243,7 +319,39 @@ Now there are a little more pain with arrays and lists when asserting. Did you n
 1. We are not sure that there are only 4 elements! And when there are less we get a nasty exception.
 2. Did you spot the mistaken `VendorJobSplit[2].Share` was never asserted?
 
-True, you can use `CollectionAssert` and the like. But it requires you to implement `Equals()` on all types. And when implementing that, best practice is to also implement `GetHashCode()`. Now you spend more time building needles infra structure, that testing and getting the job done!
+
+```C#
+[Test]
+public void ExampleListAndArrays()
+{
+  var sut = new TaxvendorManager(products, vendors, year);
+  sut.AddVendor(JobType.JobType1, added1);
+  sut.AddVendor(JobType.JobType2, added2);
+  sut.AddVendor(JobType.JobType3, added3);
+
+  var expected = @"new Boo[]()
+[0] = new Boo()
+{
+    Allocation = 100
+    Price = 20
+    Share = 20
+}
+[1] = new Boo()
+{
+    Allocation = 120
+    Price = 550
+    Share = 30
+}
+[2] = new Boo()
+{
+    Allocation = 880
+    Price = 11
+    Share = 50
+}
+";
+
+  TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, sut.VendorJobSplit);
+```
 
 
 
