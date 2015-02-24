@@ -205,7 +205,7 @@ public void TestXML()
     </Orders>
   </Customer>";
   
-  printer.Assert.PrintIsSame(expected, customerElements);
+ Helper.GetPrinter().Assert.PrintIsSame(expected, customerElements);
 ```
 
 
@@ -247,7 +247,9 @@ public void AllocationTest()
   Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
 ```
 
-With Stateprinter
+When reviewing code like this, I always question whether the comitter remembered to check all the fields. I can't really tell from the test if something has been forgotten. Notice also how cluttered the test is. More than 50% of the code is *IRRELEVANT*, I'm talking about the `Assert.That(.... Is.EqualTo())`.
+
+With Stateprinter we are down to earth with much less clutter and all the irrelevant code stripped away.
 
 ```C#
 [Test]
@@ -264,7 +266,6 @@ public void EndlessAssertsAlternative()
   var sut = new Allocator();
   var allocateData = sut.CreateAllocation(allocation);
   
-  var printer = TestHelper.CreateTestPrinter();
   var expected = @"new AllocationDataResult()
 {
     Premium = 22
@@ -286,7 +287,7 @@ public void EndlessAssertsAlternative()
     Tax = 110
 }
 ";
-  printer.Assert.PrintIsSame(expected, allocateData);
+ Helper.GetPrinter().Assert.PrintIsSame(expected, allocateData);
 ```
  
 ### 3.3.3 Example 3 - Asserting on lists and arrays
@@ -350,7 +351,7 @@ public void ExampleListAndArrays()
 }
 ";
 
-  TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, sut.VendorJobSplit);
+  Helper.GetPrinter().Assert.PrintIsSame(expected, sut.VendorJobSplit);
 ```
 
 
@@ -376,7 +377,7 @@ var printer = new StatePrinter(cfg);
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
-* They may hold uninteresting values pollute the assert
+* They may hold uninteresting values polute the assert
 * They may even change value from execution to execution
 
 We can easily remedy this situation using the FieldHarvester abstraction described above, however, we do not feel inclined to create an implementation of the harvesting interface per class to be tested. The `ProjectiveHarvester` has a wealth of possibilities to transform (project) a type into another. That is, only include certain fields, only exclude certain fields, or create a filter programmatically. 
@@ -424,7 +425,7 @@ or programmatically
 
 You can now easily configure what to dump when testing. 
 
-
+Notice though, that when you use the `Include` or `AddFilter` functionality, you are exlcuding yourself from failing tests when your business data is extended. So use it with care.
 
 ## 3.6 Stateprinter.Assert
 
