@@ -3,19 +3,20 @@
 
 
 **Table of content**
-* [3. Unit testing](#3-unit-testing)
- * 3.1 Getting started
- * 3.2 The problems with normal unit tests
- * 3.3 Examples of hard to read and maintain unit tests
- * 3.4 Integrating with your unit test framework
- * 3.5 Configuration - Restricting fields harvested
- * 3.6 Stateprinter.Assert
+* [3. Unit testing](#3-unit-tests)
+ * [3.1 Getting started](#31-getting-started)
+ * [3.2 The problems with normal unit tests](#32-the-problems-with-normal-unit-tests)
+ * [3.3 Examples of hard to read and maintain unit tests](#33-examples-of-hard-to-read-and-maintain-unit-tests)
+ * [3.4 Integrating with your unit test framework](#34-integrating-with-your-unit-test-framework)
+ * [3.5 Configuration - Restricting fields harvested](#35-configuration---restricting-fields-harvested)
+ * [3.6 Stateprinter.Assert](#36-stateprinterassert)
 
  
  
 # 3. Unit tests
 
-When unit testing business code, I find myself often writing a ton of asserts to check the state of numerous fields. This is problematic for a number of reasons elaborated in 3.2. After a philosophical summary of the problems, we look at concrete examples in 3.3. Further down more examples on configurability.
+When writing unit tests for business code, I find myself often having to write a ton of asserts that check the state of numerous fields. This results in a number of maintenance and readability problems, which are elaborated in section 3.2. After elaborating the problems in unit tests asserting on multiple fields, examples of the problems are given along with solutions using stateprinter.
+Before diving into the problems, a quick introduction is given to the tool and how to use it in unit tests. 
 
  
  
@@ -37,7 +38,7 @@ public void GetDocumentWhenAllDataIsAvailable()
 }
 ```
 
-With a general helper method to retrieve a standard printer for unit testing
+A standard printer for unit testing can be retrieved with a general helper method
 
 ```
 static class Helper
@@ -121,7 +122,7 @@ We've quickly looked at how you can automate your unit testing process. But so f
 
 #### It is laborious. 
 
-When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needles typing takes time and drains my energy.
+When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needless typing takes time and drains my energy.
 
 *When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.*
 
@@ -176,7 +177,7 @@ public void TestXML()
    Assert.AreEqual(order.Element(logic.NameSpace + "OrderNumber").Value, testData.orderNumber);
 ```
 
-Gosh! I'm getting sick to my stomack. All that typing. But worse. Where is the overview!?
+Gosh! I'm getting sick to my stomach. All that typing. But worse. Where is the overview!?
 
 How about just compare a string from StatePrinter
 
@@ -358,7 +359,7 @@ public void ExampleListAndArrays()
 
 ## 3.4 Integrating with your unit test framework
 
-Stateprinter is not dependent on any unit testing framework, but it will integrate with most if not all. Since unit testing frameworks do not share a common interface, instead, you have to configure StatePrinter to call your testing frameworks' assert method. For Nunit the below suffices:
+Stateprinter is not dependent on any unit testing framework, but it will integrate with most if not all. Since unit testing frameworks do not share a common interface that StatePrinter can use, you have to configure StatePrinter to call your testing frameworks' assert method. For Nunit the below suffices:
 
 ```C#
 var printer = new StatePrinter();
@@ -377,7 +378,7 @@ var printer = new StatePrinter(cfg);
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
-* They may hold uninteresting values polute the assert
+* They may hold uninteresting values pollute the assert
 * They may even change value from execution to execution
 
 We can easily remedy this situation using the FieldHarvester abstraction described above, however, we do not feel inclined to create an implementation of the harvesting interface per class to be tested. The `ProjectiveHarvester` has a wealth of possibilities to transform (project) a type into another. That is, only include certain fields, only exclude certain fields, or create a filter programmatically. 
@@ -429,10 +430,10 @@ Notice though, that when you use the `Include` or `AddFilter` functionality, you
 
 ## 3.6 Stateprinter.Assert
 
-From v2.0, StatePrinter ships with assert methods accesible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
+From v2.0, StatePrinter ships with assert methods accessible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
 
 * They wrap the current unit testing framework of your choice 
-* They code generates your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
+* They code generate your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
 * Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling when copy/pasting.
 
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
