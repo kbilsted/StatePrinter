@@ -135,11 +135,39 @@ A similar situation arises when merging code from one branch to another. Say you
 *When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.*
 
 
-#### Poor readability
+#### Poor readability I
 
 You come a long way with good naming of test classes, test methods and standard naming of test elements. However, no naming convention can make up for the visual clutter asserts creates. Further clutter is added when indexes are used to pick out elements from lists or dictionaries. And don't get me started when combining this with `for`, `foreach` loops or LINQ expressions.
 
 *When using StatePrinter, object graphs are compared rather than single fields. Thus there is no need for logic in the test to pick out data.*
+
+
+
+#### Poor readability II
+
+When I read tests like the below. Think about what is it that is really important here
+
+```C#
+  Assert.IsNotNull(result, "result");
+  Assert.IsNotNull(result.VersionData, "Version data");
+  CollectionAssert.IsNotEmpty(result.VersionData)
+  var adjustmentAccountsInfoData = result.VersionData[0].AdjustmentAccountsInfo;
+  Assert.IsFalse(adjustmentAccountsInfoData.IsContractAssociatedWithAScheme);
+  Assert.AreEqual(RiskGroupStatus.High, adjustmentAccountsInfoData.Status);
+  Assert.That(adjustmentAccountsInfoData.RiskGroupModel, Is.EqualTo(RiskGroupModel.Flexible));
+  Assert.AreEqual("b", adjustmentAccountsInfoData.PriceModel);
+  Assert.IsTrue(adjustmentAccountsInfoData.IsManual);
+```
+
+when distilled really what we are trying to express is 
+
+```C#
+  adjustmentAccountsInfoData.IsContractAssociatedWithAScheme = false
+  adjustmentAccountsInfoData.Status = RiskGroupStatus.High
+  adjustmentAccountsInfoData.RiskGroupModel = RiskGroupModel.Flexible
+  adjustmentAccountsInfoData.PriceModel = "b"
+  adjustmentAccountsInfoData.IsManual = true
+```
 
 
 #### Poor convincibility
