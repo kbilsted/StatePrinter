@@ -43,7 +43,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Dictionary_int_int()
         {
             var d = new Dictionary<int, int> { { 1, 2 }, { 2, 4 }, { 3, 6 } };
-            Assert.AreEqual("[1] = 2\r\n[2] = 4\r\n[3] = 6\r\n", printer.PrintObject(d));
+            Assert.AreEqual("[1] = 2\r\n[2] = 4\r\n[3] = 6", printer.PrintObject(d));
         }
 
         [Test]
@@ -66,8 +66,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     _key = 1
     _value = 2
-}
-", printer.PrintObject(d));
+}", printer.PrintObject(d));
         }
 
     }

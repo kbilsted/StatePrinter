@@ -118,8 +118,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     I = 1
     J = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -134,8 +133,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     i = 1
     j = 2
-}
-", printer.PrintObject(sut));
+}", printer.PrintObject(sut));
         }
 
 
@@ -150,8 +148,7 @@ namespace StatePrinter.Tests.IntegrationTests
     Sum = 3
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -164,8 +161,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -189,8 +185,7 @@ namespace StatePrinter.Tests.IntegrationTests
     J = 2
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -204,8 +199,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 

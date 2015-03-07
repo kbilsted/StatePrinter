@@ -68,8 +68,7 @@ namespace StatePrinter.Tests.FieldHarvesters
             var expected = @"new B()
 {
  ToString() = ""My age is 1""
-}
-";
+}";
             var actual = sut.PrintObject(new B { Age = 1 });
             Assert.AreEqual(expected, actual);
         }
@@ -85,8 +84,7 @@ namespace StatePrinter.Tests.FieldHarvesters
  {
   ToString() = ""My age is 2""
  }
-}
-";
+}";
             var actual = sut.PrintObject(new A { X = 1 });
             Assert.AreEqual(expected, actual);
         }
@@ -104,8 +102,7 @@ namespace StatePrinter.Tests.FieldHarvesters
  {
   Age = 42
  }
-}
-";
+}";
             var actual = sut.PrintObject(new A { X = 1, b = new C() });
             Assert.AreEqual(expected, actual);
         }

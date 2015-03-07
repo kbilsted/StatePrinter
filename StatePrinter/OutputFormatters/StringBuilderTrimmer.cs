@@ -23,22 +23,26 @@ namespace StatePrinter.OutputFormatters
 {
     public class StringBuilderTrimmer
     {
-        public int TrimLast(StringBuilder sb)
+        readonly bool trimTrailingNewlines;
+
+        public StringBuilderTrimmer(bool trimTrailingNewlines)
         {
-            return CountTrailingSpaces(sb);
+            this.trimTrailingNewlines = trimTrailingNewlines;  
         }
 
-        int CountTrailingSpaces(StringBuilder sb)
+        public int TrimLast(StringBuilder sb)
         {
             int p = sb.Length;
-            while (--p >= 0)
-            {
-                if (sb[p] != ' ')
-                {
-                    break;
-                }
-            }
+            while (--p >= 0 && sb[p] == ' ')
+            { }
             p++;
+
+            if (trimTrailingNewlines)
+            {
+                while (--p >= 0 && (sb[p] == '\r' || sb[p] == '\n'))
+                { }
+                p++;
+            }
 
             return sb.Length - p;
         }

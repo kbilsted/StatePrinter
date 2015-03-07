@@ -39,7 +39,7 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void EmptyIntArray()
         {
-            Assert.AreEqual("new Int32[]()\r\n", printer.PrintObject(new int[0]));
+            Assert.AreEqual("new Int32[]()", printer.PrintObject(new int[0]));
         }
 
 
@@ -47,7 +47,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void EmptyIntArray_json()
         {
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
-            Assert.AreEqual("[]\r\n", printer.PrintObject(new int[0]));
+            Assert.AreEqual("[]", printer.PrintObject(new int[0]));
         }
 
         [Test]
@@ -64,8 +64,7 @@ namespace StatePrinter.Tests.IntegrationTests
       @"new Int32[]()
 [0] = 1
 [1] = 2
-[2] = 3
-", printer.PrintObject(new int[] { 1, 2, 3 }));
+[2] = 3", printer.PrintObject(new int[] { 1, 2, 3 }));
         }
 
         [Test]
@@ -75,8 +74,7 @@ namespace StatePrinter.Tests.IntegrationTests
       @"new String[]()
 [0] = """"
 [1] = null
-[2] = ""42""
-", printer.PrintObject(new[] { "", null, "42" }));
+[2] = ""42""", printer.PrintObject(new[] { "", null, "42" }));
         }
 
 
@@ -108,8 +106,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Zip = ""CA 91601""
         Country = USA
     }
-}
-";
+}";
             Assert.AreEqual(expected, printer.PrintObject(d));
         }
 
@@ -143,8 +140,7 @@ namespace StatePrinter.Tests.IntegrationTests
         </value>
     </ROOT>
     </Enumeration>
-</ROOT>
-";
+</ROOT>";
 
             printer.Assert.AreEqual(expected, printer.PrintObject(d));
         }

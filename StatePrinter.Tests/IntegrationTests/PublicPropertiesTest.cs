@@ -126,8 +126,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     Sum = 23
     i = 1
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -140,8 +139,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -154,8 +152,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Assert.AreEqual(@"new GetterSetter()
 {
     I = 1
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -175,8 +172,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Assert.AreEqual(@"new GetterSetterExplicitBackingField()
 {
     I = 1
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 
@@ -190,8 +186,7 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     i = 1
     j = 2
-}
-", printer.PrintObject(sut, ""));
+}", printer.PrintObject(sut, ""));
         }
 
 

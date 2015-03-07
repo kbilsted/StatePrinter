@@ -56,8 +56,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Weight = 525
     }
     Brand = ""Toyota""
-}
-";
+}";
             Assert.AreEqual(expected, printer.PrintObject(car));
         }
 
@@ -84,8 +83,7 @@ namespace StatePrinter.Tests.IntegrationTests
         ""Weight"" : 525
     }
     ""Brand"" : ""Toyota""
-}
-";
+}";
 
             Assert.AreEqual(expected, printer.PrintObject(car));
         }
@@ -109,8 +107,7 @@ namespace StatePrinter.Tests.IntegrationTests
         <Weight>525</Weight>
     </steeringWheel>
     <Brand>""Toyota""</Brand>
-</ROOT>
-";
+</ROOT>";
             Assert.AreEqual(expected, printer.PrintObject(car));
         }
 
@@ -136,8 +133,7 @@ namespace StatePrinter.Tests.IntegrationTests
         name = ""Richy""
         course =  -> 0
     }
-}
-";
+}";
             Assert.AreEqual(expected, printer.PrintObject(course));
         }
 
@@ -165,8 +161,7 @@ namespace StatePrinter.Tests.IntegrationTests
             ""course"" :  root
         }
     ]
-}
-";
+}";
             Assert.AreEqual(expected, printer.PrintObject(course));
         }
 
@@ -213,8 +208,7 @@ namespace StatePrinter.Tests.IntegrationTests
     }
     Children[1] =  -> 3
     Father =  -> 2
-}
-";
+}";
             //Console.WriteLine(printer.PrintObject(mother));
             Assert.AreEqual(expected, printer.PrintObject(mother));
         }
@@ -267,8 +261,7 @@ namespace StatePrinter.Tests.IntegrationTests
         ""Children"" :  root.Children[0].Father.Children[2]
     ],
     ""Father"" :  root.Children[0].Father
-}
-";
+}";
             var actual = printer.PrintObject(mother);
             Assert.AreEqual(expected, actual);
         }
@@ -326,8 +319,7 @@ namespace StatePrinter.Tests.IntegrationTests
         </Members>
         </Enumeration>
     </Members>
-</ROOT>
-";
+</ROOT>";
             Assert.AreEqual(expected, printer.PrintObject(course));
         }
     }

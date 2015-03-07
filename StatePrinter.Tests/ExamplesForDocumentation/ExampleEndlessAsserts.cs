@@ -60,8 +60,7 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
     PremiumInternalCostBeforeDiscount = 57
     PremiumInternalCostAfterDiscount = 37
     Tax = 110
-}
-";
+}";
             printer.Assert.PrintIsSame(expected, allocateData);
         }
 

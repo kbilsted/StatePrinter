@@ -64,8 +64,7 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
     Allocation = 880
     Price = 11
     Share = 50
-}
-";
+}";
             TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, vendorManager.VendorJobSplit);
         }
     }

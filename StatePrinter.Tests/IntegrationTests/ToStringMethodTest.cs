@@ -41,8 +41,7 @@ namespace StatePrinter.Tests.IntegrationTests
     C[2] = 3
     C[3] = 2
     C[4] = 1
-}
-";
+}";
             Assert.AreEqual(expected, a.ToString());
         }
     }

@@ -312,8 +312,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 {
     Name = ""m""
     Age = 1
-}
-";
+}";
                 var actual = stateprinter.PrintObject(b1);
                 stateprinter.Assert.AreEqual(expected, actual);
 
@@ -328,8 +327,7 @@ namespace StatePrinter.Tests.FieldHarvesters
 {
     Name = ""a""
     Age = 2
-}
-";
+}";
                 B b2 = new B() { Age = 2, Name = "a", X = DateTime.Now, Y = DateTime.Now };
                 actual = stateprinter.PrintObject(new[] { b1, b2 });
                 stateprinter.Assert.AreEqual(expected, actual);

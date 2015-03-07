@@ -50,7 +50,7 @@ namespace StatePrinter.OutputFormatters
 
         string MakeString(IEnumerable<Token> tokens)
         {
-            var sb = new IndentingStringBuilder(configuration.IndentIncrement, configuration.NewLineDefinition);
+            var sb = new IndentingStringBuilder(configuration);
 
             foreach (var token in tokens)
             {

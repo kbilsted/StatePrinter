@@ -36,6 +36,8 @@ namespace StatePrinter.Configurations
     {
         public const string DefaultIndention = "    ";
 
+        public LegacyBehaviour LegacyBehaviour { get; set; }
+
         /// <summary>
         /// Specifies the indentation size.
         /// </summary>
@@ -88,6 +90,7 @@ namespace StatePrinter.Configurations
             OutputFormatter = new CurlyBraceStyle(this);
             AreEqualsMethod = areEqualsMethod;
             NewLineDefinition = Environment.NewLine;
+            LegacyBehaviour = new LegacyBehaviour();
         }
 
         public IOutputFormatter OutputFormatter;
@@ -186,5 +189,14 @@ namespace StatePrinter.Configurations
             return this;
         }
         #endregion
+    }
+
+    public class LegacyBehaviour
+    {
+        /// <summary>
+        /// To mimic the behaviour of v1.0.6 and below, set this to false.
+        /// </summary>
+        public bool TrimTrailingNewlines = true;
+
     }
 }

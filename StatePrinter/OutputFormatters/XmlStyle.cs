@@ -51,7 +51,7 @@ namespace StatePrinter.OutputFormatters
 
         string MakeString(IEnumerable<Token> tokens)
         {
-            var sb = new IndentingStringBuilder(configuration.IndentIncrement, configuration.NewLineDefinition);
+            var sb = new IndentingStringBuilder(configuration);
 
             Token previous = null;
             var endTags = new Stack<string>();

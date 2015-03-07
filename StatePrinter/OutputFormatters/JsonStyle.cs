@@ -101,7 +101,7 @@ namespace StatePrinter.OutputFormatters
 
         string MakeString(List<Token> tokens, Dictionary<Reference, string> referencePaths)
         {
-            var sb = new IndentingStringBuilder(configuration.IndentIncrement, configuration.NewLineDefinition);
+            var sb = new IndentingStringBuilder(configuration);
 
             for (int i = 0; i < tokens.Count; i++)
             {

@@ -66,8 +66,7 @@ namespace StatePrinter.Tests.IntegrationTests
     SameFieldInAB = ""A part""
     SomeFieldOnlyInB = 2
     SameFieldInAB = ""B part""
-}
-"; printer.Assert.IsSame(expected, printer.PrintObject(b));
+}"; printer.Assert.IsSame(expected, printer.PrintObject(b));
         }
     }
 }

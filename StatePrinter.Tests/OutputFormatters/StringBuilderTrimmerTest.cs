@@ -33,28 +33,36 @@ namespace StatePrinter.Tests.OutputFormatters
         public void TestTrimLast_Empty()
         {
             var sb = new StringBuilder("");
-            Assert.AreEqual(0, new StringBuilderTrimmer().TrimLast(sb));
+            Assert.AreEqual(0, new StringBuilderTrimmer(true).TrimLast(sb));
         }
 
         [Test]
         public void TestTrimLast_NothingToTrim()
         {
             var sb = new StringBuilder("abvc");
-            Assert.AreEqual(0, new StringBuilderTrimmer().TrimLast(sb));
+            Assert.AreEqual(0, new StringBuilderTrimmer(true).TrimLast(sb));
         }
 
         [Test]
         public void TestTrimLast_TrimSpaces()
         {
             var sb = new StringBuilder("abvc  ");
-            Assert.AreEqual(2, new StringBuilderTrimmer().TrimLast(sb));
+            Assert.AreEqual(2, new StringBuilderTrimmer(true).TrimLast(sb));
         }
 
         [Test]
         public void TestTrimLast_TrimAllSpaces()
         {
             var sb = new StringBuilder("   ");
-            Assert.AreEqual(3, new StringBuilderTrimmer().TrimLast(sb));
+            Assert.AreEqual(3, new StringBuilderTrimmer(true).TrimLast(sb));
+            Assert.AreEqual(3, new StringBuilderTrimmer(false).TrimLast(sb));
+        }
+        [Test]
+        public void TestTrimLast_TrimAllNewlines()
+        {
+            var sb = new StringBuilder("   \r\n");
+            Assert.AreEqual(2, new StringBuilderTrimmer(true).TrimLast(sb));
+            Assert.AreEqual(0, new StringBuilderTrimmer(false).TrimLast(sb));
         }
     }
 }

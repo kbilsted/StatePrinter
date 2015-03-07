@@ -36,9 +36,9 @@ namespace StatePrinter.Tests.IntegrationTests
             var usPrinter = new Stateprinter();
             usPrinter.Configuration.Culture = new CultureInfo("en-US");
 
-            Assert.AreEqual("12345.343\r\n", usPrinter.PrintObject(DecimalNumber));
-            Assert.AreEqual("12345.34\r\n", usPrinter.PrintObject((float)DecimalNumber));
-            Assert.AreEqual("2/28/2010 10:10:59 PM\r\n", usPrinter.PrintObject(dateTime));
+            Assert.AreEqual("12345.343", usPrinter.PrintObject(DecimalNumber));
+            Assert.AreEqual("12345.34", usPrinter.PrintObject((float)DecimalNumber));
+            Assert.AreEqual("2/28/2010 10:10:59 PM", usPrinter.PrintObject(dateTime));
         }
 
         [Test]
@@ -47,9 +47,9 @@ namespace StatePrinter.Tests.IntegrationTests
             var dkPrinter = new Stateprinter();
             dkPrinter.Configuration.Culture = new CultureInfo("da-DK");
 
-            Assert.AreEqual("12345,343\r\n", dkPrinter.PrintObject(DecimalNumber));
-            Assert.AreEqual("12345,34\r\n", dkPrinter.PrintObject((float)DecimalNumber));
-            Assert.AreEqual("28-02-2010 22:10:59\r\n", dkPrinter.PrintObject(dateTime));
+            Assert.AreEqual("12345,343", dkPrinter.PrintObject(DecimalNumber));
+            Assert.AreEqual("12345,34", dkPrinter.PrintObject((float)DecimalNumber));
+            Assert.AreEqual("28-02-2010 22:10:59", dkPrinter.PrintObject(dateTime));
         }
     }
 }

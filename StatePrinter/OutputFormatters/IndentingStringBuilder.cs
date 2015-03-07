@@ -19,6 +19,7 @@
 
 using System;
 using System.Text;
+using StatePrinter.Configurations;
 
 namespace StatePrinter.OutputFormatters
 {
@@ -27,13 +28,15 @@ namespace StatePrinter.OutputFormatters
         public readonly StringBuilder sb = new StringBuilder();
         readonly string IndentIncrement;
         readonly string NewLineDefinition;
+        readonly Configuration configuration;
 
         string indent = "";
 
-        public IndentingStringBuilder(string indentIncrement, string newLineDefinition)
+        public IndentingStringBuilder(Configuration configuration)
         {
-            IndentIncrement = indentIncrement;
-            NewLineDefinition = newLineDefinition;
+            IndentIncrement = configuration.IndentIncrement;
+            NewLineDefinition = configuration.NewLineDefinition;
+            this.configuration = configuration;
         }
 
         public void Indent()
@@ -60,7 +63,7 @@ namespace StatePrinter.OutputFormatters
 
         public void TrimLast()
         {
-            int trim = new StringBuilderTrimmer().TrimLast(sb);
+            int trim = new StringBuilderTrimmer(configuration.LegacyBehaviour.TrimTrailingNewlines).TrimLast(sb);
             if(trim > 0)
                 sb.Remove(sb.Length - trim, trim);
         
