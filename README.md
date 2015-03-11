@@ -5,8 +5,8 @@
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=feature%2Fcodecoverage)](https://coveralls.io/r/kbilsted/StatePrinter?branch=feature%2Fcodecoverage)
-[![Stats](https://img.shields.io/badge/Code_lines-3,0_K-ff69b4.svg)
-[![Stats](https://img.shields.io/badge/Doc_lines-213-ff69b4.svg)
+[![Stats](https://img.shields.io/badge/Code_lines-3,0_K-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-213-ff69b4.svg)]()
 
 
 # What is Stateprinter
