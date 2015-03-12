@@ -37,7 +37,11 @@ Console.WriteLine(printer.PrintObject(car));
 
 The documentation is split into
 * [Automating ToStrings](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
+
+
+* [The problems with traditional unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
 * [Automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
+
 * [Configuration and exension](https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md) 
 
 
