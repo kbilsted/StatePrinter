@@ -135,6 +135,13 @@ A similar situation arises when merging code from one branch to another. Say you
 *When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.*
 
 
+#### Detrimental to change
+
+Ironically, while tests initially makes you code faster and with more confidence, tests, or rather the way we do asserts, can easily be detrimental to code changes later on. A fact of life is that business requirements change. When they do, you have to change the implementation and all the code. Most of the time, a hand full of tests are unit testing the heart of the requirements, while the other tests, say module-, integration- and acceptance-tests serve to put into perspective the requirement executed in relation to other data and other requirements. Most of the time when correcting the asserts of such tests is time consuming, annoying. You no longer feel free, you feel shackled and dread the next requirement change that yet again forces you to drone your days away reconfiguring your asserts. 
+
+*With StatePrinter's special assert methods, you can easilty turn on automatic assert rewritting of your test to use new values returned from you code. You still need to make sure the new expected values are correct, but this now becomes a reading excersice - all the tedious editing has disappeared. No more running your tests again and again only to be able to update the next assert in line. Only to run the test again to fix the next assert.*
+
+
 #### Poor readability I
 
 You come a long way with good naming of test classes, test methods and standard naming of test elements. However, no naming convention can make up for the visual clutter asserts creates. Further clutter is added when indexes are used to pick out elements from lists or dictionaries. And don't get me started when combining this with `for`, `foreach` loops or LINQ expressions.
