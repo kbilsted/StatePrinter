@@ -13,8 +13,7 @@
  
 # 1. Unit tests
 
-When writing unit tests for business code, I find myself often having to write a ton of asserts that check the state of numerous fields. This results in a number of maintenance and readability problems, which are elaborated in https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithNormalAsserts.md 
- 
+When writing unit tests for business code, I find myself often having to write a ton of asserts that check the state of numerous fields. This results in a number of maintenance and readability problems, which are elaborated in https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md 
  
 ## 1.1 Getting started
 
