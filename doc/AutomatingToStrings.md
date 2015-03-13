@@ -2,16 +2,16 @@
 
 
 **Table of content**
-* [1. Introduction](#1-introduction)
- * [1.1 Simple example usage](#11-simple-example-usage)
- * [1.2 Generic ToString() usage](#12-generic-tostring-usage)
-
- 
-# 1. The future of ToString() implementations
+* [1.1 Simple example usage](#11-simple-example-usage)
+* [1.2 Object graphs and cycles](#12-object-graphs-and-cycles)
+* [1.3 Configuration](#13-configuration)
+* [1.4 Best practices](#14-best-practices)
 
 
 If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With the stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
 
+
+## 1.1 Simple example usage
 
 ```C#
 class AClassWithToString
@@ -21,6 +21,7 @@ class AClassWithToString
 
   // Nice stuff ahead!
   static readonly Stateprinter printer = new Stateprinter();
+  
   public override string ToString()
   {
     return printer.PrintObject(this);
@@ -36,7 +37,7 @@ Console.WriteLine( new AClassWithToString() );
 
 we get (curlybrace-style)
 
-```
+```C#
 	new AClassWithToString()
 	{
 	    B = ""hello""
@@ -51,7 +52,7 @@ we get (curlybrace-style)
 
 or (json-style)
 
-```
+```JSON
 {
     ""B"" : ""hello"",
     ""C"" :
@@ -67,7 +68,7 @@ or (json-style)
 
 or (xml-style)
  
-```
+```XML
 <ROOT type='AClassWithToString'>
     <B>hello</B>
     <C type='Int32[]'>
@@ -84,7 +85,7 @@ or (xml-style)
  
 
 
-### 1.1 Object graphs 
+## 1.2 Object graphs and cycles
 
 To dump an object graph all you need to do is first to create an object graph
 
@@ -149,14 +150,16 @@ yields
 notice the `-> 0` this is a pointer back to an already printed object. Notice that references are only added to the output if needed. This amongst alot of other details are configurable.
 
 
-### 1.3 Configuration
+## 1.3 Configuration
 
-The Stateprinter is *very* configurable. See [configuration](HowToConfigure.md) for the vast possibilities.
+The Stateprinter is *very* configurable and extendible. See [configuration](HowToConfigure.md) for the vast possibilities.
 
 
-### Performance considerations
+## 1.4 Best practices
 
-  
+When using StatePrinter as the ToString() implementation speed may be a consideration. StatePrinter is fairly quick, partly because the introspection of types is cached within the StatePrinter instance. Therefore, it is a bad idea from a performance perspective to instantiate a stateprinter for every use situation.
+
+A better approach is to instantiate and hold a static reference in each type, or inject an instance using IoC into your types.
 
 
 Have fun!
