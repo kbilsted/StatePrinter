@@ -1,15 +1,17 @@
-#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) The problems with traditional  unit teststing
+#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) The problems with traditional  unit testing
 
  
 This page highlights the pains and problems with how we write unit tests today. It is a philosophical discussion that applies to asserting in unit tests. To see how to use StatePrinter to remedy these problems please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md
 
 There are five (if not more) pain points that I have discovered through my years as a developer. Don't get me wrong. I love tests! They are an absolute required part of software development. That being said, the way we do unit testing today is far to laborious and often the claim that unit tests are a ressource of documentation is far from the truth.
 
+
 #### 1. Writing tests is laborious task. 
 
 When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needless typing takes time and drains my energy.
 
 *When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.*
+
 
 #### 2. Code and test easily gets out of sync
 
@@ -32,7 +34,6 @@ Ironically, while tests initially makes you code faster and with more confidence
 You come a long way with good naming of test classes, test methods and standard naming of test elements. However, no naming convention can make up for the visual clutter asserts creates. Further clutter is added when indexes are used to pick out elements from lists or dictionaries. And don't get me started when combining this with `for`, `foreach` loops or LINQ expressions.
 
 *When using StatePrinter, object graphs are compared rather than single fields. Thus there is no need for logic in the test to pick out data.*
-
 
 
 #### 4.b Poor readability II
