@@ -4,6 +4,4 @@ Steps for creating a new release
 * Edit Stateprinter/Properties/Assemblyinfo.cs
 * Update CHANGELOG.md
 * Update StatePrinter.nuspec
-* Edit version number in CreateNuget.cmd
-* Run CreateNuget.cmd
 * Run DeployToNuget.cmd

@@ -2,14 +2,14 @@
 <package>
   <metadata>
     <id>StatePrinter</id>
-    <version>2.0.121-rc</version>
+    <version>2.0.145-rc</version>
     <authors>Kasper B. Graversen</authors>
     <owners>Kasper B. Graversen</owners>
     <licenseUrl>https://raw.githubusercontent.com/kbilsted/StatePrinter/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/kbilsted/StatePrinter</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>An open source utility to turn object graphs into strings. Automate your unit testing assertion and your ToString Implementations.</description>
+    <description>Turn object graphs into strings. Automate your unit testing and your ToString Implementations.</description>
     <releaseNotes>Facilities to automate unit testing.</releaseNotes>
     <copyright>Copyright 2014-2015</copyright>
     <tags>ToString UnitTesting Approvals Serializer Assert</tags>
