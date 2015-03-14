@@ -3,13 +3,14 @@
 
 
 **Table of content**
-* [1. Unit testing](#3-unit-tests)
- * [1.1 Getting started](#31-getting-started)
- * [1.2 Integrating with your unit test framework](#34-integrating-with-your-unit-test-framework)
- * [1.3 Configuration - Restricting fields harvested](#35-configuration---restricting-fields-harvested)
- * [1.4 Stateprinter.Assert](#36-stateprinterassert)
-
- 
+* [1. Unit tests](#1-unit-tests)
+ * [1.1 Getting started](#11-getting-started)
+ * [1.2 Integrating with your unit test framework](#12-integrating-with-your-unit-test-framework)
+ * [1.3 Configuration - Restricting fields harvested](#13-configuration---restricting-fields-harvested)
+ * [1.4 Stateprinter.Assert](#14-stateprinterassert)
+ * [1.5 Best practices](#15-best-practices)
+  * [StatePrinter configuration](#stateprinter-configuration)
+  * [Asserting](#asserting)
  
 # 1. Unit tests
 
