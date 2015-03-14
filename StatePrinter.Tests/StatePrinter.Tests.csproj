@@ -62,6 +62,7 @@
     <Compile Include="IntegrationTests\IEnumeratbleTest.cs" />
     <Compile Include="IntegrationTests\InheritanceTest.cs" />
     <Compile Include="IntegrationTests\ObjectGraphsTest.cs" />
+    <Compile Include="IntegrationTests\ReflectorTest.cs" />
     <Compile Include="IntegrationTests\StandardConfigurationTest.cs" />
     <Compile Include="IntegrationTests\ToStringMethodTest.cs" />
     <Compile Include="Introspection\TokenTest.cs" />

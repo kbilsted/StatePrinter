@@ -31,8 +31,9 @@ namespace StatePrinter.Tests
         public static Stateprinter CreateTestPrinter()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration()
-                .SetAreEqualsMethod(Assert.AreEqual)
-                .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"));
+                .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+                .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
+                .SetAutomaticTestRewrite((x) => false);
 
             return new Stateprinter(cfg);
         }

@@ -60,10 +60,9 @@ namespace StatePrinter.Configurations
             return this;
         }
 
-
-        ///// <summary>
-        ///// For small objects, the assert may be better presented on a single line rather than multiple lines.
-        ///// </summary>
+        /// <summary>
+        /// For small objects, the assert may be better presented on a single line rather than multiple lines.
+        /// </summary>
         public string NewLineDefinition { get; private set; }
 
         /// <summary>
@@ -91,8 +90,12 @@ namespace StatePrinter.Configurations
             AreEqualsMethod = areEqualsMethod;
             NewLineDefinition = Environment.NewLine;
             LegacyBehaviour = new LegacyBehaviour();
+            AutomaticTestRewrite = (x) => false;
         }
 
+        /// <summary>
+        /// Defines how the output is formatted.
+        /// </summary>
         public IOutputFormatter OutputFormatter;
 
         readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
@@ -188,6 +191,35 @@ namespace StatePrinter.Configurations
             
             return this;
         }
+
+        /// <summary>
+        /// The signature for finding out if a test's expected value may be automatically re-written.
+        /// </summary>
+        /// <param name="pathToUnitTest">Path to the failing test.</param>
+        /// <returns>True if the test may be rewritten with the new expected value to make the test pass again.</returns>
+        public delegate bool TestRewriteIndicator(string pathToUnitTest);
+
+        /// <summary>
+        /// Evaluate the function for each failing test. <para></para>
+        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
+        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a <see cref="Lazy"/>
+        /// </summary>
+        public Configuration SetAutomaticTestRewrite(TestRewriteIndicator indicator)
+        {
+            if (indicator == null)
+                throw new ArgumentNullException("indicator");
+            AutomaticTestRewrite = indicator;
+            
+            return this;
+        }
+
+        /// <summary>
+        /// Evaluate the function for each failing test. <para></para>
+        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
+        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a <see cref="Lazy"/>
+        /// </summary>
+        public TestRewriteIndicator AutomaticTestRewrite { get; private set; } 
+        
         #endregion
     }
 
@@ -197,6 +229,5 @@ namespace StatePrinter.Configurations
         /// To mimic the behaviour of v1.0.6 and below, set this to false.
         /// </summary>
         public bool TrimTrailingNewlines = true;
-
     }
 }

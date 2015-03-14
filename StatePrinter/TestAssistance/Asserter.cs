@@ -48,8 +48,28 @@ namespace StatePrinter.TestAssistance
         /// </summary>
         public void AreEqual(string expected, string actual)
         {
-            var message = string.Format("{0}{0}Proposed output for unit test:{0}var expected = {1};{0}", Environment.NewLine, Escape(actual));
-            assert(expected, actual, message);
+            if(expected != actual)
+            {
+                var newExpected = string.Format("var expected = {0};", Escape(actual));
+                var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
+
+                var reflector = new Reflector();
+                var info = reflector.TryGetLocation();
+                if (info != null)
+                {
+                    if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
+                    {
+                        if(!info.TestMethodHasAStringVariable)
+                            throw new ArgumentException("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.");
+                        
+                        new TestRewriter().RewriteTest(info, newExpected);
+                        message = "Automatically rewritting test expectations to " + newExpected;
+                    }
+                    assert(expected, actual, message);
+                }
+                else
+                    assert(expected, actual, message);
+            }
         }
 
         /// <summary>
