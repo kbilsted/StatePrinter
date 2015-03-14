@@ -162,7 +162,7 @@ You can *in a type safe manner, and using auto-completion of visual studio* incl
   var printer = new Stateprinter(cfg);
 
   var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state);
 ```
 
 and
@@ -173,7 +173,7 @@ and
   var printer = new Stateprinter(cfg);
 
   var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state.Replace("\r\n", ""));
+  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state);
 ```
 
 or programmatically
