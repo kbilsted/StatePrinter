@@ -196,6 +196,51 @@ From v2.0, StatePrinter ships with assert methods accessible from `printer.Asser
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
 
 
+## 1.5 Best practices
+
+### StatePrinter configuration
+
+The bast practices when using StatePrinter for unit testing is different from using it to do ToString-implementations. The caching of field harvesting of types is not compatible with using the `Include<>`, `Exclude<>` and filter properties of the `ProjectionHarvester`. Thus to ensure correctness of our tests and to ensure that our tests are independent of each other, the best strategy is to use a fresh instance of StatePrinter in each test.
+
+There are many ways of achieving this, but I found the best way to use a `TestHelper` class that provides general configuration shared among all tests, and then for specific tests, tune this configuration. Eg. with filters.
+
+Things to consider in the general case
+
+* The use of a specific culture to ensure that your tests work across platforms. For example, AppVeyor has a completely different setup than my local machine.
+* Setup type converters as you want them. E.g. do you want strings in the output to be enclosd in `""` or maybe you have attributes on your enum-values that you want to see in the output.
+* Hook up your unit testing framwork 
+
+You come a long way with the following code
+
+```C#
+static class Create
+{
+    public static Stateprinter CreatePrinter()
+    {
+        var cfg = ConfigurationHelper.GetStandardConfiguration()
+            .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+            .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"));
+
+            return new Stateprinter(cfg);
+    }
+}
+```
+
+Then you can use, and further fine-tune in your test like
+
+```C#
+[Test]
+public void Foo()
+{
+    var printer = TestHelper.CreatePrinter();
+    printer.Configuration....// fine tuning
+
+    printer.Assert.PrintIsSame(...);
+```
+
+### Asserting
+
+Prefer the `IsSame()` over the `AreEquals()`. I've come to really appreciate the `IsSame()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
 
 Have fun!
