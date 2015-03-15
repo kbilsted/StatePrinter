@@ -4,21 +4,22 @@
 [![Nuget](https://img.shields.io/nuget/dt/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
-[![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=feature%2Fcodecoverage)](https://coveralls.io/r/kbilsted/StatePrinter?branch=feature%2Fcodecoverage)
+[![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=master)](https://coveralls.io/r/kbilsted/StatePrinter?branch=master)
 [![Stats](https://img.shields.io/badge/Code_lines-2,8_K-ff69b4.svg)]()
 [![Stats](https://img.shields.io/badge/Doc_lines-1,2_K-ff69b4.svg)]()
 
 
 # What is Stateprinter
-A simple framework for automatic `Assert.AreEquals()`, `Assert.That()` and `ToString()` 
+A simple framework for **automatic** `Assert.AreEquals()`, `Assert.That()` and `ToString()` 
 
-StatePrinter is a simple little library that turn any object-graph into a string representation. It is mainly intended automating writing `ToString` methods and help automating aspects of writing and maintaining unit tests. This type of code is rather dreary and boring to write. 
+StatePrinter is a little library that turn any object-graph into a string representation. It is mainly intended automating writing `ToString` methods and help automating aspects of writing and maintaining unit tests. Code which is rather dreary and boring to write. 
 
 Why you should take StatePrinter for a spin
 
 * *No more manual .ToString()* - it is much easier to write robus and self-sufficient `ToString()` methods. 
+* Automatic generation of asserts - both for new tests and when changing the code, all tests can automatically be corrected.
 * It becomes much easier to write unit tests. No more screens full of asserts. Especially testing against object-graphs is a bliss. 
-* Very very configurable and extensible.
+* Very configurable and extensible.
 * Stateprinter is free, highly configurable and thread safe.  
 * It is part of the back-end engine of other projects
   * The very nice [ApprovalTests framework](http://approvaltests.sourceforge.net/).
