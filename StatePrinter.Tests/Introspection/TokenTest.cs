@@ -31,7 +31,9 @@ namespace StatePrinter.Tests.Introspection
         {
             var a = new Token(TokenType.StartScope);
             var b = new Token(TokenType.StartScope);
+            Assert.AreEqual(a, a);
             Assert.AreEqual(a, b);
+            Assert.IsTrue(a.Equals((object) b));
         }
 
         [Test]
@@ -39,6 +41,10 @@ namespace StatePrinter.Tests.Introspection
         {
             var a = new Token(TokenType.StartScope);
             var b = new Token(TokenType.EndScope);
+            Assert.AreNotEqual(a, b);
+            Assert.AreNotEqual(a, null);
+
+            b = new Token(TokenType.StartScope, reference: new Reference(2));
             Assert.AreNotEqual(a, b);
         }
     }

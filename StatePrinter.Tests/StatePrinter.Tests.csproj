@@ -54,6 +54,7 @@
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />
+    <Compile Include="TestingAssistance\ParserTest.cs" />
     <Compile Include="IntegrationTests\PublicPropertiesTest.cs" />
     <Compile Include="IntegrationTests\PropertiesTest.cs" />
     <Compile Include="IntegrationTests\ArrayTest.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="IntegrationTests\IEnumeratbleTest.cs" />
     <Compile Include="IntegrationTests\InheritanceTest.cs" />
     <Compile Include="IntegrationTests\ObjectGraphsTest.cs" />
-    <Compile Include="IntegrationTests\ReflectorTest.cs" />
+    <Compile Include="IntegrationTests\CallStackReflectorTest.cs" />
     <Compile Include="IntegrationTests\StandardConfigurationTest.cs" />
     <Compile Include="IntegrationTests\ToStringMethodTest.cs" />
     <Compile Include="Introspection\TokenTest.cs" />
@@ -71,6 +72,8 @@
     <Compile Include="PerformanceTests\ManySmallObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="TestingAssistance\TestingAssistanceReWriteTest.cs" />
+    <Compile Include="TestingAssistance\ReWriterMockedTests.cs" />
     <Compile Include="TestingAssistance\UserStory.cs" />
     <Compile Include="TestingAssistance\TestingAssistanceTest.cs" />
   </ItemGroup>

@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Reflection;
 
 namespace StatePrinter.TestAssistance
 {
@@ -50,27 +51,20 @@ namespace StatePrinter.TestAssistance
             new UTF32Encoding(true, true),
 
             // fallback
-            new UTF8Encoding(false) 
+            new UTF8Encoding(false),
         };
 
         public void RewriteTest(UnitTestLocationInfo info, string newExpected)
         {
-            var bytes = File.ReadAllBytes(info.Filepath);
-
             Encoding enc = null;
             string content = null;
-            //foreach (var encoding in encodings)
-            //{
-            //    enc = encoding;
-            //    if (TryConvertFromEncoding(encoding, bytes, out content))
-            //        break;
-            //}
+            var fileRepository = new FileRepository();
+            var bytes = fileRepository.Read(info.Filepath);
 
             enc = encodings.First(x => TryConvertFromEncoding(x, bytes, out content));
 
             var newTestContent = new Parser().ReplaceExpected(content, info.LineNumber, newExpected);
-
-            File.WriteAllBytes(info.Filepath, enc.GetBytes(newTestContent));
+            fileRepository.Write(info.Filepath, enc.GetBytes(newTestContent));
         }
 
         bool TryConvertFromEncoding(Encoding enc, byte[] bytes, out string result)
@@ -87,7 +81,33 @@ namespace StatePrinter.TestAssistance
         }
     }
 
-    public class Reflector
+    public class FileRepository
+    {
+        public static byte[] UnitTestFakeReadContent = null;
+        
+        public byte[] Read(string path)
+        {
+            if (UnitTestFakeReadContent != null)
+                return UnitTestFakeReadContent;
+
+            var bytes = File.ReadAllBytes(path);
+
+            if (bytes.Length < 50)
+                throw new FileLoadException("Input file '" + path+ "' contains less than 50 bytes.");
+
+            return bytes;
+        }
+
+        public void Write(string path, byte[] content)
+        {
+            if (UnitTestFakeReadContent == null)
+                File.WriteAllBytes(path, content);
+        }
+
+    }
+
+
+    public class CallStackReflector
     {
         public UnitTestLocationInfo TryGetLocation()
         {
@@ -111,16 +131,28 @@ namespace StatePrinter.TestAssistance
             var trace = new StackTrace(true);
 
             var stateprinterAssembly = trace.GetFrame(0).GetMethod().Module.Assembly;
-//            var stateprinterAssembly = new StackFrame(0).GetMethod().Module.Assembly;
             for (int i = 1; i < trace.FrameCount; i++)
             {
                 var frame = trace.GetFrame(i);
-
-                if (!stateprinterAssembly.Equals(frame.GetMethod().Module.Assembly))
-                    return frame;
+                var mth = frame.GetMethod();
+                if (!stateprinterAssembly.Equals(mth.Module.Assembly) && frame.GetFileName() != null)
+                {
+                    if(IsLambdaExpression(mth))
+                    {
+                        if (mth.GetMethodBody().LocalVariables.Any(x => x.LocalType == typeof(string)))
+                            return frame;
+                    }
+                    else
+                        return frame;
+                }
             }
 
             return null;
+        }
+
+        bool IsLambdaExpression(MethodBase mth)
+        {
+            return mth.Name.StartsWith("<") && mth.Name.Contains('>');
         }
     }
 
@@ -129,7 +161,7 @@ namespace StatePrinter.TestAssistance
         static string verbatimString = "\"([^\"]|(\"\"))*?\"";
         static string ensureLineStartsBlank = "(?<prespace>(\n|\r)[ \t]*?)";
         static RegexOptions options = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.RightToLeft;
-        static Regex re = new Regex(ensureLineStartsBlank + @"var expected\s*=\s*@" + verbatimString + @"\s*;", options);
+        static Regex re = new Regex(ensureLineStartsBlank + @"(var|string)\s+expected\s*=\s*@" + verbatimString + @"\s*;", options);
 
         public string ReplaceExpected(string content, int lineNo, string newExpected)
         {
@@ -162,7 +194,7 @@ namespace StatePrinter.TestAssistance
                     line++;
             }
 
-            throw new ArgumentOutOfRangeException("File does not have " + lineNo + " lines. Only " + line + " lines.");
+            throw new ArgumentOutOfRangeException("content", "File does not have " + lineNo + " lines. Only " + line + " lines.");
         }
     }
 

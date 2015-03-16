@@ -56,42 +56,49 @@ namespace StatePrinter.Tests.TestingAssistance
         [Test]
         public void AreEquals_WhenConfigured()
         {
-            string called_expected = null, called_actual = null, called_msg = null;
-            TestFrameworkAreEqualsMethod assertMth = (exp, act, msg) =>
-            {
-                called_expected = exp;
-                called_actual = act;
-                called_msg = msg;
-            };
-
-            var cfg = ConfigurationHelper.GetStandardConfiguration(assertMth);
+            var assertMock = new AreEqualsMethodMock();
+            var cfg = ConfigurationHelper.GetStandardConfiguration(assertMock.AreEqualsMock);
             var printer = new Stateprinter(cfg);
 
             // without "
             printer.Assert.AreEqual("a", "b");
-            Assert.AreEqual("a", called_expected);
-            Assert.AreEqual("b", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"b\";\r\n", called_msg);
+            Assert.AreEqual("a", assertMock.Expected);
+            Assert.AreEqual("b", assertMock.Actual);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"b\";\r\n", assertMock.Message);
 
             // with  "
             printer.Assert.AreEqual("c", "\"e\"");
-            Assert.AreEqual("c", called_expected);
-            Assert.AreEqual("\"e\"", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"e\"\"\";\r\n", called_msg);
+            Assert.AreEqual("c", assertMock.Expected);
+            Assert.AreEqual("\"e\"", assertMock.Actual);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"e\"\"\";\r\n", assertMock.Message);
 
 
             // without "
             printer.Assert.That("aa", Is.EqualTo("bb"));
-            Assert.AreEqual("bb", called_expected);
-            Assert.AreEqual("aa", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"aa\";\r\n", called_msg);
+            Assert.AreEqual("bb", assertMock.Expected);
+            Assert.AreEqual("aa", assertMock.Actual);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"aa\";\r\n", assertMock.Message);
 
             // with  "
             printer.Assert.That("\"cc\"", Is.EqualTo("ee"));
-            Assert.AreEqual("ee", called_expected);
-            Assert.AreEqual("\"cc\"", called_actual);
-            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"cc\"\"\";\r\n", called_msg);
+            Assert.AreEqual("ee", assertMock.Expected);
+            Assert.AreEqual("\"cc\"", assertMock.Actual);
+            Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"cc\"\"\";\r\n", assertMock.Message);
         }
+    }
 
+   
+    class AreEqualsMethodMock
+    {
+        public string Expected { get; private set; }
+        public string Actual { get; private set; }
+        public string Message{ get; private set; }
+        
+        public void AreEqualsMock(string exp, string actual, string msg)
+        {
+            Expected = exp;
+            Actual = actual;
+            Message = msg;
+        }
     }
 }

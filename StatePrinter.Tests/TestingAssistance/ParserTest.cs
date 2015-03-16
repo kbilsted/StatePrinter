@@ -26,39 +26,8 @@ using NUnit.Framework;
 
 using StatePrinter.TestAssistance;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinter.Tests.TestingAssistance
 {
-    [TestFixture]
-    class ReflectorTest
-    {
-        [Test]
-        public void TryGetInfo()
-        {
-            string expected = "";
-            var res = new Reflector().TryGetLocation();
-
-            Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(38, res.LineNumber);
-            Assert.IsTrue(res.TestMethodHasAStringVariable);
-        }
-
-        [Test]
-        public void TryGetInfo_with_no_local_variable_of_type_string()
-        {
-            var info = new Reflector().TryGetLocation();
-            Assert.IsFalse(info.TestMethodHasAStringVariable);
-        }
-
-        const string key = "StatePrinter_auto_correct_expected";
-
-        [Test]
-        public void ENV()
-        {
-            Console.WriteLine("***");
-            Console.WriteLine(Environment.GetEnvironmentVariable(key, EnvironmentVariableTarget.User));
-        }
-    }
-
     [TestFixture]
     class ParserTest
     {
@@ -91,16 +60,6 @@ namespace StatePrinter.Tests.IntegrationTests
             TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
         }
 
-
-        [Test]
-        public void Autocorrection_works()
-        {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-            var expected = @"""test auto""";
-            printer.Assert.PrintIsSame(expected, "test auto");
-        }
 
 
         [Test]
