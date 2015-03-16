@@ -28,20 +28,15 @@ Why you should take StatePrinter for a spin
 
 # How do I get started
 
-The short answer is 
-
-```C#
-var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-Stateprinter printer = new Stateprinter();
-Console.WriteLine(printer.PrintObject(car));
-```
-
 The documentation is split into
 * [Automating ToStrings](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
 
+and
 
 * [The problems with traditional unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
 * [Automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
+
+and
 
 * [Configuration and exension](https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md) 
 
