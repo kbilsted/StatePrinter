@@ -3,7 +3,11 @@ REM .nuget\NuGet.exe setapikey e39ea-get-the-full-key-on-nuget.org
 
 call CreateNuget.cmd
 .nuget\NuGet.exe push nuget_packages\StatePrinter.2.0.*.nupkg
+.nuget\NuGet.exe push nuget_packages\StatePrinter.2.0.*.symbols.nupkg
 
+cd nuget_packages
+del *
+cd ..
 rmdir nuget_packages
 
 pause 
