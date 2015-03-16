@@ -17,10 +17,9 @@ StatePrinter is a little library that turn any object-graph into a string repres
 Why you should take StatePrinter for a spin
 
 * *No more manual .ToString()* - it is much easier to write robus and self-sufficient `ToString()` methods. 
-* Automatic generation of asserts - both for new tests and when changing the code, all tests can automatically be corrected.
-* It becomes much easier to write unit tests. No more screens full of asserts. Especially testing against object-graphs is a bliss. 
+* *No more manual writing/updating Asserts* - both for new tests and when the code changes, all tests can automatically be corrected.
+* *No more screens full of asserts*. Especially testing against object-graphs is a bliss. 
 * Very configurable and extensible.
-* Stateprinter is free, highly configurable and thread safe.  
 * It is part of the back-end engine of other projects
   * The very nice [ApprovalTests framework](http://approvaltests.sourceforge.net/).
 
@@ -33,8 +32,8 @@ The documentation is split into
 
 and
 
-* [The problems with traditional unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
 * [Automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
+* [The problems with traditional unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
 
 and
 
@@ -59,7 +58,6 @@ PM> Install-Package StatePrinter -Pre
 For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
-
 # History
 Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
 
@@ -67,12 +65,8 @@ This file describes the latest pushed changes. For documentation of earlier rele
 [1.0.6](https://github.com/kbilsted/StatePrinter/blob/1.0.6/README.md), [1.0.5](https://github.com/kbilsted/StatePrinter/blob/1.0.5/README.md), [1.0.4](https://github.com/kbilsted/StatePrinter/blob/1.0.4/README.md)
 
 
-
-
 # Requirements
 Requires C# 3.5 or newer
-
-
 
 
 # License
