@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -16,38 +16,40 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-namespace StatePrinter.Introspection
+
+using NUnit.Framework;
+
+using StatePrinter.Introspection;
+
+namespace StatePrinter.Tests.Introspection
 {
-    /// <summary>
-    /// A numeric value denoting an already outputted object that is referred to by current object
-    /// </summary>
-    public class Reference
+    [TestFixture]
+    class Referencetest
     {
-        public readonly int Number;
-
-        /// <summary>
-        /// ctor
-        /// </summary>
-        public Reference(int number)
+        [Test]
+        public void Equals()
         {
-            Number = number;
+            var a = new Reference(1);
+            var b = new Reference(1);
+            Assert.AreEqual(a, a);
+            Assert.AreEqual(a, b);
+            Assert.IsTrue(a.Equals((object) b));
         }
 
-        public override bool Equals(object obj)
+        [Test]
+        public void NotEquals()
         {
-            var other = obj as Reference;
-            if (other == null) return false;
-            return Number == other.Number;
+            var a = new Reference(1);
+            var b = new Reference(2);
+            Assert.AreNotEqual(a, b);
+            Assert.AreNotEqual(a, null);
         }
 
-        public override int GetHashCode()
+        [Test]
+        public void ToString()
         {
-            return Number;
-        }
-
-        public override string ToString()
-        {
-            return Number.ToString();
+            var a = new Reference(1);
+            Assert.AreEqual("1", a.ToString());
         }
     }
 }
