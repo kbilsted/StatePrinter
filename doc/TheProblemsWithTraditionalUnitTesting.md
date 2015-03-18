@@ -102,7 +102,7 @@ Gosh! I'm getting sick to my stomach. All that typing. But worse. Where is the o
 
 How about just compare a string from StatePrinter
 
-```
+```C#
 [Test]
 public void TestXML()
 {
