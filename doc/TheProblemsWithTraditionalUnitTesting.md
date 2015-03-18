@@ -1,7 +1,7 @@
 #  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) The problems with traditional  unit testing
 
  
-This page highlights the pains and problems with how we write unit tests today. It is a philosophical discussion that applies to asserting in unit tests. To see how to use StatePrinter to remedy these problems please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md
+This page highlights the pains and problems with how we write unit tests today. It is a philosophical discussion that applies to asserting in unit tests. To see how to use StatePrinter to remedy these problems please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md
 
 There are five (if not more) pain points that I have discovered through my years as a developer. Don't get me wrong. I love tests! They are an absolute required part of software development. That being said, the way we do unit testing today is far to laborious and often the claim that unit tests are a ressource of documentation is far from the truth.
 
