@@ -279,7 +279,7 @@ public void ExampleListAndArrays()
 
 ## Further reading
 
-Now that you have understood the problems with traditional asserting in unit tests, you may be eager to get started using StatePrinter. Please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md
+Now that you have understood the problems with traditional asserting in unit tests, you may be eager to get started using StatePrinter. Please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md
  for further information on the topic.
 
 
