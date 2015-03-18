@@ -1,29 +1,27 @@
 #  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter automating your unit tests
 
+> We honor the dead for giving us the world we inherited, however, we must recoqnize we are doomed if we allow the dead to govern us.
 
-
-**Table of content**
- * [1. Unit tests](#1-unit-tests)
-   * [1.1 Getting started](#11-getting-started)
-   * [1.2 Integrating with your unit test framework](#12-integrating-with-your-unit-test-framework)
-   * [1.3 Configuration - Restricting fields harvested](#13-configuration---restricting-fields-harvested)
-   * [1.4 Stateprinter.Assert](#14-stateprinterassert)
-   * [1.5 Best practices](#15-best-practices)
-     * [StatePrinter configuration](#stateprinter-configuration)
-     * [Asserting](#asserting)
-
-
- 
-# 1. Unit tests
+This document explains a radically different approach to writing and maintaining asserts in unit tests. Read with an open mind!
 
 When writing unit tests for business code, I find myself often having to write a ton of asserts that check the state of numerous fields. This results in a number of maintenance and readability problems. The kind of problems one run into every day with traditional unit testing is elaborated in https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md 
 
 This document has the focus of how to use StatePrinter to improve the speed you flesh out your unit tests, make them more readable and even make them automatically re-write them selves.
 
  
-## 1.1 Getting started
+# 1. Getting started with semi-automatic testing
 
-To get started with the automatic asserting when unit testing, you first write your business code and an *empty test* similar to
+The workflow is as follows
+
+1. Create the test, but leave the expected empty
+2. Run the test, naturally this will fail since expected and actual are different
+3. The error message holds a code generated version of the tests' expectations
+4. Inspect the changes before pushing code to the repository
+
+ 
+## 1.1 Create the test
+
+To get started with the automatic asserting in  unit testing, you first write your business code and an *empty test* which only excercise the code under test. No asserts are to be written. For example:
 
 ```C#
 [Test]
@@ -35,25 +33,26 @@ public void GetDocumentWhenAllDataIsAvailable()
     var actual = printer.PrintObject(sut.Foo(c, d, ...));
     
     var expected = "";
-    printer.Assert.IsSame(expected, actual);    
+    printer.Assert.AreEquals(expected, actual);    
 }
 ```
 
-A standard printer for unit testing can be retrieved with a general helper method
+As described in "best practices" further down the page, it is a good idea to have a single source from which all Stateprinter instances for unit testing are created. In the following example we are creating a printing and bridging to Nunit's Assert method.
 
-```
+```C#
 static class Helper
 {
     public static StatePrinter CreatePrinter()
     { 
         var printer = new Stateprinter();
-        printer.Configuration.AreEqualsMethod = Assert.AreEquals;
+        printer.Configuration.AreEqualsMethod = Nunit.Framework.Assert.AreEquals;
         
         return printer;
     }
 }
 ```
 
+## 1.2 Run the test
 Running the test will *FAIL*. This is quite intentional! The error message will contain C# code you can paste directly into the code:
 
 ```C#
@@ -71,7 +70,10 @@ var expected = @"new Order()
   -----------^
 ```
 
-Copy-paste the `expected` definition and your test becomes:
+
+## 1.3 Copy-paste the generated asserts
+
+Copy-paste the `expected` definition and your test, Also notice how `AreEquals` have been replaced by `IsSame` (in many ways `IsSame` is much nicer to work with - more on this later). The result is:
 
 ```C#
 [Test]
@@ -91,6 +93,9 @@ public void GetDocumentWhenAllDataIsAvailable()
 }
 ```
 
+## 1.4 Inspect and commit
+
+*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test).
 
 Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting. Thus we re-write the above simply as:
 
@@ -110,14 +115,29 @@ public void GetDocumentWhenAllDataIsAvailable()
 }
 ```
 
-
-Not only did you get the assert creation for free, when the order-object gets extended in the future you will get those updates for free as well. If you dont like the format of the `expected` variable, check (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweak the output.
-
-
+### Conclusion
+Not only did you get the assert creation for free, when the order-object gets extended in the future you will get those updates for free as well. If you don't like the output format of the `expected` variable, read  (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweak the output.
 
 
+# 2. Getting started with FULL automatic unit tests
 
-## 1.2 Integrating with your unit test framework
+
+The workflow is as follows
+
+1. Instruct StatePrinter to allow auto-rewriting
+2. Create the test, but leave the expected empty
+3. Run the test, the failing tests are now automatically rectified to pass
+4. Inspect the changes before pushing to the repository
+
+This is a much simpler work flow since it allows StatePrinter to automatically re-write your tests so that they will pass. Naturally, this is not suitable for all development situations. But very often you are in the situation where you must fix-up several tests simply due to the introduction of new code or changes to code. Most of the time these tests are integration test, acceptance tests. But also changes to internal called by public API can requires you to do said changes.
+
+...Work in progress...
+
+
+
+
+
+# 3. Integrating with your unit test framework
 
 Stateprinter is not dependent on any unit testing framework, but it will integrate with most if not all. Since unit testing frameworks do not share a common interface that StatePrinter can use, you have to configure StatePrinter to call your testing frameworks' assert method. For Nunit the below suffices:
 
@@ -134,7 +154,7 @@ var printer = new StatePrinter(cfg);
 ```
 
 
-## 1.3 Configuration - Restricting fields harvested
+# 4. Configuration - Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -188,7 +208,7 @@ You can now easily configure what to dump when testing.
 
 Notice though, that when you use the `Include` or `AddFilter` functionality, you are exlcuding yourself from failing tests when your business data is extended. So use it with care.
 
-## 1.4 Stateprinter.Assert
+# 5- Stateprinter.Assert
 
 From v2.0, StatePrinter ships with assert methods accessible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
 
@@ -199,9 +219,9 @@ From v2.0, StatePrinter ships with assert methods accessible from `printer.Asser
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
 
 
-## 1.5 Best practices
+# 6. Best practices
 
-### StatePrinter configuration
+## StatePrinter configuration
 
 The bast practices when using StatePrinter for unit testing is different from using it to do ToString-implementations. The caching of field harvesting of types is not compatible with using the `Include<>`, `Exclude<>` and filter properties of the `ProjectionHarvester`. Thus to ensure correctness of our tests and to ensure that our tests are independent of each other, the best strategy is to use a fresh instance of StatePrinter in each test.
 
@@ -241,7 +261,7 @@ public void Foo()
     printer.Assert.PrintIsSame(...);
 ```
 
-### Asserting
+## Asserting
 
 Prefer the `IsSame()` over the `AreEquals()`. I've come to really appreciate the `IsSame()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
