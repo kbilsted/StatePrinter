@@ -95,7 +95,9 @@ public void GetDocumentWhenAllDataIsAvailable()
 
 ## 1.4 Inspect and commit
 
-*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test).
+*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. StatePrinter simply takes away the typing in testing.
+
+## Shortcut helpers
 
 Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting. Thus we re-write the above simply as:
 
@@ -131,7 +133,41 @@ The workflow is as follows
 
 This is a much simpler work flow since it allows StatePrinter to automatically re-write your tests so that they will pass. Naturally, this is not suitable for all development situations. But very often you are in the situation where you must fix-up several tests simply due to the introduction of new code or changes to code. Most of the time these tests are integration test, acceptance tests. But also changes to internal called by public API can requires you to do said changes.
 
+
+
+## 2.1. Instruct StatePrinter to allow auto-rewriting
+
+Simply define in the `CreatePrinter()` helper `printer.Configuration.SetAreEqualsMethod(() => return true);`
+
+
+ 
+## 2.2 Create the test
+
+
+```C#
+[Test]
+public void GetDocumentWhenAllDataIsAvailable()
+{ 
+    var sut = new BusinessCode(a, b, ...);
+
+    var printer = Helper.GetPrinter();
+    var actual = printer.PrintObject(sut.Foo(c, d, ...));
+    
+    var expected = @"";
+    printer.Assert.AreEquals(expected, actual);    
+}
+```
+
+
 ...Work in progress...
+
+## 2.3 Run the test
+
+From within visual studio or using an external gui
+
+## 2.4 Inspect and commit
+
+*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. StatePrinter simply takes away the typing in testing.
 
 
 
@@ -143,15 +179,9 @@ Stateprinter is not dependent on any unit testing framework, but it will integra
 
 ```C#
 var printer = new StatePrinter();
-printer.Configuration.AreEqualsMethod = Assert.AreEquals;
+printer.Configuration..SetAreEqualsMethod(Nunit.Framework.Assert.AreEquals);
 ```
 
-or 
-
-```C#
-var cfg = new Configuration().SetAreEqualsMethod(Assert.AreEquals);
-var printer = new StatePrinter(cfg);
-```
 
 
 # 4. Configuration - Restricting fields harvested
