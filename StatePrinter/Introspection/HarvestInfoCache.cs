@@ -28,7 +28,9 @@ namespace StatePrinter.Introspection
     /// </summary>
     class HarvestInfoCache : IDisposable
     {
-        // Due to supporting C# 3.5 we cannot use ConcurrentDictionary
+        /// <summary>
+        /// Due to supporting C# 3.5 we cannot use ConcurrentDictionary
+        /// </summary>
         readonly Dictionary<Type, ReflectionInfo> harvestCache = new Dictionary<Type, ReflectionInfo>();
         readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
 
@@ -66,3 +68,4 @@ namespace StatePrinter.Introspection
         }
     }
 }
+    
