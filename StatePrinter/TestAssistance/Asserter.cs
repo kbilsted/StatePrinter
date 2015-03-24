@@ -50,7 +50,8 @@ namespace StatePrinter.TestAssistance
         {
             if(expected != actual)
             {
-                var newExpected = string.Format("var expected = {0};", Escape(actual));
+                var escapedActual = Escape(actual);
+                var newExpected = string.Format("var expected = {0};", escapedActual);
                 var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
 
                 var reflector = new CallStackReflector();
@@ -59,10 +60,7 @@ namespace StatePrinter.TestAssistance
                 {
                     if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
                     {
-                        if(!info.TestMethodHasAStringVariable)
-                            throw new ArgumentException("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.");
-                        
-                        new TestRewriter().RewriteTest(info, newExpected);
+                        new TestRewriter().RewriteTest(info, expected, escapedActual);
                         message = "AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:" + newExpected;
                     }
                     assert(expected, actual, message);

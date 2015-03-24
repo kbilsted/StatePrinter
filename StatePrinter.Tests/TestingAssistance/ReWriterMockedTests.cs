@@ -40,10 +40,10 @@ namespace StatePrinter.Tests.TestingAssistance
                 var assertMock = new AreEqualsMethodMock();
                 printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
-                string expected = @"expect";
+                string expected = "boo";
                 printer.Assert.IsSame(expected, "actul");
 
-                Assert.AreEqual("expect", assertMock.Expected);
+                Assert.AreEqual("boo", assertMock.Expected);
                 Assert.AreEqual("actul", assertMock.Actual);
                 Assert.AreEqual("AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:var expected = \"actul\";", assertMock.Message);
             }
@@ -128,11 +128,8 @@ reported by the callstackreflector
             }
         }
 
-
-        // TODO is not working!
         [Test]
-        [Explicit]
-        public void Rewriter_calls_to_testframework_fileTooShort_TODO()
+        public void Rewriter_calls_to_testframework_fileTooShort2()
         {
             try
             {
@@ -147,7 +144,7 @@ reported by the callstackreflector
                 string expected = @"expect";
 
                 var ex = Assert.Throws<ArgumentOutOfRangeException>(() => printer.Assert.IsSame(expected, "actul"));
-                Assert.AreEqual("File does not have 125 lines. Only 47 lines.\r\nParameter name: content", ex.Message);
+                Assert.AreEqual("File does not have 146 lines. Only 47 lines.\r\nParameter name: content", ex.Message);
             }
             finally
             {

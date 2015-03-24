@@ -39,20 +39,58 @@ namespace StatePrinter.Tests.TestingAssistance
             sut = new Parser();
         }
 
+        [Test]
+        public void NoEscapingOfNewExpected()
+        {
+            var r = sut.ReplaceExpected("Assert.AreEqual(\"hello\", sut.Do());", 1, "hello", "boo");
+            TestHelper.CreateTestPrinter().Assert.PrintIsSame(@"""Assert.AreEqual(boo, sut.Do());""", r);
+        }
 
         [Test]
-        public void ReplaceExpected_simple_input()
+        public void Somehow_content_could_not_be_found()
         {
-            string program = 
+            var ex = Assert.Throws<ArgumentException>(() => sut.ReplaceExpected("aaaaaaaa", 1, "someOtherString", "boo"));
+            Assert.AreEqual("Did not find 'someOtherString'", ex.Message);
+        }
+
+        [Test]
+        public void Somehow_content_containing_weird_symbols_could_not_be_found()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => sut.ReplaceExpected("aaaaaaaa", 1, "some.OtherString()", "boo"));
+            Assert.AreEqual("Did not find 'some.OtherString()'", ex.Message);
+        }
+
+        [Test]
+        public void simple_input()
+        {
+            string program =
+@"  abc def
+  qwe ert
+  printer.Assert.Here(@""hello"", ...)
+  iu of";
+            var r = sut.ReplaceExpected(program, 3, "hello", "boo");
+
+            var expected = @"""  abc def
+  qwe ert
+  printer.Assert.Here(boo, ...)
+  iu of""";
+
+            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+        }
+
+        [Test]
+        public void expected_variable()
+        {
+            string program =
 @"  abc def
   var expected = @""hello"";
   qwe ert
   printer.Assert.Here(...)
   iu of";
-            var r = sut.ReplaceExpected(program, 4, "var expected = @\"boo\";");
+            var r = sut.ReplaceExpected(program, 4, "hello", "boo");
 
             var expected = @"""  abc def
-  var expected = @""boo"";
+  var expected = boo;
   qwe ert
   printer.Assert.Here(...)
   iu of""";
@@ -62,24 +100,47 @@ namespace StatePrinter.Tests.TestingAssistance
 
 
 
+
         [Test]
-        public void ReplaceExpected_only_last_expected_changes()
+        public void only_last_expected_changes_normal_string()
         {
             string program = @"abc def
-var expected = @""a"";
 var expected = @""b"";
+var expected = ""b"";
 qwe ert
 printer.Assert.Here(...)
 iu of";
 
-            var r = sut.ReplaceExpected(program, 4, "var expected = @\"boo\";");
+            var r = sut.ReplaceExpected(program, 4, "b", "boo");
 
-            var expected = @"""abc def
-var expected = @""a"";
-var expected = @""boo"";
+            string expected = @"""abc def
+var expected = @""b"";
+var expected = boo;
 qwe ert
 printer.Assert.Here(...)
 iu of""";
+            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+        }
+
+
+
+        [Test]
+        public void only_last_expected_changes_verbatim_string()
+        {
+            string program = @"abc def
+var expected = ""b"";
+var expected = @""b"";
+qwe ert
+printer.Assert.Here(...)
+iu of";
+            var r = sut.ReplaceExpected(program, 4, "b", "boo");
+            string expected = @"""abc def
+var expected = ""b"";
+var expected = boo;
+qwe ert
+printer.Assert.Here(...)
+iu of""";
+
             TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
         }
 
@@ -92,100 +153,29 @@ iu of""";
   iu of""";
 
 
+
+        /// <summary>
+        /// Shows that we may further improve the matching to skip lines where lines start with "//"
+        /// </summary>
         [Test]
-        public void ReplaceExpected_content_contains_expected_string()
-        {
-            string program =
-@"  abc def
-    var expected = @""a
- var expected = @""""aaa"""";
-"";
-  qwe ert
-  printer.Assert.Here(...)
-  iu of";
-
-            var r = sut.ReplaceExpected(program, 5, "var expected = @\"boo\";");
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(nestedExpected, r);
-        }
-
-
-        [Test]
-        public void ReplaceExpected_content_contains_expected_string22()
-        {
-            string program =
-@"  abc def
-    var expected = @""a
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
-"";
-  qwe ert
-  printer.Assert.Here(...)
-  iu of";
-
-            var r = sut.ReplaceExpected(program, 8, "var expected = @\"boo\";");
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(nestedExpected, r);
-        }
-
-
-        [Test]
-        public void ReplaceExpected_outcommented_expected_string()
+        public void bug_outcommented_string_is_matched_()
         {
             string program = @"abc def
 var expected = @""a"";
-// var expected = @""b"";
+// var expected = @""a"";
 qwe ert
 printer.Assert.Here(...)
 iu of";
-            Console.WriteLine("''program:" + program);
-            var r = sut.ReplaceExpected(program, 4, "var expected = @\"boo\";");
+            var r = sut.ReplaceExpected(program, 4, "a", "boo");
 
-            var expected = @"""abc def
-var expected = @""boo"";
-// var expected = @""b"";
+            var expected = @"abc def
+var expected = @""a"";
+// var expected = boo;
 qwe ert
 printer.Assert.Here(...)
-iu of""";
+iu of";
 
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
-        }
-
-
-        [Test]
-        public void ReplaceExpected_outcommented_expected_string2()
-        {
-            string program =
-   @"  abc def
-    var expected = @""a
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
- var expected = @""""aaa"""";
-"";
-  qwe ert
-  printer.Assert.Here(...)
-  iu of";
-            Console.WriteLine("''program:" + program);
-            var r = sut.ReplaceExpected(program, 22, "var expected = @\"boo\";");
-
-            var expected = @"""  abc def
-    var expected = @""boo"";
-  qwe ert
-  printer.Assert.Here(...)
-  iu of""";
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+           Assert.AreEqual(expected, r);
         }
     }
 }

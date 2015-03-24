@@ -34,65 +34,33 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void TryGetInfo_inside_test_method()
         {
-            string expected = "";
             var res = new CallStackReflector().TryGetLocation();
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(38, res.LineNumber);
-            Assert.IsTrue(res.TestMethodHasAStringVariable);
+            Assert.AreEqual(37, res.LineNumber);
         }
 
         [Test]
         public void TryGetInfo_inside_lambda_expected_outside_lambda()
         {
-            string expected = "";
             UnitTestLocationInfo res = null;
 
             Action x = () => res = new CallStackReflector().TryGetLocation();
             x();
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(52, res.LineNumber);
-            Assert.IsTrue(res.TestMethodHasAStringVariable);
+            Assert.AreEqual(48, res.LineNumber);
         }
 
         [Test]
         public void TryGetInfo_inside_AssertThrowsLambda_expected_outside_lambda()
         {
-            string expected = "";
             UnitTestLocationInfo res = null;
 
             Assert.DoesNotThrow(() => res = new CallStackReflector().TryGetLocation());
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(65, res.LineNumber);
-            Assert.IsTrue(res.TestMethodHasAStringVariable);
-        }
-        
-        
-        [Test]
-        public void TryGetInfo_inside_lambda_expected_inside_lambda()
-        {
-            UnitTestLocationInfo res = null;
-
-            Action x = () =>
-            {
-                string expected = "";
-                res = new CallStackReflector().TryGetLocation();
-            };
-            x();
-
-            Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(81, res.LineNumber);
-            Assert.IsTrue(res.TestMethodHasAStringVariable);
-        }
-
-
-        [Test]
-        public void TryGetInfo_with_no_local_variable_of_type_string()
-        {
-            var info = new CallStackReflector().TryGetLocation();
-            Assert.IsFalse(info.TestMethodHasAStringVariable);
+            Assert.AreEqual(60, res.LineNumber);
         }
     }
 }

@@ -34,11 +34,6 @@ namespace StatePrinter.TestAssistance
     {
         public string Filepath;
         public int LineNumber;
-
-        /// <summary>
-        /// we cannot check if a local variable is named "expected", so all we can do is to check that there exists a local string variable.
-        /// </summary>
-        public bool TestMethodHasAStringVariable;
     }
 
     class TestRewriter
@@ -54,7 +49,7 @@ namespace StatePrinter.TestAssistance
             new UTF8Encoding(false),
         };
 
-        public void RewriteTest(UnitTestLocationInfo info, string newExpected)
+        public void RewriteTest(UnitTestLocationInfo info, string originalExpected, string newExpected)
         {
             Encoding enc = null;
             string content = null;
@@ -63,7 +58,7 @@ namespace StatePrinter.TestAssistance
 
             enc = encodings.First(x => TryConvertFromEncoding(x, bytes, out content));
 
-            var newTestContent = new Parser().ReplaceExpected(content, info.LineNumber, newExpected);
+            var newTestContent = new Parser().ReplaceExpected(content, info.LineNumber, originalExpected, newExpected);
             fileRepository.Write(info.Filepath, enc.GetBytes(newTestContent));
         }
 
@@ -119,7 +114,6 @@ namespace StatePrinter.TestAssistance
                 {
                     Filepath = info.GetFileName(),
                     LineNumber = info.GetFileLineNumber(),
-                    TestMethodHasAStringVariable = info.GetMethod().GetMethodBody().LocalVariables.Any(x=>x.LocalType == typeof(string)),
                 };
         }
 
@@ -136,67 +130,94 @@ namespace StatePrinter.TestAssistance
                 var frame = trace.GetFrame(i);
                 var mth = frame.GetMethod();
                 if (!stateprinterAssembly.Equals(mth.Module.Assembly) && frame.GetFileName() != null)
-                {
-                    if(IsLambdaExpression(mth))
-                    {
-                        if (mth.GetMethodBody().LocalVariables.Any(x => x.LocalType == typeof(string)))
-                            return frame;
-                    }
-                    else
-                        return frame;
-                }
+                    return frame;
             }
 
             return null;
-        }
-
-        bool IsLambdaExpression(MethodBase mth)
-        {
-            return mth.Name.StartsWith("<") && mth.Name.Contains('>');
         }
     }
 
     public class Parser
     {
-        static string verbatimString = "\"([^\"]|(\"\"))*?\"";
-        static string ensureLineStartsBlank = "(?<prespace>(\n|\r)[ \t]*?)";
-        static RegexOptions options = RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.RightToLeft;
-        static Regex re = new Regex(ensureLineStartsBlank + @"(var|string)\s+expected\s*=\s*@" + verbatimString + @"\s*;", options);
+        static RegexOptions options = RegexOptions.Singleline | RegexOptions.RightToLeft;
 
-        public string ReplaceExpected(string content, int lineNo, string newExpected)
+        public string ReplaceExpected(string content, int lineNo, string originalExpected, string newExpected)
         {
-            int index = FindIndexOfLine(content, lineNo);
+            int index = FindLastIndexOfLine(content, lineNo);
+
+            var reString = EscapeForString(originalExpected);
+            var reVerbString = EscapeForVerbatimString(originalExpected);
+            Regex re= new Regex( "("
+                + reString
+                + "|"
+                + reVerbString
+                + ")", options);
+            
             var match = re.Match(content, index);
             if (!match.Success)
-                throw new ArgumentException("Did not find 'var expected = @\"..\";'");
+                throw new ArgumentException("Did not find '" + originalExpected + "'");
 
-            int start = match.Index + match.Groups["prespace"].Length;
+            int start = match.Index;
             int end = match.Index + match.Length;
-            var res = content.Substring(0, start) 
-                + newExpected 
+            var res = content.Substring(0, start)
+                + newExpected
                 + content.Substring(end);
 
             return res;
         }
-        
+
+        string EscapeForString(string s)
+        {
+            return "@?\"" + EscapeForRegEx(s)
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r")
+                .Replace("\t", "\\t")
+                .Replace("\"", "\\\"")
+                .Replace(".", "\\.")
+                + "\"";
+        }
+
+        string EscapeForVerbatimString(string s)
+        {
+            return "@\"" 
+                + EscapeForRegEx(s).Replace("\"", "\"\"")
+                + "\"";
+        }
+
+        string EscapeForRegEx(string s)
+        {
+            return s.Replace("(", "\\(")
+                .Replace(")", "\\)")
+                .Replace("|", "\\|")
+                .Replace("+", "\\+")
+            ;
+        }
+
         /// <summary>
         /// This method does not support files using only \r as newlines
         /// </summary>
-        int FindIndexOfLine(string content, int lineNo)
+        int FindLastIndexOfLine(string content, int lineNo)
         {
             int line = 1;
-
-            for (int i = 0; i < content.Count(); i++)
+            bool found = false;
+            int i = 0;
+            for (; i < content.Count(); i++)
             {
                 if (line == lineNo)
-                    return i;
+                    found = true;
                 if (content[i] == '\n')
+                {
+                    if (found)
+                        return i;
                     line++;
+                }
             }
+
+            if(found)
+                return i;
 
             throw new ArgumentOutOfRangeException("content", "File does not have " + lineNo + " lines. Only " + line + " lines.");
         }
     }
-
 }
 

@@ -1,4 +1,4 @@
-﻿// Copyright 2014-2015 Kasper B. Graversen
+// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -30,53 +30,6 @@ namespace StatePrinter.Tests.TestingAssistance
     [TestFixture]
     class TestingAssistanceRewriteTest
     {
-
-        [Test]
-        public void Rewriter_requires_local_variable_of_type_string()
-        {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-            var ex = Assert.Throws<System.ArgumentException>(() => printer.Assert.IsSame("", "a"));
-            Assert.AreEqual("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.", ex.Message);
-        }
-
-
-        [Test]
-        public void Rewriter_requires_an_expected()
-        {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-            string unusued = " ";
-            var ex = Assert.Throws<System.ArgumentException>(() => printer.Assert.IsSame(unusued, "a"));
-            Assert.AreEqual("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.", ex.Message);
-        }
-
-
-        [Test]
-        public void Rewriter_requires_verbatim_string()
-        {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-            string expected = " ";
-            var ex = Assert.Throws<System.ArgumentException>(() => printer.Assert.IsSame(expected, "a"));
-            Assert.AreEqual("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.", ex.Message);
-        }
-
-        [Test]
-        public void Rewriter_when_expectedIsOutCommented_fail()
-        {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-            // string expected = @" ";
-            var ex = Assert.Throws<System.ArgumentException>(() => printer.Assert.IsSame("b", "a"));
-            Assert.AreEqual("Cannot find a local variable of type string. Expecting the test to contain the variable 'expected' of type string.", ex.Message);
-        }
-
-
 
         [Test]
         [Explicit]
