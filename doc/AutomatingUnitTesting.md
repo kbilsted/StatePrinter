@@ -2,6 +2,27 @@
 
 > We honor the dead for giving us the world we inherited, however, we must recoqnize we are doomed if we allow the dead to govern us.
 
+# Table of Content
+ * [1. Getting started with semi-automatic testing](#1-getting-started-with-semi-automatic-testing)
+   * [1.1 Create the test](#11-create-the-test)
+   * [1.2 Run the test](#12-run-the-test)
+   * [1.3 Copy-paste the generated asserts](#13-copy-paste-the-generated-asserts)
+   * [1.4 Inspect and commit](#14-inspect-and-commit)
+   * [Shortcut helpers](#shortcut-helpers)
+     * [Conclusion](#conclusion)
+ * [2. Getting started with FULL automatic unit tests](#2-getting-started-with-full-automatic-unit-tests)
+   * [2.1. Instruct StatePrinter to allow auto-rewriting](#21-instruct-stateprinter-to-allow-auto-rewriting)
+   * [2.2 Create the test](#22-create-the-test)
+   * [2.3 Run the test](#23-run-the-test)
+   * [2.4 Inspect and commit](#24-inspect-and-commit)
+ * [3. Integrating with your unit test framework](#3-integrating-with-your-unit-test-framework)
+ * [4. Configuration - Restricting fields harvested](#4-configuration---restricting-fields-harvested)
+ * [5. Stateprinter.Assert](#5-stateprinterassert)
+ * [6. Best practices](#6-best-practices)
+   * [StatePrinter configuration](#stateprinter-configuration)
+   * [Asserting](#asserting)
+
+
 This document explains a radically different approach to writing and maintaining asserts in unit tests. Read with an open mind!
 
 When writing unit tests for business code, I find myself often having to write a ton of asserts that check the state of numerous fields. This results in a number of maintenance and readability problems. The kind of problems one run into every day with traditional unit testing is elaborated in https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md 
@@ -11,7 +32,7 @@ This document has the focus of how to use StatePrinter to improve the speed you 
  
 # 1. Getting started with semi-automatic testing
 
-The workflow is as follows
+The work flow is as follows
 
 1. Create the test, but leave the expected empty
 2. Run the test, naturally this will fail since expected and actual are different
@@ -21,7 +42,7 @@ The workflow is as follows
  
 ## 1.1 Create the test
 
-To get started with the automatic asserting in  unit testing, you first write your business code and an *empty test* which only excercise the code under test. No asserts are to be written. For example:
+To get started with the automatic asserting in  unit testing, you first write your business code and an *empty test* which only exercise the code under test. No asserts are to be written. For example:
 
 ```C#
 [Test]
@@ -121,10 +142,12 @@ public void GetDocumentWhenAllDataIsAvailable()
 Not only did you get the assert creation for free, when the order-object gets extended in the future you will get those updates for free as well. If you don't like the output format of the `expected` variable, read  (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweak the output.
 
 
+
+
+
 # 2. Getting started with FULL automatic unit tests
 
-
-The workflow is as follows
+The work flow is as follows
 
 1. Instruct StatePrinter to allow auto-rewriting
 2. Create the test, but leave the expected empty
@@ -137,8 +160,9 @@ This is a much simpler work flow since it allows StatePrinter to automatically r
 
 ## 2.1. Instruct StatePrinter to allow auto-rewriting
 
-Simply define in the `CreatePrinter()` helper `printer.Configuration.SetAreEqualsMethod(() => return true);`
+Simply define in the `CreatePrinter()` helper method: `printer.Configuration.SetAutomaticTestRewrite((fileName) => true);`
 
+meaning that for any the file name of any test executed, allow automatic rewriting of expected values.
 
  
 ## 2.2 Create the test
@@ -238,7 +262,10 @@ You can now easily configure what to dump when testing.
 
 Notice though, that when you use the `Include` or `AddFilter` functionality, you are exlcuding yourself from failing tests when your business data is extended. So use it with care.
 
-# 5- Stateprinter.Assert
+
+
+
+# 5. Stateprinter.Assert
 
 From v2.0, StatePrinter ships with assert methods accessible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
 
@@ -247,6 +274,8 @@ From v2.0, StatePrinter ships with assert methods accessible from `printer.Asser
 * Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling when copy/pasting.
 
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
+
+
 
 
 # 6. Best practices
@@ -291,9 +320,14 @@ public void Foo()
     printer.Assert.PrintIsSame(...);
 ```
 
+
+
 ## Asserting
 
-Prefer the `IsSame()` over the `AreEquals()`. I've come to really appreciate the `IsSame()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
+When not using automatic rewrite, I prefer the `IsSame()` over the `AreEquals()`. I've come to really appreciate the `IsSame()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
+
+With automatic rewrite, there are no issues with copy-pasting, and thus it is more right to use the AreEqual variant which does not modify the input before comparison.
+
 
 
 Have fun!
