@@ -189,8 +189,7 @@ namespace StatePrinter.TestAssistance
             return s.Replace("(", "\\(")
                 .Replace(")", "\\)")
                 .Replace("|", "\\|")
-                .Replace("+", "\\+")
-            ;
+                .Replace("+", "\\+");
         }
 
         /// <summary>
