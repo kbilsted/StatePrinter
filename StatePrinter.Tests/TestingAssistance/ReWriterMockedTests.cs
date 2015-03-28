@@ -35,7 +35,7 @@ namespace StatePrinter.Tests.TestingAssistance
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetAutomaticTestRewrite((x) => true);
 
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(testFileContent);
+                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
 
                 var assertMock = new AreEqualsMethodMock();
                 printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
@@ -53,7 +53,7 @@ namespace StatePrinter.Tests.TestingAssistance
             }
         }
 
-        const string testFileContent = @"
+        const string TestFileContent = @"
 must
 contain
 more
@@ -113,7 +113,7 @@ reported by the callstackreflector
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetAutomaticTestRewrite((x) => true);
 
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(testFileContent);
+                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
 
                 var assertMock = new AreEqualsMethodMock();
                 printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
@@ -136,7 +136,7 @@ reported by the callstackreflector
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetAutomaticTestRewrite((x) => true);
 
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(testFileContent);
+                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
 
                 var assertMock = new AreEqualsMethodMock();
                 printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);

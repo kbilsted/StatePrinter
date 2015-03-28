@@ -61,7 +61,7 @@ namespace StatePrinter.Tests.TestingAssistance
         }
 
         [Test]
-        public void simple_input()
+        public void Simple_input()
         {
             string program =
 @"  abc def
@@ -79,7 +79,7 @@ namespace StatePrinter.Tests.TestingAssistance
         }
 
         [Test]
-        public void expected_variable()
+        public void Expected_variable()
         {
             string program =
 @"  abc def
@@ -102,7 +102,7 @@ namespace StatePrinter.Tests.TestingAssistance
 
 
         [Test]
-        public void only_last_expected_changes_normal_string()
+        public void Only_last_expected_changes_normal_string()
         {
             string program = @"abc def
 var expected = @""b"";
@@ -125,7 +125,7 @@ iu of""";
 
 
         [Test]
-        public void only_last_expected_changes_verbatim_string()
+        public void Only_last_expected_changes_verbatim_string()
         {
             string program = @"abc def
 var expected = ""b"";
@@ -143,22 +143,13 @@ iu of""";
 
             TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
         }
-
-
-
-        static string nestedExpected = @"""  abc def
-    var expected = @""boo"";
-  qwe ert
-  printer.Assert.Here(...)
-  iu of""";
-
 
 
         /// <summary>
         /// Shows that we may further improve the matching to skip lines where lines start with "//"
         /// </summary>
         [Test]
-        public void bug_outcommented_string_is_matched_()
+        public void Bug_outcommented_string_is_matched_()
         {
             string program = @"abc def
 var expected = @""a"";

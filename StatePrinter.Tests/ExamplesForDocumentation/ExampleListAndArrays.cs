@@ -29,10 +29,10 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
         [Test]
         public void ExampleListAndArraysAlternative()
         {
-            object products=1;
-            object vendors=2;
-            object year=2222;
-            int added1=0;
+            object products = 1;
+            object vendors = 2;
+            object year = 2222;
+            int added1 = 0;
             int added2 = 0;
             int added3 = 0;
             var vendorManager = new TaxvendorManager(products, vendors, year);
@@ -40,31 +40,32 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
             vendorManager.AddVendor(JobType.JobType2, added2);
             vendorManager.AddVendor(JobType.JobType3, added3);
 
-            int consumption1=333;
-            int consumption2=23;
-            int consumption3=333;
-            int fee=10;
-            int fee2=11;
+            int consumption1 = 333;
+            int consumption2 = 23;
+            int consumption3 = 333;
+            int fee = 10;
+            int fee2 = 11;
 
-            var expected = @"new Boo[]()
-[0] = new Boo()
+            var expected = @"new VendorAllocation[]()
+[0] = new VendorAllocation()
 {
     Allocation = 100
     Price = 20
     Share = 20
 }
-[1] = new Boo()
+[1] = new VendorAllocation()
 {
     Allocation = 120
     Price = 550
     Share = 30
 }
-[2] = new Boo()
+[2] = new VendorAllocation()
 {
     Allocation = 880
     Price = 11
     Share = 50
 }";
+
             TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, vendorManager.VendorJobSplit);
         }
     }
@@ -76,19 +77,20 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
         JobType2,
         JobType1
     }
+
     class TaxvendorManager
     {
         public TaxvendorManager(object products, object vendors, object year)
         {
-            VendorJobSplit = new Boo[]
+            VendorJobSplit = new VendorAllocation[]
                                  {
-                                     new Boo(){Allocation = 100, Price = 20, Share = 20f}, 
-                                     new Boo(){Allocation = 120, Price = 550, Share = 30f}, 
-                                     new Boo(){Allocation = 880, Price = 11, Share = 50f}, 
+                                     new VendorAllocation(){Allocation = 100, Price = 20, Share = 20f}, 
+                                     new VendorAllocation(){Allocation = 120, Price = 550, Share = 30f}, 
+                                     new VendorAllocation(){Allocation = 880, Price = 11, Share = 50f}, 
                                  };
         }
 
-        public Boo[] VendorJobSplit { get; set; }
+        public VendorAllocation[] VendorJobSplit { get; set; }
 
         public void AddVendor(object jobType3, object added3)
         {
@@ -96,7 +98,7 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
         }
     }
 
-    class Boo
+    class VendorAllocation
     {
         public int Allocation, Price;
         public float Share;

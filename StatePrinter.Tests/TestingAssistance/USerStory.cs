@@ -21,6 +21,7 @@
 using NUnit.Framework;
 
 using StatePrinter.Configurations;
+using Is = StatePrinter.TestAssistance.Is;
 
 namespace StatePrinter.Tests.TestingAssistance
 {

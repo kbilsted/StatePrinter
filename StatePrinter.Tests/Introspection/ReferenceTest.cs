@@ -46,7 +46,7 @@ namespace StatePrinter.Tests.Introspection
         }
 
         [Test]
-        public void ToString()
+        public void TestToString()
         {
             var a = new Reference(1);
             Assert.AreEqual("1", a.ToString());
