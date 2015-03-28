@@ -95,7 +95,6 @@
   <ItemGroup>
     <None Include="gfx\stateprinter.ico" />
     <None Include="gfx\stateprinter.png" />
-    <None Include="StatePrinter.nuspec" />
     <None Include="StatePrinterStrongNameKeyFile_DoNotDelete.snk" />
   </ItemGroup>
   <ItemGroup />
