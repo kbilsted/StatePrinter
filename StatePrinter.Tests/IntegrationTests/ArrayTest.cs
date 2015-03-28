@@ -25,17 +25,26 @@ namespace StatePrinter.Tests.IntegrationTests
     [TestFixture]
     class ArrayTest
     {
-        [Test]
-        public void TwoDimArray()
-        {
-            int[,] twoDimArray = { { 1, 2 }, { 3, 4 } };
-            var printer = new Stateprinter();
+        int[,] twoDimArray = { { 1, 2 }, { 3, 4 } };
 
-            Assert.AreEqual(@"new Int32[,]()
+        string expected = @"new Int32[,]()
 [0] = 1
 [1] = 2
 [2] = 3
-[3] = 4", printer.PrintObject(twoDimArray, ""));
+[3] = 4";
+
+        [Test]
+        public void TwoDimArray()
+        {
+            var printer = new Stateprinter();
+            Assert.AreEqual(expected, printer.PrintObject(twoDimArray, ""));
+        }
+        
+         [Test]
+        public void TwoDimArray_LegacyApi()
+        {
+            var printer = new StatePrinter();
+            Assert.AreEqual(expected, printer.PrintObject(twoDimArray, ""));
         }
     }
 }

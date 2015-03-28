@@ -29,7 +29,7 @@ namespace StatePrinter.Tests.TestingAssistance
     class Userstory_nonexplicit
     {
         [Test]
-        public void AreEquals_differentNewlines()
+        public void IsSame_differentNewlines()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
             var printer = new Stateprinter(cfg);
@@ -38,6 +38,10 @@ namespace StatePrinter.Tests.TestingAssistance
             printer.Assert.IsSame("a\r\n", "a\n");
             printer.Assert.IsSame("a\r", "a\n");
             printer.Assert.IsSame("a\r", "a\r\n");
+
+            printer.Assert.PrintIsSame("\"a\r\"", "a\r\n");
+            printer.Assert.PrintIsSame("\"a\r\"", "a\r");
+            printer.Assert.PrintEquals("\"a\r\"", "a\r");
         }
     }
 
