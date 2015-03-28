@@ -37,10 +37,10 @@ namespace StatePrinter.Configurations
         /// 
         /// Eg. add a <see cref="PublicFieldsHarvester"/> to restrict the printed state to only public fields.
         /// </summary>
-        public static Configuration GetStandardConfiguration(
-            TestFrameworkAreEqualsMethod areEqualsMethod)
+        public static Configuration GetStandardConfiguration(TestFrameworkAreEqualsMethod areEqualsMethod)
         {
-            if (areEqualsMethod == null) throw new ArgumentNullException("areEqualsMethod");
+            if (areEqualsMethod == null) 
+                throw new ArgumentNullException("areEqualsMethod");
 
             return GetStandardConfiguration(
                 Configuration.DefaultIndention,

@@ -39,6 +39,8 @@ namespace StatePrinter.Tests.PerformanceTests
         /// Version 1.04 - HPPavilion 7
         /// 11941
         /// 
+        /// Version 2.00 - HPPavilion 7
+        /// 9506
         /// </summary>
         [Test]
         public void TestManyPrintings()
@@ -72,6 +74,20 @@ namespace StatePrinter.Tests.PerformanceTests
         /// 256000:  4332
         /// 512000:  8567
         /// 1024000:  16878
+        /// 
+        /// 
+        /// Version 2.00 - HPPavilion 7
+        /// 1000:  132
+        /// 2000:  26
+        /// 4000:  58
+        /// 8000:  122
+        /// 16000:  257
+        /// 32000:  510
+        /// 64000:  1022
+        /// 128000:  2064
+        /// 256000:  4220
+        /// 512000:  8426
+        /// 1024000:  16904
         /// </summary>
         [Test]
         public void DumpManySmallObjects()

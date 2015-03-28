@@ -17,9 +17,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using NUnit.Framework;
-
-using StatePrinter.Introspection;
 using StatePrinter.TestAssistance;
 
 namespace StatePrinter.Tests.Mocks
