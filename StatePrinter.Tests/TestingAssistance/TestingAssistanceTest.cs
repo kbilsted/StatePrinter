@@ -32,7 +32,7 @@ namespace StatePrinter.Tests.TestingAssistance
     {
         const string ExpectedNonconfigured =
                             "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
-                            + "e.g. use the value: 'Assert.AreEqual' "
+                            + "e.g. use the value: 'Nunit.Framework.Assert.AreEqual' "
                             + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
                             + "Parameter name: Configuration.AreEqualsMethod"
                             + "\r\nParameter name: Configuration.AreEqualsMethod";
