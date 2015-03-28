@@ -33,7 +33,9 @@ namespace StatePrinter.Tests.Introspection
             var b = new Token(TokenType.StartScope);
             Assert.AreEqual(a, a);
             Assert.AreEqual(a, b);
-            Assert.IsTrue(a.Equals((object) b));
+            Assert.IsFalse(a.Equals((Token)null));
+            Assert.IsTrue(a.Equals(a));
+            Assert.IsTrue(a.Equals((object)b));
         }
 
         [Test]

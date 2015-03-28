@@ -24,7 +24,7 @@ using StatePrinter.Introspection;
 namespace StatePrinter.Tests.Introspection
 {
     [TestFixture]
-    class Referencetest
+    class ReferenceTest
     {
         [Test]
         public void Equals()

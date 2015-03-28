@@ -17,6 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using StatePrinter.Configurations;
@@ -54,6 +55,16 @@ namespace StatePrinter.Tests.Configurations
             IValueConverter h;
             Assert.IsTrue(config.TryGetValueConverter(typeof(decimal), out h));
             Assert.IsTrue(h is StandardTypesConverter);
+        }
+
+        [Test]
+        public void SettingNullValues()
+        {
+            var sut = new Configuration();
+            Assert.Throws<ArgumentNullException>(() => sut.SetCulture(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetNewlineDefinition(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetAreEqualsMethod(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetAutomaticTestRewrite(null));
         }
     }
 }
