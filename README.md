@@ -69,6 +69,10 @@ This file describes the latest pushed changes. For documentation of earlier rele
 Requires C# 3.5 or newer
 
 
+# Resharper approved
+StatePrinter has been awarded a free resharper group lincense to share among all active contribututers.
+
+
 # License
 Stateprinter is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
 
