@@ -42,7 +42,9 @@ The work flow is as follows
  
 ## 1.1 Create the test
 
-To get started with the automatic asserting in  unit testing, you first write your business code and an *empty test* which only exercise the code under test. No asserts are to be written. For example:
+To get started with the automatic asserting in  unit testing, you first write your business code and an *empty test* which only exercise the code under test. No asserts are to be written manually any more. This approeach also works for existing tests, justthink of the blow test as one of your existing tests where the business code has changes since last running this test.
+
+For example:
 
 ```C#
 [Test]
@@ -74,7 +76,7 @@ static class Helper
 ```
 
 ## 1.2 Run the test
-Running the test will *FAIL*. This is quite intentional! The error message will contain C# code you can paste directly into the code:
+Running the test will *fail*. This is quite intentional! **The error message will contain proposed C# code, that you can paste directly into your test code**:
 
 ```C#
 Proposed output for unit test:
@@ -116,7 +118,7 @@ public void GetDocumentWhenAllDataIsAvailable()
 
 ## 1.4 Inspect and commit
 
-*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. StatePrinter simply takes away the typing in testing.
+*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. **StatePrinter simply takes away the typing in testing.**
 
 ## Shortcut helpers
 
@@ -145,7 +147,7 @@ Not only did you get the assert creation for free, when the order-object gets ex
 
 
 
-# 2. Getting started with FULL automatic unit tests
+# 2. Getting started with full automatic unit tests
 
 The work flow is as follows
 
@@ -167,6 +169,7 @@ meaning that for any the file name of any test executed, allow automatic rewriti
  
 ## 2.2 Create the test
 
+Create a new test of think of this as one of your existing tests where the business code has changes since last running this test.
 
 ```C#
 [Test]
@@ -181,9 +184,6 @@ public void GetDocumentWhenAllDataIsAvailable()
     printer.Assert.AreEquals(expected, actual);    
 }
 ```
-
-
-...Work in progress...
 
 ## 2.3 Run the test
 
@@ -297,13 +297,14 @@ You come a long way with the following code
 ```C#
 static class Create
 {
-    public static Stateprinter CreatePrinter()
+    public static Asserter Asserter()
     {
         var cfg = ConfigurationHelper.GetStandardConfiguration()
             .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-            .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"));
+            .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
+            .SetAutomaticTestRewrite((fileName) => true);
 
-            return new Stateprinter(cfg);
+            return new Stateprinter(cfg).Assert;
     }
 }
 ```
@@ -314,10 +315,10 @@ Then you can use, and further fine-tune in your test like
 [Test]
 public void Foo()
 {
-    var printer = TestHelper.CreatePrinter();
-    printer.Configuration....// fine tuning
+    var assert = Create.Asserter();
+    assert.Configuration....// fine tuning
 
-    printer.Assert.PrintIsSame(...);
+    assert.PrintAreEquals(...);
 ```
 
 
