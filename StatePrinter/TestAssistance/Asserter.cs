@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using StatePrinter.Configurations;
 
 
 namespace StatePrinter.TestAssistance
@@ -33,12 +34,12 @@ namespace StatePrinter.TestAssistance
     /// </summary>
     public class Asserter
     {
-        readonly TestFrameworkAreEqualsMethod assert;
         readonly Stateprinter printer;
-
+        
+        public Configuration Configuration { get { return printer.Configuration; } }
+        
         internal Asserter(Stateprinter printer)
         {
-            this.assert = printer.Configuration.AreEqualsMethod;
             this.printer = printer;
         }
 
@@ -48,26 +49,42 @@ namespace StatePrinter.TestAssistance
         /// </summary>
         public void AreEqual(string expected, string actual)
         {
-            if(expected != actual)
-            {
-                var escapedActual = Escape(actual);
-                var newExpected = string.Format("var expected = {0};", escapedActual);
-                var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
+            if (expected == actual)
+                return;
+            
+            var escapedActual = Escape(actual);
+            var newExpected = string.Format("var expected = {0};", escapedActual);
+            var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
 
-                var reflector = new CallStackReflector();
-                var info = reflector.TryGetLocation();
-                if (info != null)
-                {
-                    if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
-                    {
-                        new TestRewriter().RewriteTest(info, expected, escapedActual);
-                        message = "AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:" + newExpected;
-                    }
-                    assert(expected, actual, message);
-                }
-                else
-                    assert(expected, actual, message);
+            var reflector = new CallStackReflector();
+            var info = reflector.TryGetLocation();
+            
+            CallUnderlyingAssert(expected, actual, info, message, escapedActual, newExpected);
+        }
+
+        void CallUnderlyingAssert(
+            string expected,
+            string actual,
+            UnitTestLocationInfo info,
+            string message,
+            string escapedActual,
+            string newExpected)
+        {
+            if (info == null)
+            {
+                Configuration.AreEqualsMethod(expected, actual, message);
+                return;
             }
+
+            if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
+            {
+                new TestRewriter().RewriteTest(info, expected, escapedActual);
+                message =
+                    "AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:"
+                    + newExpected;
+            }
+
+            Configuration.AreEqualsMethod(expected, actual, message);
         }
 
         /// <summary>
@@ -92,6 +109,14 @@ namespace StatePrinter.TestAssistance
         public void PrintIsSame(string expected, object objectToPrint)
         {
             IsSame(expected, printer.PrintObject(objectToPrint));
+        }
+        
+        /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintEquals(string expected, object objectToPrint)
+        {
+            AreEqual(expected, printer.PrintObject(objectToPrint));
         }
 
         string UnifyNewLines(string text)
@@ -125,11 +150,6 @@ namespace StatePrinter.TestAssistance
     {
         public string ExpectedValue;
     }
-}
-
-namespace StatePrinter
-{
-    using StatePrinter.TestAssistance;
 
     /// <summary>
     /// Emulate Nunits Is.EqualTo() 
@@ -144,5 +164,5 @@ namespace StatePrinter
             return new Expected() { ExpectedValue = exptected };
         }
     }
-
 }
+

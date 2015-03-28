@@ -106,6 +106,24 @@ namespace StatePrinter
                 return asserter;
             }
         }
+    }
 
+
+
+    /// <summary>
+    /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="Stateprinter"/>
+    /// </summary>
+    [Obsolete]
+    public class StatePrinter : Stateprinter
+    {
+        public StatePrinter()
+            : base()
+        {
+        }
+
+        public StatePrinter(Configuration configuration)
+            : base(configuration)
+        {
+        }
     }
 }

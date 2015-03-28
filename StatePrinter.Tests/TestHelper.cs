@@ -19,14 +19,17 @@
 
 using System.Globalization;
 
-using NUnit.Framework;
-
 using StatePrinter.Configurations;
+using StatePrinter.TestAssistance;
 
 namespace StatePrinter.Tests
 {
     static class TestHelper
     {
+        public static Asserter Assert()
+        {
+            return CreateTestPrinter().Assert;
+        }
 
         public static Stateprinter CreateTestPrinter()
         {
@@ -43,7 +46,9 @@ namespace StatePrinter.Tests
             var res = ConfigurationHelper
                 .GetStandardConfiguration("")
                 .SetNewlineDefinition(" ")
-                .SetAreEqualsMethod(Assert.AreEqual);
+                .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
+                .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+                .SetAutomaticTestRewrite((x) => false);
 
             return res;
         }

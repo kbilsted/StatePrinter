@@ -19,22 +19,22 @@
 
 using System;
 
+using StatePrinter.TestAssistance;
 using NUnit.Framework;
 
-using StatePrinter.Configurations;
-using StatePrinter.TestAssistance;
+using Is = StatePrinter.TestAssistance.Is;
 
 namespace StatePrinter.Tests.TestingAssistance
 {
     [TestFixture]
     class TestingAssistanceTest
     {
-        const string ExpectedNonconfigured = 
+        const string ExpectedNonconfigured =
                             "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
                             + "e.g. use the value: 'Assert.AreEqual' "
                             + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
                             + "Parameter name: Configuration.AreEqualsMethod"
-                            +"\r\nParameter name: Configuration.AreEqualsMethod";
+                            + "\r\nParameter name: Configuration.AreEqualsMethod";
 
         [Test]
         public void AreEquals_WhenNotConfigured()
@@ -57,30 +57,31 @@ namespace StatePrinter.Tests.TestingAssistance
         public void AreEquals_WhenConfigured()
         {
             var assertMock = new AreEqualsMethodMock();
-            var cfg = ConfigurationHelper.GetStandardConfiguration(assertMock.AreEqualsMock);
-            var printer = new Stateprinter(cfg);
+            Asserter assert = TestHelper.Assert();
+            assert.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
             // without "
-            printer.Assert.AreEqual("a", "b");
+            assert.AreEqual("a", "b");
             Assert.AreEqual("a", assertMock.Expected);
             Assert.AreEqual("b", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"b\";\r\n", assertMock.Message);
 
             // with  "
-            printer.Assert.AreEqual("c", "\"e\"");
+            assert.AreEqual("c", "\"e\"");
             Assert.AreEqual("c", assertMock.Expected);
             Assert.AreEqual("\"e\"", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"e\"\"\";\r\n", assertMock.Message);
 
 
             // without "
-            printer.Assert.That("aa", Is.EqualTo("bb"));
+            assert.That("aa", Is.EqualTo("bb"));
             Assert.AreEqual("bb", assertMock.Expected);
             Assert.AreEqual("aa", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = \"aa\";\r\n", assertMock.Message);
 
+        
             // with  "
-            printer.Assert.That("\"cc\"", Is.EqualTo("ee"));
+            assert.That("\"cc\"", Is.EqualTo("ee"));
             Assert.AreEqual("ee", assertMock.Expected);
             Assert.AreEqual("\"cc\"", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"cc\"\"\";\r\n", assertMock.Message);
