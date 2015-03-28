@@ -22,6 +22,7 @@ using System;
 using NUnit.Framework;
 using StatePrinter.Configurations;
 using StatePrinter.TestAssistance;
+using StatePrinter.Tests.Mocks;
 
 namespace StatePrinter.Tests.TestingAssistance
 {
@@ -30,27 +31,27 @@ namespace StatePrinter.Tests.TestingAssistance
         [Test]
         public void Rewriter_calls_to_testframework_autorewriting()
         {
-            try
-            {
-                var printer = TestHelper.CreateTestPrinter();
-                printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            var printer = TestHelper.CreateTestPrinter();
 
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
+            var fakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
+            var mock = new FileRepositoryMock(fakeReadContent);
+            printer.Configuration.FactoryFileRepository = () => mock;
+            printer.Configuration.SetAutomaticTestRewrite((x) => true);
 
-                var assertMock = new AreEqualsMethodMock();
-                printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
+            var assertMock = new AreEqualsMethodMock();
+            printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
-                string expected = "boo";
-                printer.Assert.IsSame(expected, "actul");
+            string expected = "boo";
+            printer.Assert.IsSame(expected, "actul");
 
-                Assert.AreEqual("boo", assertMock.Expected);
-                Assert.AreEqual("actul", assertMock.Actual);
-                Assert.AreEqual("AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:var expected = \"actul\";", assertMock.Message);
-            }
-            finally
-            {
-                FileRepository.UnitTestFakeReadContent = null;
-            }
+            Assert.AreEqual("boo", assertMock.Expected);
+            Assert.AreEqual("actul", assertMock.Actual);
+            Assert.IsTrue(assertMock.Message.StartsWith("Rewritting test expectations in '"));
+            Assert.IsTrue(assertMock.Message.EndsWith(@"'.
+Compile and re-run to see green lights.
+New expectations:
+""actul"""));
+            Assert.IsTrue(mock.WritePath.EndsWith("ReWriterMockedTests.cs"));
         }
 
         const string TestFileContent = @"
@@ -108,48 +109,18 @@ reported by the callstackreflector
         [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "File does not have 123 lines. Only 47 lines.\r\nParameter name: content")]
         public void Rewriter_calls_to_testframework_fileTooShort()
         {
-            try
-            {
-                var printer = TestHelper.CreateTestPrinter();
-                printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            var printer = TestHelper.CreateTestPrinter();
 
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
+            var fakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
+            printer.Configuration.FactoryFileRepository = () => new FileRepositoryMock(fakeReadContent);
+            printer.Configuration.SetAutomaticTestRewrite((x) => true);
 
-                var assertMock = new AreEqualsMethodMock();
-                printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
-                
-                string expected = @"expect";
+            var assertMock = new AreEqualsMethodMock();
+            printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
-                printer.Assert.IsSame(expected, "actul");
-            }
-            finally
-            {
-                FileRepository.UnitTestFakeReadContent = null;
-            }
-        }
+            string expected = @"expect";
 
-        [Test]
-        public void Rewriter_calls_to_testframework_fileTooShort2()
-        {
-            try
-            {
-                var printer = TestHelper.CreateTestPrinter();
-                printer.Configuration.SetAutomaticTestRewrite((x) => true);
-
-                FileRepository.UnitTestFakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
-
-                var assertMock = new AreEqualsMethodMock();
-                printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
-
-                string expected = @"expect";
-
-                var ex = Assert.Throws<ArgumentOutOfRangeException>(() => printer.Assert.IsSame(expected, "actul"));
-                Assert.AreEqual("File does not have 146 lines. Only 47 lines.\r\nParameter name: content", ex.Message);
-            }
-            finally
-            {
-                FileRepository.UnitTestFakeReadContent = null;
-            }
+            printer.Assert.IsSame(expected, "actul");
         }
     }
 }

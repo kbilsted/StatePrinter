@@ -23,6 +23,7 @@ using StatePrinter.TestAssistance;
 using NUnit.Framework;
 
 using Is = StatePrinter.TestAssistance.Is;
+using StatePrinter.Tests.Mocks;
 
 namespace StatePrinter.Tests.TestingAssistance
 {
@@ -85,21 +86,6 @@ namespace StatePrinter.Tests.TestingAssistance
             Assert.AreEqual("ee", assertMock.Expected);
             Assert.AreEqual("\"cc\"", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"cc\"\"\";\r\n", assertMock.Message);
-        }
-    }
-
-   
-    class AreEqualsMethodMock
-    {
-        public string Expected { get; private set; }
-        public string Actual { get; private set; }
-        public string Message{ get; private set; }
-        
-        public void AreEqualsMock(string exp, string actual, string msg)
-        {
-            Expected = exp;
-            Actual = actual;
-            Message = msg;
         }
     }
 }

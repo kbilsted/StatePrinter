@@ -59,7 +59,7 @@ namespace StatePrinter.TestAssistance
             var reflector = new CallStackReflector();
             var info = reflector.TryGetLocation();
             
-            CallUnderlyingAssert(expected, actual, info, message, escapedActual, newExpected);
+            CallUnderlyingAssert(expected, actual, info, message, escapedActual);
         }
 
         void CallUnderlyingAssert(
@@ -67,8 +67,7 @@ namespace StatePrinter.TestAssistance
             string actual,
             UnitTestLocationInfo info,
             string message,
-            string escapedActual,
-            string newExpected)
+            string escapedActual)
         {
             if (info == null)
             {
@@ -78,10 +77,17 @@ namespace StatePrinter.TestAssistance
 
             if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
             {
-                new TestRewriter().RewriteTest(info, expected, escapedActual);
+                new TestRewriter(Configuration.FactoryFileRepository)
+                    .RewriteTest(info, expected, escapedActual);
+                
                 message =
-                    "AUTOMATICALLY rewritting test expectations. Compile and re-run to see green lights.\nNew expectation\n:"
-                    + newExpected;
+                    "Rewritting test expectations in '" 
+                    + info.Filepath 
+                    + "'."+ @"
+Compile and re-run to see green lights.
+New expectations:
+"
+                    + escapedActual;
             }
 
             Configuration.AreEqualsMethod(expected, actual, message);

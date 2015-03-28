@@ -70,7 +70,7 @@ namespace StatePrinter.Configurations
         /// </summary>
         public Configuration SetNewlineDefinition(string newlineCharacters)
         {
-            if(newlineCharacters== null)
+            if(newlineCharacters == null)
                 throw new ArgumentNullException("newlineCharacters");
             NewLineDefinition = newlineCharacters;
             
@@ -221,6 +221,8 @@ namespace StatePrinter.Configurations
         public TestRewriteIndicator AutomaticTestRewrite { get; private set; } 
         
         #endregion
+
+        public Func<FileRepository> FactoryFileRepository = () => new FileRepository();
     }
 
     public class LegacyBehaviour
