@@ -6,7 +6,7 @@ call CreateNuget.cmd
 .nuget\NuGet.exe push nuget_packages\StatePrinter.2.0.*.symbols.nupkg
 
 cd nuget_packages
-del *
+del /q *
 cd ..
 rmdir nuget_packages
 

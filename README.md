@@ -5,9 +5,8 @@
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=master)](https://coveralls.io/r/kbilsted/StatePrinter?branch=master)
-[![Stats](https://img.shields.io/badge/Code_lines-3,0_K-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Code_lines-3,1_K-ff69b4.svg)]()
 [![Stats](https://img.shields.io/badge/Doc_lines-1,2_K-ff69b4.svg)]()
-
 
 # What is Stateprinter
 A simple framework for **automatic** `Assert.AreEquals()`, `Assert.That()` and `ToString()` 
