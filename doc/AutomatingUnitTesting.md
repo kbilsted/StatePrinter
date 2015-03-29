@@ -65,7 +65,7 @@ As described in "best practices" further down the page, it is a good idea to hav
 ```C#
 static class Helper
 {
-    public static Stateprinter CreatePrinter()
+    public static Stateprinter GetPrinter()
     { 
         var printer = new Stateprinter();
         printer.Configuration.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual);
