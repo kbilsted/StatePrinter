@@ -2,8 +2,12 @@
 
 # Version history
 
+Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
 ## 2.0.169
+
+Added
+
 * Added automatic unit test rewriting
 * Added configuration of how line-endings are generated during state printing. This is to mitigate problems due to different operating systems uses different line-endings.
 * Added assertion helper methods `Stateprinter.Assert.AreEqual`, `Stateprinter.Assert.IsSame`, `Stateprinter.Assert.PrintIsSame` and `Stateprinter.Assert.That`.  Improves the unit test experience by printing a suggested expected string as C# code.
