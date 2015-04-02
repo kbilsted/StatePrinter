@@ -37,6 +37,7 @@ namespace StatePrinter.Configurations
         public const string DefaultIndention = "    ";
 
         public LegacyBehaviour LegacyBehaviour { get; set; }
+        public TestingBehaviour Test { get; set; }
 
         /// <summary>
         /// Specifies the indentation size.
@@ -77,7 +78,6 @@ namespace StatePrinter.Configurations
             return this;
         }
 
-
         /// <summary>
         /// Instantiate using the <see cref="DefaultIndention"/> and the <see cref="CurlyBraceStyle"/>
         /// </summary>
@@ -87,10 +87,15 @@ namespace StatePrinter.Configurations
         {
             IndentIncrement = indentIncrement;
             OutputFormatter = new CurlyBraceStyle(this);
-            AreEqualsMethod = areEqualsMethod;
             NewLineDefinition = Environment.NewLine;
             LegacyBehaviour = new LegacyBehaviour();
-            AutomaticTestRewrite = (x) => false;
+
+            Test = new TestingBehaviour(this);
+            Test.SetAutomaticTestRewrite(x => false);
+            Test.AssertMessageCreator = DefaultAssertMessage.Create;
+    
+            if(areEqualsMethod != null)
+                Test.SetAreEqualsMethod(areEqualsMethod);
         }
 
         /// <summary>
@@ -98,6 +103,11 @@ namespace StatePrinter.Configurations
         /// </summary>
         public IOutputFormatter OutputFormatter;
 
+        public Configuration SetOutputFormatter(IOutputFormatter formatter)
+        {
+            OutputFormatter = formatter;
+            return this;
+        }
         readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
 
         /// <summary>
@@ -162,74 +172,34 @@ namespace StatePrinter.Configurations
             return result != null;
         }
 
-        #region unit testing support
         ProjectionHarvester projection;
 
         /// <summary>
         /// Adds to the configuration a <see cref="ProjectionHarvester"/> and returns it.
         /// </summary>
+        public ProjectionHarvester Project
+        {
+            get { return projection ?? (projection = new ProjectionHarvester(this)); }
+        }
+
+        /// <summary>
+        /// Instead use <see cref="Project"/>
+        /// </summary>
+        [Obsolete("Use the Project property instead")]
         public ProjectionHarvester Projectionharvester()
         {
-            return projection ?? (projection = new ProjectionHarvester(this));
+            return Project;
         }
 
         /// <summary>
-        /// Configure how to call AreEquals in the unit testing framework of your choice. 
-        /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
+        /// Instead use <see cref="TestingBehaviour.SetAreEqualsMethod"/>
         /// </summary>
-        public TestFrameworkAreEqualsMethod AreEqualsMethod { get; private set; }
-
-        /// <summary>
-        /// Configure how to call AreEquals in the unit testing framework of your choice. 
-        /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
-        /// </summary>
+        [Obsolete("Use the Configuration.Test.SetAreEqualsMethod instead")]
         public Configuration SetAreEqualsMethod(TestFrameworkAreEqualsMethod areEqualsMethod)
         {
-            if (areEqualsMethod == null)
-                throw new ArgumentNullException("areEqualsMethod");
-            AreEqualsMethod = areEqualsMethod;
-            
-            return this;
+            return Test.SetAreEqualsMethod(areEqualsMethod);
         }
-
-        /// <summary>
-        /// The signature for finding out if a test's expected value may be automatically re-written.
-        /// </summary>
-        /// <param name="pathToUnitTest">Path to the failing test.</param>
-        /// <returns>True if the test may be rewritten with the new expected value to make the test pass again.</returns>
-        public delegate bool TestRewriteIndicator(string pathToUnitTest);
-
-        /// <summary>
-        /// Evaluate the function for each failing test. <para></para>
-        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
-        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a <see cref="Lazy"/>
-        /// </summary>
-        public Configuration SetAutomaticTestRewrite(TestRewriteIndicator indicator)
-        {
-            if (indicator == null)
-                throw new ArgumentNullException("indicator");
-            AutomaticTestRewrite = indicator;
-            
-            return this;
-        }
-
-        /// <summary>
-        /// Evaluate the function for each failing test. <para></para>
-        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
-        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a <see cref="Lazy"/>
-        /// </summary>
-        public TestRewriteIndicator AutomaticTestRewrite { get; private set; } 
-        
-        #endregion
 
         public Func<FileRepository> FactoryFileRepository = () => new FileRepository();
-    }
-
-    public class LegacyBehaviour
-    {
-        /// <summary>
-        /// To mimic the behaviour of v1.0.6 and below, set this to false.
-        /// </summary>
-        public bool TrimTrailingNewlines = true;
     }
 }

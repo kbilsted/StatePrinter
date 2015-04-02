@@ -59,7 +59,7 @@ namespace StatePrinter.Tests.TestingAssistance
         {
             var assertMock = new AreEqualsMethodMock();
             Asserter assert = TestHelper.Assert();
-            assert.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
+            assert.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
             // without "
             assert.AreEqual("a", "b");

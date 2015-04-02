@@ -36,7 +36,7 @@ namespace StatePrinter.Tests.TestingAssistance
         public void Autocorrection_works_var()
         {
             var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            printer.Configuration.Test.SetAutomaticTestRewrite((x) => true);
 
             var expected = @"""test auto""";
             printer.Assert.PrintIsSame(expected, "test auto");
@@ -47,7 +47,7 @@ namespace StatePrinter.Tests.TestingAssistance
         public void Autocorrection_works_string()
         {
             var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            printer.Configuration.Test.SetAutomaticTestRewrite((x) => true);
 
             string expected = @"""test auto""";
             printer.Assert.PrintIsSame(expected, "test auto");

@@ -46,7 +46,7 @@ namespace StatePrinter.Tests.IntegrationTests
         public void Setup()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration()
-                    .SetAreEqualsMethod(Assert.AreEqual);
+                    .Test.SetAreEqualsMethod(Assert.AreEqual);
             cfg.OutputFormatter = new CurlyBraceStyle(cfg);
             printer = new Stateprinter(cfg);
         }

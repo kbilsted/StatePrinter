@@ -91,7 +91,7 @@ namespace StatePrinter
                 // lazy fetch so not to require people to set up an asserter when it is not used
                 if (asserter == null)
                 {
-                    if (Configuration.AreEqualsMethod == null)
+                    if (Configuration.Test.AreEqualsMethod == null)
                     {
                         var message =
                             "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "

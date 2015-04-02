@@ -54,12 +54,22 @@ namespace StatePrinter.Tests.FieldHarvesters
             public DateTime X;
         }
 
-        [SetCulture("da-DK")]
+        [Test]
+        public void Obsolete_TestFluintInterface_exclude()
+        {
+            var cfg = TestHelper.CreateTestConfiguration();
+            cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
+            var printer = new Stateprinter(cfg);
+
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A() { Name = ""Charly"" }", state);
+        }
+
         [Test]
         public void TestFluintInterface_exclude()
         {
             var cfg = TestHelper.CreateTestConfiguration();
-            cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
+            cfg.Project.Exclude<A>(x => x.X, x => x.Y);
             var printer = new Stateprinter(cfg);
 
             var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
@@ -73,12 +83,11 @@ namespace StatePrinter.Tests.FieldHarvesters
             Assert.AreEqual(@"new C() { X = 08-09-2010 00:00:00 }", state);
         }
 
-        [SetCulture("da-DK")]
         [Test]
         public void TestFluintInterface_Include()
         {
             var cfg = TestHelper.CreateTestConfiguration();
-            cfg.Projectionharvester().Include<A>(x => x.Name);
+            cfg.Project.Include<A>(x => x.Name);
             var printer = new Stateprinter(cfg);
 
             var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
@@ -92,14 +101,11 @@ namespace StatePrinter.Tests.FieldHarvesters
             Assert.AreEqual(@"new C() { X = 08-09-2010 00:00:00 }", state);
         }
 
-        [SetCulture("da-DK")]
         [Test]
         public void UserStory()
         {
             var cfg = TestHelper.CreateTestConfiguration();
-            cfg.Projectionharvester()
-                .AddFilter<A>(
-                    x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+            cfg.Project.AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 
             var printer = new Stateprinter(cfg);
 
@@ -306,7 +312,7 @@ namespace StatePrinter.Tests.FieldHarvesters
                                 new ProjectionHarvester().Include<B>(
                                     x => x.Name,
                                     x => x.Age)));
-                stateprinter.Configuration.SetAreEqualsMethod(Assert.AreEqual);
+                stateprinter.Configuration.Test.SetAreEqualsMethod(Assert.AreEqual);
 
                 var expected = @"new B()
 {

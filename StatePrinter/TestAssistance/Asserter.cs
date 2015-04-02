@@ -52,45 +52,38 @@ namespace StatePrinter.TestAssistance
             if (expected == actual)
                 return;
             
-            var escapedActual = Escape(actual);
-            var newExpected = string.Format("var expected = {0};", escapedActual);
-            var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
 
             var reflector = new CallStackReflector();
             var info = reflector.TryGetLocation();
             
-            CallUnderlyingAssert(expected, actual, info, message, escapedActual);
+            CallUnderlyingAssert(expected, actual, info);
         }
 
         void CallUnderlyingAssert(
             string expected,
             string actual,
-            UnitTestLocationInfo info,
-            string message,
-            string escapedActual)
+            UnitTestLocationInfo info)
         {
-            if (info == null)
+            var escapedActual = Escape(actual);
+            bool rewriteTest = info != null && printer.Configuration.Test.AutomaticTestRewrite(info);
+            
+            var message = printer.Configuration.Test.AssertMessageCreator(
+                expected,
+                actual,
+                escapedActual,
+                rewriteTest,
+                info);
+
+            if (rewriteTest)
             {
-                Configuration.AreEqualsMethod(expected, actual, message);
-                return;
+                var rewriter = new TestRewriter(Configuration.FactoryFileRepository);
+                rewriter.RewriteTest(
+                    info,
+                    expected,
+                    escapedActual);
             }
 
-            if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
-            {
-                new TestRewriter(Configuration.FactoryFileRepository)
-                    .RewriteTest(info, expected, escapedActual);
-                
-                message =
-                    "Rewritting test expectations in '" 
-                    + info.Filepath 
-                    + "'."+ @"
-Compile and re-run to see green lights.
-New expectations:
-"
-                    + escapedActual;
-            }
-
-            Configuration.AreEqualsMethod(expected, actual, message);
+            Configuration.Test.AreEqualsMethod(expected, actual, message);
         }
 
         /// <summary>
