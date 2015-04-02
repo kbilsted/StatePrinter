@@ -4,7 +4,13 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
-## 2.0.169
+
+## v2.x.xxx 
+
+Fixed
+  * [#21 Make error message configurable upon assertion failiure](https://github.com/kbilsted/StatePrinter/issues/22)
+
+## v2.0.169
 
 Added
 
