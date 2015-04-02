@@ -98,24 +98,24 @@ namespace StatePrinter.Configurations
         /// </summary>
         public IOutputFormatter OutputFormatter;
 
-        readonly List<IValueConverter> valueConverters = new List<IValueConverter>();
+        readonly Stack<IValueConverter> valueConverters = new Stack<IValueConverter>();
 
         /// <summary>
         /// Gets a view of the value converters
         /// </summary>
         public ReadOnlyCollection<IValueConverter> ValueConverters
         {
-            get { return new ReadOnlyCollection<IValueConverter>(valueConverters); }
+            get { return new ReadOnlyCollection<IValueConverter>(valueConverters.ToArray()); }
         }
 
-        readonly List<IFieldHarvester> fieldHarvesters = new List<IFieldHarvester>();
+        readonly Stack<IFieldHarvester> fieldHarvesters = new Stack<IFieldHarvester>();
 
         /// <summary>
         /// Gets a view of the harvesters
         /// </summary>
         public ReadOnlyCollection<IFieldHarvester> FieldHarvesters
         {
-            get { return new ReadOnlyCollection<IFieldHarvester>(fieldHarvesters); }
+            get { return new ReadOnlyCollection<IFieldHarvester>(fieldHarvesters.ToArray()); }
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace StatePrinter.Configurations
         /// </summary>
         public Configuration Add(IValueConverter handler)
         {
-            valueConverters.Insert(0, handler);
+            valueConverters.Push(handler);
             return this;
         }
 
@@ -134,7 +134,7 @@ namespace StatePrinter.Configurations
         /// </summary>
         public Configuration Add(IFieldHarvester handler)
         {
-            fieldHarvesters.Insert(0, handler);
+            fieldHarvesters.Push(handler);
             return this;
         }
 
