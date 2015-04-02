@@ -25,7 +25,7 @@ namespace StatePrinter.OutputFormatters
 {
     class IndentingStringBuilder
     {
-        public readonly StringBuilder sb = new StringBuilder();
+        readonly StringBuilder sb = new StringBuilder();
         readonly string IndentIncrement;
         readonly string NewLineDefinition;
         readonly Configuration configuration;

@@ -17,12 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
-
 using NUnit.Framework;
-
-using StatePrinter.Configurations;
-using StatePrinter.TestAssistance;
 
 namespace StatePrinter.Tests.TestingAssistance
 {

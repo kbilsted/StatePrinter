@@ -74,7 +74,8 @@ namespace StatePrinter.FieldHarvesters
             Configuration configuration = null,
             IFieldHarvester harvester = null)
         {
-            if (configuration != null) configuration.Add(this);
+            if (configuration != null) 
+                configuration.Add(this);
             harvestingStrategy = harvester ?? new AllFieldsAndPropertiesHarvester();
         }
 
@@ -112,13 +113,15 @@ namespace StatePrinter.FieldHarvesters
         {
             if (selectedStrategy == Strategy.Excluder
                 || selectedStrategy == Strategy.Filter) return ExcludeOrFilterfields(type, harvestingStrategy.GetFields(type));
-            else return IncludeFields(type, harvestingStrategy.GetFields(type));
+            else 
+                return IncludeFields(type, harvestingStrategy.GetFields(type));
         }
 
         List<SanitiedFieldInfo> IncludeFields(Type type, List<SanitiedFieldInfo> fields)
         {
             var result = new List<SanitiedFieldInfo>();
-            foreach (var implementation in selected) result.AddRange(implementation.Filter(fields));
+            foreach (var implementation in selected) 
+                result.AddRange(implementation.Filter(fields));
 
             return result;
         }
@@ -127,7 +130,8 @@ namespace StatePrinter.FieldHarvesters
             Type type,
             List<SanitiedFieldInfo> fields)
         {
-            foreach (var implementation in selected) fields = implementation.Filter(fields).ToList();
+            foreach (var implementation in selected) 
+                fields = implementation.Filter(fields).ToList();
 
             return fields;
         }
@@ -183,7 +187,8 @@ namespace StatePrinter.FieldHarvesters
         {
             PreConditionToAdd<TTarget>(Strategy.Excluder);
 
-            foreach (var fieldSpecification in fieldSpecifications) ExcludeField(fieldSpecification);
+            foreach (var fieldSpecification in fieldSpecifications) 
+                ExcludeField(fieldSpecification);
 
             return this;
         }
@@ -191,29 +196,24 @@ namespace StatePrinter.FieldHarvesters
         void PreConditionToAdd<TTarget>(Strategy addingStrategy)
         {
             if (addingStrategy != Strategy.Excluder)
-                if (excluders.Select(x => x.Selector).Contains(typeof(TTarget)))
-                    throw new ArgumentException(
-                        string.Format(
-                            "Type {0} has already been configured as an excluder.",
-                            typeof(TTarget).Name));
+                Forbid<TTarget>(excluders, "an excluder");
 
             if (addingStrategy != Strategy.Includer)
-                if (includers.Select(x => x.Selector).Contains(typeof(TTarget)))
-                    throw new ArgumentException(
-                        string.Format(
-                            "Type {0} has already been configured as an includer.",
-                            typeof(TTarget).Name));
+                Forbid<TTarget>(includers, "an includer");
 
             if (addingStrategy != Strategy.Filter)
-                if (filters.Select(x => x.Selector).Contains(typeof(TTarget)))
-                    throw new ArgumentException(
-                        string.Format(
-                            "Type {0} has already been configured as a filter.",
-                            typeof(TTarget).Name));
+                Forbid<TTarget>(filters, "a filter");
         }
 
-        void ExcludeField<TTarget, TAny>(
-            Expression<Func<TTarget, TAny>> fieldSpecification)
+        void Forbid<TTarget>(List<Implementation> filter, string filterKind)
+        {
+            var type = typeof(TTarget);
+            if (filter.Any(x => x.Selector == type))
+                throw new ArgumentException(
+                    string.Format("Type {0} has already been configured as {1}.", type.Name, filterKind));
+        }
+
+        void ExcludeField<TTarget, TAny>(Expression<Func<TTarget, TAny>> fieldSpecification)
         {
             var name = GetFieldNameFromExpression(fieldSpecification);
             excluders.Add(
@@ -260,7 +260,8 @@ namespace StatePrinter.FieldHarvesters
         T Cast<T>(object objectToCast, string errorMessage) where T : class
         {
             T x = objectToCast as T;
-            if (x == null) throw new ArgumentException(errorMessage);
+            if (x == null) 
+                throw new ArgumentException(errorMessage);
             return x;
         }
 

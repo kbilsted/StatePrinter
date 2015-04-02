@@ -203,11 +203,12 @@ namespace StatePrinter.OutputFormatters
         /// </summary>
         string OptionalComma(List<Token> tokens, int position)
         {
-            bool isLastToken = position == tokens.Count - 1;
+            var nextPos = position + 1;
+            bool isLastToken = nextPos == tokens.Count;
             if (isLastToken)
                 return "";
 
-            var nextToken = tokens[position + 1].Tokenkind;
+            var nextToken = tokens[nextPos].Tokenkind;
             bool isNextScope = nextToken == TokenType.EndScope
                                || nextToken == TokenType.StartEnumeration
                                || nextToken == TokenType.StartScope
