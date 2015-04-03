@@ -65,7 +65,7 @@ This file describes the latest pushed changes. For documentation of earlier rele
 
 
 # Requirements
-Requires C# 3.5 or newer
+Requires .NET 3.5 or newer
 
 
 # Resharper approved
