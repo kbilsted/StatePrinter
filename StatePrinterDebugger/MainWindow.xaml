@@ -1,0 +1,82 @@
+﻿<Window x:Class="StatePrinterDebugger.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="StatePrinter debug assistant v2.xx" Height="650" Width="800">
+    <Grid>
+        <DockPanel>
+            <Menu Width="Auto" Height="20" Background="#FFA9D1F4" DockPanel.Dock="Top" >
+                <MenuItem Header="_File" >
+                    <MenuItem Header="_Open"/>
+                    <MenuItem Header="_Close"  InputGestureText="F2" />
+                    <MenuItem Header="_Save"/>
+                </MenuItem>
+                <MenuItem Header="_Edit" >
+                    <MenuItem Header="_Bold"  InputGestureText="Ctrl+B" />
+                    <MenuItem Header="_Italic"  InputGestureText="Ctrl+I" />
+                    <MenuItem Header="_Underline"  InputGestureText="Ctrl+U" />
+                    <Separator></Separator>
+                    <MenuItem Header="_Find"  InputGestureText="Ctrl+F" Click="MenuItem_Find"/> <!-- virker ikke med callback -->
+                </MenuItem>
+            </Menu>
+            <DockPanel LastChildFill="True">
+                <!-- top button bars -->
+                <!--
+                <StackPanel Orientation="Horizontal"  DockPanel.Dock="Top">
+                    <Button Name="buttonBoldName" Click="OnClick_ButtonBold">Bold</Button>
+                    <Button Name="buttonItalic">Italic</Button>
+                    <Button Name="btnSearch" Click="btnSearch_Click">Search</Button>
+                </StackPanel>
+                -->
+                <!-- statusBar -->
+                <StackPanel Orientation="Horizontal"  DockPanel.Dock="Bottom">
+                    <TextBlock>Status:</TextBlock>
+                    <TextBlock Name="Line">Line: </TextBlock>
+                </StackPanel>
+                <!-- editors -->
+                <TabControl Name="GroupTabs">
+                    <TabItem Header="Welcome to..." Name="WelcomeTab" >
+                        <FlowDocumentScrollViewer>
+                        <FlowDocument>
+                                <Paragraph FontSize="22">StatePrinter Debug Assistance Window</Paragraph>
+                                <Paragraph FontStyle="Italic" TextAlignment="Left" FontSize="12" >
+                                    This tool enables you to easily inspect the state of your application and how it changes over time. 
+                                    To get started all you need to do is to issue dump commands, either directly in your code, 
+                                    or in the "immediate window" during debugging. 
+                                    The current state will then be dumped and shown here for your perusal.
+                                    <LineBreak></LineBreak>
+                                    <LineBreak></LineBreak>
+                                    Simply call any of:
+                                </Paragraph>
+                                <Paragraph FontStyle="Normal" TextAlignment="Left" FontSize="12" FontFamily="Courier new">
+                                    stateprinter.Debug.PrintToDebug(object state);
+                                    <LineBreak></LineBreak>
+                                    stateprinter.Debug.PrintToDebug(string group, object state);
+                                    <LineBreak></LineBreak>
+                                    stateprinter.Debug.PrintToDebug(string group, string subGroup, object state);
+                                    <LineBreak></LineBreak>
+                                    stateprinter.Debug.PrintToDebug(string group, string subGroup, string header, object state);
+                                </Paragraph>
+                                <Paragraph FontStyle="Normal" FontWeight="SemiBold" TextAlignment="Left" FontSize="12" >
+                                    <LineBreak></LineBreak>
+                                    Licensing:
+                                </Paragraph>
+                                <Paragraph FontStyle="Italic" TextAlignment="Left" FontSize="12" >
+                                    For the application as a whole ......................................... Apache v2.0
+                                    <LineBreak></LineBreak>
+                                    For the FastColoredTextBox (c) Pavel Torgashov .......... Lesser GLP v3
+                                </Paragraph>
+                                <Paragraph FontStyle="Italic" TextAlignment="Left" FontSize="12" >
+                                    <LineBreak></LineBreak>
+                                    <LineBreak></LineBreak>
+                                    For more information see:
+                                    <Hyperlink NavigateUri="https://github.com/kbilsted/StatePrinter">https://github.com/kbilsted/StatePrinter</Hyperlink>
+                                    <LineBreak></LineBreak>
+                                </Paragraph>
+                            </FlowDocument>
+                        </FlowDocumentScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+        </DockPanel>
+    </Grid>
+</Window>
