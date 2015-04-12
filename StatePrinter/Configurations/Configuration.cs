@@ -36,7 +36,14 @@ namespace StatePrinter.Configurations
     {
         public const string DefaultIndention = "    ";
 
+        /// <summary>
+        /// Set behaviour so StatePrinter works as in previous versions.
+        /// </summary>
         public LegacyBehaviour LegacyBehaviour { get; set; }
+
+        /// <summary>
+        /// Configure the behaviour concerning automated testing.
+        /// </summary>
         public TestingBehaviour Test { get; set; }
 
         /// <summary>
@@ -105,6 +112,8 @@ namespace StatePrinter.Configurations
 
         public Configuration SetOutputFormatter(IOutputFormatter formatter)
         {
+            if (formatter == null)
+                throw new ArgumentNullException("formatter");
             OutputFormatter = formatter;
             return this;
         }
@@ -192,7 +201,7 @@ namespace StatePrinter.Configurations
         }
 
         /// <summary>
-        /// Instead use <see cref="TestingBehaviour.SetAreEqualsMethod"/>
+        /// Instead use <see cref="TestingBehaviour.SetAreEqualsMethod"/> ie. "printer.Configuration.Test.SetAreEqualsMethod()".
         /// </summary>
         [Obsolete("Use the Configuration.Test.SetAreEqualsMethod instead")]
         public Configuration SetAreEqualsMethod(TestFrameworkAreEqualsMethod areEqualsMethod)

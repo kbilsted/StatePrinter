@@ -63,6 +63,7 @@ namespace StatePrinter.Tests.Configurations
             var sut = new Configuration();
             Assert.Throws<ArgumentNullException>(() => sut.SetCulture(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetNewlineDefinition(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetOutputFormatter(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetAreEqualsMethod(null));
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod(null));
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAutomaticTestRewrite(null));

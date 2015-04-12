@@ -55,6 +55,29 @@ namespace StatePrinter.Tests.TestingAssistance
 
         const string AreAlikeNotice = @"Info: Expected value and Actual value are not equal, but they are alike. Use 'Asserter.AreAlike()' if you expected the values to be alike.
 ";
+
+
+
+        class  Tuple
+        {
+            public Tuple(string item1, string item2)
+            {
+                Item1 = item1;
+                Item2 = item2;
+            }
+
+            public string Item1, Item2;
+        }
+
+        readonly Tuple[] alikeStrings =
+            {
+                new Tuple("a\r", "a\r\n"), 
+                new Tuple("a\r\n", "a\r"), 
+                new Tuple("a\n", "a\r\n"),
+                new Tuple("a\n", "a\r"), 
+                new Tuple("a\r", "a\n")
+            };
+
         [Test]
         public void AreEquals_WhenValues_AreAlike_Then_Suggest_change()
         {
@@ -62,16 +85,15 @@ namespace StatePrinter.Tests.TestingAssistance
             Asserter assert = TestHelper.Assert();
             assert.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
-            assert.AreEqual("a\r", "a\r\n");
-            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
-            assert.AreEqual("a\r\n", "a\r");
-            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
-            assert.AreEqual("a\n", "a\r\n");
-            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
+            foreach (Tuple t in alikeStrings)
+            {
+                assert.AreEqual(t.Item1, t.Item2);
+                Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
+            }
         }
 
         [Test]
-        public void AreEquals_Escaping_WhenConfigured_()
+        public void AreEquals_Escaping_WhenConfigured()
         {
             var assertMock = new AreEqualsMethodMock();
             Asserter assert = TestHelper.Assert();
@@ -102,6 +124,20 @@ namespace StatePrinter.Tests.TestingAssistance
             Assert.AreEqual("ee", assertMock.Expected);
             Assert.AreEqual("\"cc\"", assertMock.Actual);
             Assert.AreEqual("\r\n\r\nProposed output for unit test:\r\n\r\nvar expected = @\"\"\"cc\"\"\";\r\n", assertMock.Message);
+        }
+
+        [Test]
+        public void AreAlike()
+        {
+            var assertMock = new AreEqualsMethodMock();
+            Asserter assert = TestHelper.Assert();
+            assert.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
+
+            foreach (Tuple t in alikeStrings)
+            {
+                assert.AreAlike(t.Item1, t.Item2);
+                assert.That(t.Item1, Is.AlikeTo(t.Item2));
+            }
         }
     }
 }
