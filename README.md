@@ -57,6 +57,19 @@ PM> Install-Package StatePrinter -Pre
 For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
+
+# How can I help out
+Everyone is encouraged to help improve this project. Here are a few ways you can help:
+* [Report bugs](https://github.com/kbilsted/StatePrinter/issues/new)
+* Fix bugs and submit pull requests
+* Write, clarify, or fix documentation
+* [Suggest](https://github.com/kbilsted/StatePrinter/issues/new) or add new features
+
+
+*StatePrinter has been awarded a ReSharper group lincense to share among all active contributers*.
+
+
+
 # History
 Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.md
 
@@ -65,11 +78,9 @@ This file describes the latest pushed changes. For documentation of earlier rele
 
 
 # Requirements
-Requires .NET 3.5 or newer
+Requires .NET 3.5 or newer.
 
 
-# Resharper approved
-StatePrinter has been awarded a free resharper group lincense to share among all active contribututers.
 
 
 # License
