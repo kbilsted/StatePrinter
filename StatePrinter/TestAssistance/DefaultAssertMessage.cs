@@ -21,9 +21,9 @@ using System;
 
 namespace StatePrinter.TestAssistance
 {
-    static class DefaultAssertMessage
+    class DefaultAssertMessage
     {
-        public static string Create(
+        public string Create(
             string expected,
             string actual,
             string escapedActual,
@@ -35,10 +35,10 @@ namespace StatePrinter.TestAssistance
             if (willPerformAutomaticRewrite)
             {
                 // important to use verbatim-string in order to get the correct Environment.NewLine at line endings
-                message = "Rewritting test expectations in '" + location.Filepath + "'." + @"
+                message = string.Format(@"Rewritting test expectations in '{0}'.
 Compile and re-run to see green lights.
 New expectations:
-" + escapedActual;
+{1}", location.Filepath, escapedActual);
             }
             else
             {

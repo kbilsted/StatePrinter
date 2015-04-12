@@ -92,7 +92,7 @@ namespace StatePrinter.Configurations
 
             Test = new TestingBehaviour(this);
             Test.SetAutomaticTestRewrite(x => false);
-            Test.AssertMessageCreator = DefaultAssertMessage.Create;
+            Test.AssertMessageCreator = new DefaultAssertMessage().Create;
     
             if(areEqualsMethod != null)
                 Test.SetAreEqualsMethod(areEqualsMethod);
