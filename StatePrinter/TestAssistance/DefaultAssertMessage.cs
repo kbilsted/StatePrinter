@@ -23,6 +23,10 @@ namespace StatePrinter.TestAssistance
 {
     class DefaultAssertMessage
     {
+        readonly StringUtils stringUtils = new StringUtils();
+
+        const string AreAlikeNotice = @"Info: Expected value and Actual value are not equal, but they are alike. Use 'Asserter.AreAlike()' if you expected the values to be alike.
+";
         public string Create(
             string expected,
             string actual,
@@ -30,20 +34,24 @@ namespace StatePrinter.TestAssistance
             bool willPerformAutomaticRewrite,
             UnitTestLocationInfo location)
         {
-            string message;
+            // It is important to use verbatim-strings in order to get the correct Environment.NewLine at line endings
+            string message = "";
+
+            bool areAlike = stringUtils.UnifyNewLines(expected) == stringUtils.UnifyNewLines(actual);
+            if (areAlike)
+                message = AreAlikeNotice;
 
             if (willPerformAutomaticRewrite)
             {
-                // important to use verbatim-string in order to get the correct Environment.NewLine at line endings
-                message = string.Format(@"Rewritting test expectations in '{0}'.
+                message += string.Format(@"Rewritting test expectations in '{0}:{1}'.
 Compile and re-run to see green lights.
 New expectations:
-{1}", location.Filepath, escapedActual);
+{2}", location.Filepath, location.LineNumber, escapedActual);
             }
             else
             {
                 var newExpected = string.Format("var expected = {0};", escapedActual);
-                message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
+                message += string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
             }
 
             return message;

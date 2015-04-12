@@ -88,6 +88,7 @@
     <Compile Include="TestAssistance\DefaultAssertMessage.cs" />
     <Compile Include="TestAssistance\FileRepository.cs" />
     <Compile Include="TestAssistance\Parser.cs" />
+    <Compile Include="TestAssistance\StringUtils.cs" />
     <Compile Include="TestAssistance\TestRewriter.cs" />
     <Compile Include="ValueConverters\DateTimeConverter.cs" />
     <Compile Include="ValueConverters\EnumConverter.cs" />

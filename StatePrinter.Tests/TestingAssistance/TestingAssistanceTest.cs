@@ -53,9 +53,25 @@ namespace StatePrinter.Tests.TestingAssistance
             Assert.AreEqual(ExpectedNonconfigured, ex.Message);
         }
 
+        const string AreAlikeNotice = @"Info: Expected value and Actual value are not equal, but they are alike. Use 'Asserter.AreAlike()' if you expected the values to be alike.
+";
+        [Test]
+        public void AreEquals_WhenValues_AreAlike_Then_Suggest_change()
+        {
+            var assertMock = new AreEqualsMethodMock();
+            Asserter assert = TestHelper.Assert();
+            assert.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
+
+            assert.AreEqual("a\r", "a\r\n");
+            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
+            assert.AreEqual("a\r\n", "a\r");
+            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
+            assert.AreEqual("a\n", "a\r\n");
+            Assert.IsTrue(assertMock.Message.StartsWith(AreAlikeNotice));
+        }
 
         [Test]
-        public void AreEquals_WhenConfigured()
+        public void AreEquals_Escaping_WhenConfigured_()
         {
             var assertMock = new AreEqualsMethodMock();
             Asserter assert = TestHelper.Assert();
