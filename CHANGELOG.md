@@ -4,7 +4,22 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
-## 2.0.169
+
+## v2.1.186-rc
+
+Fixed
+
+  * [#22 Make error message configurable upon assertion failure](https://github.com/kbilsted/StatePrinter/issues/22)
+
+Added
+
+  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated).
+  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
+  * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
+
+  
+  
+## v2.0.169
 
 Added
 
