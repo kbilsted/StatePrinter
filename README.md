@@ -54,7 +54,7 @@ PM> Install-Package StatePrinter -Pre
 
 
 # How can I get help?
-For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue](https://github.com/kbilsted/StatePrinter/issues/new).
+For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue (and let's chat)](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
 
@@ -62,11 +62,11 @@ For quick questions, Stack Overflow is your best bet. For harder questions. For 
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
 * [Report bugs](https://github.com/kbilsted/StatePrinter/issues/new)
 * Fix bugs and submit pull requests
-* Write, clarify, or fix documentation
+* Write, clarify, or fix [the documentation](doc/)
 * [Suggest](https://github.com/kbilsted/StatePrinter/issues/new) or add new features
 
 
-*StatePrinter has been awarded a ReSharper group lincense to share among all active contributers*.
+*StatePrinter has been awarded a ReSharper group lincense, to share among all active contributers*.
 
 
 
@@ -75,6 +75,9 @@ Version History: http://github.com/kbilsted/StatePrinter/blob/master/CHANGELOG.m
 
 This file describes the latest pushed changes. For documentation of earlier releases see:
 [1.0.6](https://github.com/kbilsted/StatePrinter/blob/1.0.6/README.md), [1.0.5](https://github.com/kbilsted/StatePrinter/blob/1.0.5/README.md), [1.0.4](https://github.com/kbilsted/StatePrinter/blob/1.0.4/README.md)
+
+Upgrading from v1.xx to v2.0.x should be a matter of configuring the `Configuration.LegacyBehaviour`
+
 
 
 # Requirements
