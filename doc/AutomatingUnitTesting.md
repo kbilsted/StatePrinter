@@ -129,7 +129,7 @@ public void MakeOrderTest()
 
 ### Shortcut helpers
 
-Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting in one go. Thus we re-write the above simply as:
+Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting in one go. This keeps typing at a minimu. We can re-write the above test simply as:
 
 
 ```C#
@@ -148,7 +148,7 @@ public void MakeOrderTest()
 * You get the assert creation for free
 * When the order-object is extended in the future, your the unit test failure message will tell you how to go green again. 
  
-If you don't like the output format of the `expected` variable, read  (configuration)[https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md] for heaps of ways to tweaking.
+If you don't like the output format of the `expected` variable, read  [configuration](https://github.com/kbilsted/StatePrinter/blob/master/doc/HowToConfigure.md) for heaps of ways to tweaking.
 
 
 
