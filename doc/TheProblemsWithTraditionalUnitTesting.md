@@ -19,7 +19,7 @@ When the code changes, say by adding a field to a class, you need to add asserts
 
 A similar situation arises when merging code from one branch to another. Say you merge a bug fix or feature from a release branch to the development branch, what I observe over and over again is that the code gets merged, all the tests are run and then the merge is committed. People forget to revisit and double check the entire test suite to figure out there are tests existing on the development branch and not on the branch from where the merge occured, an adjust these accordingly.
 
-*When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you loose the ability to automatically detect changes in the graph.*
+*When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you lose the ability to automatically detect changes in the graph.*
 
 
 #### 3. Tests are detrimental to change

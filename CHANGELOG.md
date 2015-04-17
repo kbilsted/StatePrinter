@@ -13,8 +13,8 @@ Fixed
 
 Added
 
-  * Added `AreAlike`, replacing `IsSame`.
-  * Made error message tell about `AreAlike` when two strings are alike but not equals.
+  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated).
+  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
   * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
 
   

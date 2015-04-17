@@ -33,8 +33,9 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public class ToStringAwareHarvester : IFieldHarvester
     {
-        Dictionary<Type, bool> cache = new Dictionary<Type, bool>();
-        Dictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
+        readonly Dictionary<Type, bool> cache = new Dictionary<Type, bool>();
+
+        readonly Dictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
 
         public ToStringAwareHarvester()
         {

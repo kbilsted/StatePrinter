@@ -25,7 +25,8 @@ using StatePrinter.FieldHarvesters;
 namespace StatePrinter.Introspection
 {
     /// <summary>
-    /// For each type we print, we hold the reflected and the readable version of the fields
+    /// For a given type we hold the relevant fields with regards to printing, and functors for retrieving the content of the fields. 
+    /// The functors enables synthetic fields. E.g. a field that represents the call to the object's ToString().
     /// </summary>
     class ReflectionInfo
     {

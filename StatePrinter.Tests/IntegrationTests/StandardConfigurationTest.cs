@@ -38,7 +38,6 @@ namespace StatePrinter.Tests.IntegrationTests
         }
     }
 
-    [SetCulture("da-DK")]
     [TestFixture]
     class StandardConfigurationTests
     {
@@ -47,7 +46,7 @@ namespace StatePrinter.Tests.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            printer = new Stateprinter(ConfigurationHelper.GetStandardConfiguration());
+            printer = TestHelper.CreateTestPrinter();
         }
 
         [Test]
