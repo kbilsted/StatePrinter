@@ -105,3 +105,4 @@ UpgradeLog*.XML
 /.project
 
 *.orig
+StatePrinterDebugger/nCrunchTemp_*

@@ -66,74 +66,75 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\AutocompleteItem.cs" />
-    <Compile Include="FastColorTextBox\AutocompleteMenu.cs">
+    <Compile Include="Debugger.cs" />
+    <Compile Include="Gui\FastColorTextBox\AutocompleteItem.cs" />
+    <Compile Include="Gui\FastColorTextBox\AutocompleteMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\Bookmarks.cs" />
-    <Compile Include="FastColorTextBox\Char.cs" />
-    <Compile Include="FastColorTextBox\CommandManager.cs" />
-    <Compile Include="FastColorTextBox\Commands.cs" />
-    <Compile Include="FastColorTextBox\DocumentMap.cs">
+    <Compile Include="Gui\FastColorTextBox\Bookmarks.cs" />
+    <Compile Include="Gui\FastColorTextBox\Char.cs" />
+    <Compile Include="Gui\FastColorTextBox\CommandManager.cs" />
+    <Compile Include="Gui\FastColorTextBox\Commands.cs" />
+    <Compile Include="Gui\FastColorTextBox\DocumentMap.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\EncodingDetector.cs" />
-    <Compile Include="FastColorTextBox\EventArgs.cs" />
-    <Compile Include="FastColorTextBox\ExportToHTML.cs" />
-    <Compile Include="FastColorTextBox\ExportToRTF.cs" />
-    <Compile Include="FastColorTextBox\FastColoredTextBox.cs">
+    <Compile Include="Gui\FastColorTextBox\EncodingDetector.cs" />
+    <Compile Include="Gui\FastColorTextBox\EventArgs.cs" />
+    <Compile Include="Gui\FastColorTextBox\ExportToHTML.cs" />
+    <Compile Include="Gui\FastColorTextBox\ExportToRTF.cs" />
+    <Compile Include="Gui\FastColorTextBox\FastColoredTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\FastColoredTextBoxSupport.cs" />
-    <Compile Include="FastColorTextBox\FileTextSource.cs" />
-    <Compile Include="FastColorTextBox\FindForm.cs">
+    <Compile Include="Gui\FastColorTextBox\FastColoredTextBoxSupport.cs" />
+    <Compile Include="Gui\FastColorTextBox\FileTextSource.cs" />
+    <Compile Include="Gui\FastColorTextBox\FindForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\FindForm.Designer.cs">
+    <Compile Include="Gui\FastColorTextBox\FindForm.Designer.cs">
       <DependentUpon>FindForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FastColorTextBox\GoToForm.cs">
+    <Compile Include="Gui\FastColorTextBox\GoToForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\GoToForm.Designer.cs">
+    <Compile Include="Gui\FastColorTextBox\GoToForm.Designer.cs">
       <DependentUpon>GoToForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FastColorTextBox\Hints.cs" />
-    <Compile Include="FastColorTextBox\Hotkeys.cs" />
-    <Compile Include="FastColorTextBox\HotkeysEditorForm.cs">
+    <Compile Include="Gui\FastColorTextBox\Hints.cs" />
+    <Compile Include="Gui\FastColorTextBox\Hotkeys.cs" />
+    <Compile Include="Gui\FastColorTextBox\HotkeysEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\HotkeysEditorForm.Designer.cs">
+    <Compile Include="Gui\FastColorTextBox\HotkeysEditorForm.Designer.cs">
       <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FastColorTextBox\LimitedStack.cs" />
-    <Compile Include="FastColorTextBox\Line.cs" />
-    <Compile Include="FastColorTextBox\LinesAccessor.cs" />
-    <Compile Include="FastColorTextBox\MacrosManager.cs" />
-    <Compile Include="FastColorTextBox\Place.cs" />
-    <Compile Include="FastColorTextBox\PlatformType.cs" />
-    <Compile Include="FastColorTextBox\Range.cs" />
-    <Compile Include="FastColorTextBox\ReplaceForm.cs">
+    <Compile Include="Gui\FastColorTextBox\LimitedStack.cs" />
+    <Compile Include="Gui\FastColorTextBox\Line.cs" />
+    <Compile Include="Gui\FastColorTextBox\LinesAccessor.cs" />
+    <Compile Include="Gui\FastColorTextBox\MacrosManager.cs" />
+    <Compile Include="Gui\FastColorTextBox\Place.cs" />
+    <Compile Include="Gui\FastColorTextBox\PlatformType.cs" />
+    <Compile Include="Gui\FastColorTextBox\Range.cs" />
+    <Compile Include="Gui\FastColorTextBox\ReplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\ReplaceForm.Designer.cs">
+    <Compile Include="Gui\FastColorTextBox\ReplaceForm.Designer.cs">
       <DependentUpon>ReplaceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FastColorTextBox\Ruler.cs">
+    <Compile Include="Gui\FastColorTextBox\Ruler.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\Ruler.Designer.cs">
+    <Compile Include="Gui\FastColorTextBox\Ruler.Designer.cs">
       <DependentUpon>Ruler.cs</DependentUpon>
     </Compile>
-    <Compile Include="FastColorTextBox\Style.cs" />
-    <Compile Include="FastColorTextBox\SyntaxDescriptor.cs" />
-    <Compile Include="FastColorTextBox\SyntaxHighlighter.cs" />
-    <Compile Include="FastColorTextBox\TextSource.cs" />
-    <Compile Include="FastColorTextBox\TypeDescriptor.cs" />
-    <Compile Include="FastColorTextBox\UnfocusablePanel.cs">
+    <Compile Include="Gui\FastColorTextBox\Style.cs" />
+    <Compile Include="Gui\FastColorTextBox\SyntaxDescriptor.cs" />
+    <Compile Include="Gui\FastColorTextBox\SyntaxHighlighter.cs" />
+    <Compile Include="Gui\FastColorTextBox\TextSource.cs" />
+    <Compile Include="Gui\FastColorTextBox\TypeDescriptor.cs" />
+    <Compile Include="Gui\FastColorTextBox\UnfocusablePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FastColorTextBox\VisualMarker.cs" />
+    <Compile Include="Gui\FastColorTextBox\VisualMarker.cs" />
     <Compile Include="Gui\TabAdder.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -154,26 +155,26 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="FastColorTextBox\FastColoredTextBox.resx">
+    <EmbeddedResource Include="Gui\FastColorTextBox\FastColoredTextBox.resx">
       <DependentUpon>FastColoredTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FastColorTextBox\FindForm.resx">
+    <EmbeddedResource Include="Gui\FastColorTextBox\FindForm.resx">
       <DependentUpon>FindForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FastColorTextBox\GoToForm.resx">
+    <EmbeddedResource Include="Gui\FastColorTextBox\GoToForm.resx">
       <DependentUpon>GoToForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FastColorTextBox\HotkeysEditorForm.resx">
+    <EmbeddedResource Include="Gui\FastColorTextBox\HotkeysEditorForm.resx">
       <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FastColorTextBox\ReplaceForm.resx">
+    <EmbeddedResource Include="Gui\FastColorTextBox\ReplaceForm.resx">
       <DependentUpon>ReplaceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="FastColorTextBox\FCTB_key.snk" />
+    <None Include="Gui\FastColorTextBox\FCTB_key.snk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -184,7 +185,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FastColorTextBox\FastColoredTextBox.csproj" />
+    <Content Include="Gui\FastColorTextBox\FastColoredTextBox.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InterProcessComm\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

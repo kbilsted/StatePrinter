@@ -9,7 +9,7 @@ namespace StatePrinterDebugger.Gui
 {
     class TabAdder
     {
-        MainWindow mainWindow;
+        readonly MainWindow mainWindow;
 
         public TabAdder(MainWindow mainWindow)
         {
@@ -18,10 +18,6 @@ namespace StatePrinterDebugger.Gui
 
         public void AddTab(string outerTabName, string innerTabName, string contentHeader, string content)
         {
-            if (outerTabName == null) throw new ArgumentNullException("outerTabName");
-            if (innerTabName == null) throw new ArgumentNullException("innerTabName");
-            if (content == null) throw new ArgumentNullException("content");
-
             if (String.IsNullOrEmpty(contentHeader))
                 contentHeader = "";
             else
@@ -74,6 +70,16 @@ namespace StatePrinterDebugger.Gui
                 return (TabControl)groupTab.Content;
             
             return null;
+        }
+
+        /// <summary>
+        /// Setup the window for the initial state
+        /// </summary>
+        public void InitialSetup()
+        {
+            AddTab("boo", "my cool", null, "dsfdsf æj sdf \n new line\n...");
+            AddTab("boo", "my cool2", null, "aaaaaaaaaaaaaaaaaaaa..");
+            AddTab("boo", "my cool3", null, "bbbb bbb bbb..");
         }
     }
 }

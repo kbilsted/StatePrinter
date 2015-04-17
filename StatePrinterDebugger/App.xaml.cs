@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 
+using StatePrinterDebugger.Gui;
+
 namespace StatePrinterDebugger
 {
     /// <summary>
@@ -18,6 +20,9 @@ namespace StatePrinterDebugger
         {
             App app = new App();
             MainWindow window = new MainWindow();
+            TabAdder adder = new TabAdder(window);
+            adder.InitialSetup();
+            var debugger = new Debugger(adder);
             app.Run(window);
         }
     }

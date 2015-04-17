@@ -20,11 +20,6 @@ namespace StatePrinterDebugger
         public MainWindow()
         {
             InitializeComponent();
-            var gui = new TabAdder(this);
-            
-            gui.AddTab("boo", "my cool", null, "dsfdsf æj sdf \n new line\n...");
-            gui.AddTab("boo", "my cool2", null, "aaaaaaaaaaaaaaaaaaaa..");
-            gui.AddTab("boo", "my cool3", null, "bbbb bbb bbb..");
         }
 
 
