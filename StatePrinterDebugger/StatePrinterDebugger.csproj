@@ -134,6 +134,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FastColorTextBox\VisualMarker.cs" />
+    <Compile Include="Gui\TabAdder.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
