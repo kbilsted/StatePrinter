@@ -13,19 +13,21 @@ This document explains a radically different approach to writing and maintaining
    * [1.2 Run the test](#12-run-the-test)
    * [1.3 Copy-paste the generated asserts](#13-copy-paste-the-generated-asserts)
    * [1.4 Inspect and commit](#14-inspect-and-commit)
-   * [Shortcut helpers](#shortcut-helpers)
-     * [Conclusion](#conclusion)
- * [2. Using FULL automatic unit tests](#2-using-full-automatic-unit-tests)
+     * [Shortcut helpers](#shortcut-helpers)
+     * [Conclusions](#conclusions)
+ * [2. Using full automatic unit tests](#2-using-full-automatic-unit-tests)
    * [2.1. Instruct StatePrinter to allow auto-rewriting](#21-instruct-stateprinter-to-allow-auto-rewriting)
    * [2.2 Create the test](#22-create-the-test)
    * [2.3 Run the test](#23-run-the-test)
    * [2.4 Inspect and commit](#24-inspect-and-commit)
  * [3. Integrating with your unit test framework](#3-integrating-with-your-unit-test-framework)
  * [4. Configuration - Restricting fields harvested](#4-configuration---restricting-fields-harvested)
+   * [4.1 Filtering by use of Types](#41-filtering-by-use-of-types)
  * [5. Stateprinter.Assert](#5-stateprinterassert)
  * [6. Best practices](#6-best-practices)
    * [StatePrinter configuration](#stateprinter-configuration)
    * [Asserting](#asserting)
+
 
 
 
@@ -236,39 +238,39 @@ We can easily remedy this situation using the FieldHarvester abstraction describ
 given
 
 ```C#
-  class A
-  {
-     public DateTime X;
-     public DateTime Y { get; set; }
-     public string Name;
-  }
+class A
+{
+   public DateTime X;
+   public DateTime Y { get; set; }
+   public string Name;
+}
 ```
 
 You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties fieldharvester so it will by default include more than what you might be used to from using the normal field processor.
 
 ```C#
-  Asserter assert = TestHelper.CreateShortAsserter();
-  assert.Project.Exclude<A>(x => x.X, x => x.Y);
+Asserter assert = TestHelper.CreateShortAsserter();
+assert.Project.Exclude<A>(x => x.X, x => x.Y);
 
-  var state = new A { X = DateTime.Now, Name = "Charly" };
-  assert.PrintEquals("new A(){ Name = ""Charly""}", state);
+var state = new A { X = DateTime.Now, Name = "Charly" };
+assert.PrintEquals("new A(){ Name = ""Charly""}", state);
 ```
 
 alternatively, we can just mention the fields we'd like to see:
 
 ```C#
-  Asserter assert = TestHelper.CreateShortAsserter();
-  assert.Project.Include<A>(x => x.Name);
+Asserter assert = TestHelper.CreateShortAsserter();
+assert.Project.Include<A>(x => x.Name);
 
-  var state = new A { X = DateTime.Now, Name = "Charly" };
-  assert.PrintEquals("new A(){ Name = ""Charly""}", state);
+var state = new A { X = DateTime.Now, Name = "Charly" };
+assert.PrintEquals("new A(){ Name = ""Charly""}", state);
 ```
 
 or programmatically
 
 ```C#
-  Asserter assert = TestHelper.CreateShortAsserter();
-  assert.Project.AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+Asserter assert = TestHelper.CreateShortAsserter();
+assert.Project.AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 ```
 
 You can now easily configure what to dump when testing. 
@@ -277,63 +279,63 @@ Notice though, that when you use the `Include` or `AddFilter` functionality, you
 
 
 
-## 4.1 FilterByType
+## 4.1 Filtering by use of Types
 
 As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
 
 
 ```C#
-        [Test]
-        public void TestIncludeByType()
-        {
-            var sut = new AtoD();
-            Asserter assert;
+[Test]
+public void TestIncludeByType()
+{
+     var sut = new AtoD();
+     Asserter assert;
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.IncludeByType<AtoD, IA>();
-            assert.PrintEquals("new AtoD() { A = 1 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { A = 1 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.IncludeByType<AtoD, IA, IB>();
-            assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.IncludeByType<AtoD, IA, IB, IC>();
-            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
-            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
-        }
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+ }
 
-        [Test]
-        public void TestExcludeByType()
-        {
-            var sut = new AtoD();
-            Asserter assert;
+ [Test]
+ public void TestExcludeByType()
+ {
+     var sut = new AtoD();
+     Asserter assert;
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.ExcludeByType<AtoD, IA>();
-            assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.ExcludeByType<AtoD, IA, IB>();
-            assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
-            assert.PrintEquals("new AtoD() { D = 4 }", sut);
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { D = 4 }", sut);
 
-            assert = TestHelper.CreateShortAsserter();
-            assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
-            assert.PrintEquals("new AtoD() { }", sut);
-        }
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { }", sut);
+ }
 ```
 
 
