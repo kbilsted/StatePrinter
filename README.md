@@ -56,7 +56,7 @@ PM> Install-Package StatePrinter -Pre
 
 
 # How can I get help?
-For quick questions, Stack Overflow is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue (and let's chat)](https://github.com/kbilsted/StatePrinter/issues/new).
+For quick questions, [Stack Overflow](http://stackoverflow.com/questions/tagged/stateprinter?sort=newest) is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue (and let's chat)](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
 
