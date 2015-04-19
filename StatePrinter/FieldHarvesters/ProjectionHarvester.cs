@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
+
 using StatePrinter.Configurations;
 
 namespace StatePrinter.FieldHarvesters
@@ -141,6 +143,7 @@ namespace StatePrinter.FieldHarvesters
         /// <summary>
         /// Add a filter that exludes one or more fields
         /// </summary>
+        /// <typeparam name="TTarget">Target of filter</typeparam>
         /// <returns>Returns itself so you can chain the filter calls.</returns>
         public ProjectionHarvester AddFilter<TTarget>(
             Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
@@ -150,7 +153,6 @@ namespace StatePrinter.FieldHarvesters
             filters.Add(new Implementation(typeof(TTarget), filter));
             return this;
         }
-
 
         /// <summary>
         /// Includes one or more fields.
@@ -162,20 +164,92 @@ namespace StatePrinter.FieldHarvesters
         {
             PreConditionToAdd<TTarget>(Strategy.Includer);
 
-            foreach (var fieldSpecification in fieldSpecifications) IncludeField(fieldSpecification);
+            foreach (var fieldSpecification in fieldSpecifications)
+                IncludeFieldImplementation(fieldSpecification);
 
             return this;
         }
 
-        void IncludeField<TTarget, TAny>(
+        void IncludeFieldImplementation<TTarget, TAny>(
             Expression<Func<TTarget, TAny>> fieldSpecification)
         {
-            var name = GetFieldNameFromExpression(fieldSpecification);
+            string name = GetFieldNameFromExpression(fieldSpecification);
             includers.Add(
                 new Implementation(
                     typeof(TTarget),
                     x => x.Where(y => y.SanitizedName == name)));
         }
+
+        /// <summary>
+        /// Includes one or more fields as specified by <typeparam name="TInclude"/>
+        /// </summary>
+        /// <typeparam name="TTarget">Target of filter</typeparam>
+        /// <typeparam name="TInclude">Fields of this type are included</typeparam>
+        /// <returns>Returns itself so you can chain the filter calls.</returns>
+        public ProjectionHarvester IncludeByType<TTarget, TInclude>() 
+            where TTarget : TInclude
+        {
+            IncludeByTypeImplementation<TTarget>(typeof(TInclude));
+            return this;
+        }
+
+        /// <summary>
+        /// Includes one or more fields as specified by <typeparam name="TInclude"/>
+        /// </summary>
+        /// <typeparam name="TTarget">Target of filter</typeparam>
+        /// <typeparam name="TInclude">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude2">Fields of this type are included</typeparam>
+        /// <returns>Returns itself so you can chain the filter calls.</returns>
+        public ProjectionHarvester IncludeByType<TTarget, TInclude, TInclude2>()
+            where TTarget : TInclude, TInclude2
+        {
+            IncludeByTypeImplementation<TTarget>(typeof(TInclude), typeof(TInclude2));
+            return this;
+        }
+
+        /// <summary>
+        /// Includes one or more fields as specified by <typeparam name="TInclude"/>
+        /// </summary>
+        /// <typeparam name="TTarget">Target of filter</typeparam>
+        /// <typeparam name="TInclude">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude2">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude3">Fields of this type are included</typeparam>
+        /// <returns>Returns itself so you can chain the filter calls.</returns>
+        public ProjectionHarvester IncludeByType<TTarget, TInclude, TInclude2, TInclude3>()
+            where TTarget : TInclude, TInclude2, TInclude3
+        {
+            IncludeByTypeImplementation<TTarget>(typeof(TInclude), typeof(TInclude2), typeof(TInclude3));
+            return this;
+        }
+
+        /// <summary>
+        /// Includes one or more fields as specified by <typeparam name="TInclude"/>
+        /// </summary>
+        /// <typeparam name="TTarget">Target of filter</typeparam>
+        /// <typeparam name="TInclude">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude2">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude3">Fields of this type are included</typeparam>
+        /// <typeparam name="TInclude4">Fields of this type are included</typeparam>
+        /// <returns>Returns itself so you can chain the filter calls.</returns>
+        public ProjectionHarvester IncludeByType<TTarget, TInclude, TInclude2, TInclude3, TInclude4>()
+            where TTarget : TInclude, TInclude2, TInclude3, TInclude4
+        {
+            IncludeByTypeImplementation<TTarget>(typeof(TInclude), typeof(TInclude2), typeof(TInclude3), typeof(TInclude4));
+            return this;
+        }
+
+        void IncludeByTypeImplementation<TTarget>(params Type[] types)
+        {
+            PreConditionToAdd<TTarget>(Strategy.Includer);
+            var helper = new HarvestHelper();
+            
+            // we evaluate outside of the usage in the lambda to prevent multiple calls to GetFieldsAndProperties()
+            var cachedList = new List<SanitiedFieldInfo>();
+            foreach (var type in types)
+                cachedList.AddRange(helper.GetFieldsAndProperties(type));
+            includers.Add(new Implementation(typeof(TTarget), x => cachedList));
+        }
+
 
         /// <summary>
         /// Excludes one or more fields.
@@ -191,6 +265,78 @@ namespace StatePrinter.FieldHarvesters
                 ExcludeField(fieldSpecification);
 
             return this;
+        }
+
+        /// <summary>
+        /// Excludes one or more fields.
+        /// </summary>
+        /// <typeparam name="TTarget">The type to operate on</typeparam>
+        /// <typeparam name="TExclude">The type's fields will be excluded on the target</typeparam>
+        /// <returns>Returns itself so you can chain the exclude calls.</returns>
+        public ProjectionHarvester ExcludeByType<TTarget, TExclude>()
+            where TTarget : TExclude
+        {
+            ExcludeByTypeImplementation<TTarget>(typeof(TExclude));
+            return this;
+        }
+
+        /// <summary>
+        /// Excludes one or more fields.
+        /// </summary>
+        /// <typeparam name="TTarget">The type to operate on</typeparam>
+        /// <typeparam name="TExclude">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude2">The type's fields will be excluded on the target</typeparam>
+        /// <returns>Returns itself so you can chain the exclude calls.</returns>
+        public ProjectionHarvester ExcludeByType<TTarget, TExclude, TExclude2>()
+            where TTarget : TExclude, TExclude2
+        {
+            ExcludeByTypeImplementation<TTarget>(typeof(TExclude), typeof(TExclude2));
+            return this;
+        }
+
+
+        /// <summary>
+        /// Excludes one or more fields.
+        /// </summary>
+        /// <typeparam name="TTarget">The type to operate on</typeparam>
+        /// <typeparam name="TExclude">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude2">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude3">The type's fields will be excluded on the target</typeparam>
+        /// <returns>Returns itself so you can chain the exclude calls.</returns>
+        public ProjectionHarvester ExcludeByType<TTarget, TExclude, TExclude2, TExclude3>()
+            where TTarget : TExclude, TExclude2, TExclude3
+        {
+            ExcludeByTypeImplementation<TTarget>(typeof(TExclude), typeof(TExclude2), typeof(TExclude3));
+            return this;
+        }
+
+
+        /// <summary>
+        /// Excludes one or more fields.
+        /// </summary>
+        /// <typeparam name="TTarget">The type to operate on</typeparam>
+        /// <typeparam name="TExclude">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude2">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude3">The type's fields will be excluded on the target</typeparam>
+        /// <typeparam name="TExclude4">The type's fields will be excluded on the target</typeparam>
+        /// <returns>Returns itself so you can chain the exclude calls.</returns>
+        public ProjectionHarvester ExcludeByType<TTarget, TExclude, TExclude2, TExclude3, TExclude4>()
+            where TTarget : TExclude, TExclude2, TExclude3, TExclude4
+        {
+            ExcludeByTypeImplementation<TTarget>(typeof(TExclude), typeof(TExclude2), typeof(TExclude3), typeof(TExclude4));
+            return this;
+        }
+
+        void ExcludeByTypeImplementation<TTarget>(params Type[] types)
+        {
+            PreConditionToAdd<TTarget>(Strategy.Excluder);
+            var helper = new HarvestHelper();
+
+            // we evaluate outside of the usage in the lambda to prevent multiple calls to GetFieldsAndProperties()
+            var cachedList = new List<string>();
+            foreach (var type in types)
+                cachedList.AddRange(helper.GetFieldsAndProperties(type).Select(x=>x.SanitizedName));
+            excluders.Add(new Implementation(typeof(TTarget), x => x.Where(y => !cachedList.Contains(y.SanitizedName))));
         }
 
         void PreConditionToAdd<TTarget>(Strategy addingStrategy)
@@ -269,8 +415,7 @@ namespace StatePrinter.FieldHarvesters
         {
             public readonly Type Selector;
 
-            public readonly Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>>
-                Filter;
+            public readonly Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> Filter;
 
             public Implementation(
                 Type selector,

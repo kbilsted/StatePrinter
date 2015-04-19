@@ -19,7 +19,7 @@
 
 using System;
 using StatePrinter.Configurations;
-
+using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.TestAssistance
 {
@@ -37,8 +37,16 @@ namespace StatePrinter.TestAssistance
         readonly Stateprinter printer;
         readonly StringUtils stringUtils = new StringUtils();
 
+        /// <summary>
+        /// The StatePrinter configuration
+        /// </summary>
         public Configuration Configuration { get { return printer.Configuration; } }
         
+        /// <summary>
+        /// Access an instance of <see cref="ProjectionHarvester"/> which can be configured to include or exclude a number of fields from a specified type.
+        /// </summary>
+        public ProjectionHarvester Project { get { return printer.Configuration.Project; } }
+
         internal Asserter(Stateprinter printer)
         {
             this.printer = printer;

@@ -62,28 +62,28 @@ namespace StatePrinter.FieldHarvesters
             return GetFields(type.BaseType, flags).Concat(type.GetFields(flags));
         }
 
-    public List<SanitiedFieldInfo> GetFieldsAndProperties(Type type)
-    {
-      return GetFieldsAndProperties(type, flags)
-        .Select(
-        x =>
-          {
-            Func<object, object> valueFetcher;
-            switch (x.MemberType)
-            {
-              case MemberTypes.Field:
-                valueFetcher = o => ((FieldInfo)x).GetValue(o);
-                break;
-              case MemberTypes.Property:
-                valueFetcher = o => ((PropertyInfo)x).GetValue(o, null);
-                break;
-              default:
-                throw new Exception("Membertype not supported.");
-            }
-            return new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), valueFetcher);
-          })
-          .ToList();
-    }
+        public List<SanitiedFieldInfo> GetFieldsAndProperties(Type type)
+        {
+            var fieldsAndProps = GetFieldsAndProperties(type, flags)
+                .Select(x =>
+                    {
+                        Func<object, object> valueFetcher;
+                        switch (x.MemberType)
+                        {
+                            case MemberTypes.Field:
+                                valueFetcher = o => ((FieldInfo)x).GetValue(o);
+                                break;
+                            case MemberTypes.Property:
+                                valueFetcher = o => ((PropertyInfo)x).GetValue(o, null);
+                                break;
+                            default:
+                                throw new Exception("Membertype not supported.");
+                        }
+                        return new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), valueFetcher);
+                    });
+
+            return fieldsAndProps.ToList();
+        }
 
     /// <summary>
     /// Returns all Membertype.Field and Membertype.Property except backing-fields

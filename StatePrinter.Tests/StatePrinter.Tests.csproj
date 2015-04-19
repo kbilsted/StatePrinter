@@ -51,6 +51,7 @@
     <Compile Include="Configurations\ConfigurationTest.cs" />
     <Compile Include="ExamplesForDocumentation\ExampleListAndArrays.cs" />
     <Compile Include="ExamplesForDocumentation\ExampleEndlessAsserts.cs" />
+    <Compile Include="FieldHarvesters\ProjectionHarvesterByTypeTest.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />

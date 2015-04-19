@@ -31,6 +31,11 @@ namespace StatePrinter.Tests
             return CreateTestPrinter().Assert;
         }
 
+        public static Asserter CreateShortAsserter()
+        {
+            return new Stateprinter(CreateTestConfiguration()).Assert;
+        }
+
         public static Stateprinter CreateTestPrinter()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration()
@@ -43,14 +48,15 @@ namespace StatePrinter.Tests
 
         public static Configuration CreateTestConfiguration()
         {
-            var res = ConfigurationHelper
+            var cfg = ConfigurationHelper
                 .GetStandardConfiguration("")
                 .SetNewlineDefinition(" ")
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+                //.Test.SetAutomaticTestRewrite(x => true);
                 .Test.SetAutomaticTestRewrite(x => false);
 
-            return res;
+            return cfg;
         }
     }
 }

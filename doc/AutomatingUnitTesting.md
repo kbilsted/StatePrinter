@@ -228,57 +228,113 @@ printer.Configuration.SetAreEqualsMethod( Nunit.Framework.Assert.AreEquals );
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
-* They may hold uninteresting values polute the assert, e.g. a `Guid`
-* They maychange value from execution to execution, e.g. `DateTime.Now`
+* They may hold uninteresting values pollute the assert, e.g. a `Guid`
+* They may change value from execution to execution, e.g. `DateTime.Now`
 
 We can easily remedy this situation using the FieldHarvester abstraction described in the "configuration document", however, we do not feel inclined to create an implementation of the harvesting interface per class to be tested. The `ProjectiveHarvester` has a wealth of possibilities to transform (project) a type into another. That is, only include certain fields, only exclude certain fields, or create a filter programmatically. 
 
 given
 
 ```C#
- class A
- {
-   public DateTime X;
-   public DateTime Y { get; set; }
-   public string Name;
- }
+  class A
+  {
+     public DateTime X;
+     public DateTime Y { get; set; }
+     public string Name;
+  }
 ```
 
 You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties fieldharvester so it will by default include more than what you might be used to from using the normal field processor.
 
 ```C#
-  var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-  cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
-  var printer = new Stateprinter(cfg);
+  Asserter assert = TestHelper.CreateShortAsserter();
+  assert.Project.Exclude<A>(x => x.X, x => x.Y);
 
-  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state);
+  var state = new A { X = DateTime.Now, Name = "Charly" };
+  assert.PrintEquals("new A(){ Name = ""Charly""}", state);
 ```
 
-and
+alternatively, we can just mention the fields we'd like to see:
 
 ```C#
-  var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
-  cfg.Projectionharvester().Include<A>(x => x.Name);
-  var printer = new Stateprinter(cfg);
+  Asserter assert = TestHelper.CreateShortAsserter();
+  assert.Project.Include<A>(x => x.Name);
 
-  var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-  Assert.AreEqual(@"new A(){ Name = ""Charly""}", state);
+  var state = new A { X = DateTime.Now, Name = "Charly" };
+  assert.PrintEquals("new A(){ Name = ""Charly""}", state);
 ```
 
 or programmatically
 
 ```C#
- var cfg = ConfigurationHelper.GetStandardConfiguration(" ");
- cfg.Projectionharvester()
-    .AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
+  Asserter assert = TestHelper.CreateShortAsserter();
+  assert.Project.AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.SanitizedName != "Y"));
 ```
 
 You can now easily configure what to dump when testing. 
 
-Notice though, that when you use the `Include` or `AddFilter` functionality, you are exlcuding yourself from failing tests when your business data is extended. So use it with care.
+Notice though, that when you use the `Include` or `AddFilter` functionality, you are exluding yourself from failing tests when your business data is extended. So use it with care.
 
 
+
+## 4.1 FilterByType
+
+As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
+
+
+```C#
+        [Test]
+        public void TestIncludeByType()
+        {
+            var sut = new AtoD();
+            Asserter assert;
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.IncludeByType<AtoD, IA>();
+            assert.PrintEquals("new AtoD() { A = 1 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.IncludeByType<AtoD, IA, IB>();
+            assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.IncludeByType<AtoD, IA, IB, IC>();
+            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
+            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+        }
+
+        [Test]
+        public void TestExcludeByType()
+        {
+            var sut = new AtoD();
+            Asserter assert;
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.ExcludeByType<AtoD, IA>();
+            assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.ExcludeByType<AtoD, IA, IB>();
+            assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
+            assert.PrintEquals("new AtoD() { D = 4 }", sut);
+
+            assert = TestHelper.CreateShortAsserter();
+            assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
+            assert.PrintEquals("new AtoD() { }", sut);
+        }
+```
 
 
 # 5. Stateprinter.Assert
