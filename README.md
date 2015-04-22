@@ -34,7 +34,7 @@ The documentation is split into
 and
 
 * [Automating unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md)
-* [The problems with traditional unit testing](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
+* [The problems with traditional unit testing (that stateprinter solves)](https://github.com/kbilsted/StatePrinter/blob/master/doc/TheProblemsWithTraditionalUnitTesting.md)
 
 and
 
@@ -56,14 +56,15 @@ PM> Install-Package StatePrinter -Pre
 
 
 # How can I get help?
-For quick questions, [Stack Overflow](http://stackoverflow.com/questions/tagged/stateprinter?sort=newest) is your best bet. For harder questions. For bugs, issues or feature requests, [create a GitHub Issue (and let's chat)](https://github.com/kbilsted/StatePrinter/issues/new).
+For quick questions, [Stack Overflow](http://stackoverflow.com/questions/tagged/stateprinter?sort=newest) is your best bet. For harder questions, bugs, issues or feature requests, [create a GitHub Issue (and let's chat)](https://github.com/kbilsted/StatePrinter/issues/new).
 
 
 
 # How can I help out
 Everyone is encouraged to help improve this project. Here are a few ways you can help:
+* Blog about your experinces with the tool. We highly need publicity. I'll gladly link from here to your blog.
 * [Report bugs](https://github.com/kbilsted/StatePrinter/issues/new)
-* Fix bugs and submit pull requests
+* [Fix issues](https://github.com/kbilsted/StatePrinter/issues/) and submit pull requests
 * Write, clarify, or fix [the documentation](doc/)
 * [Suggest](https://github.com/kbilsted/StatePrinter/issues/new) or add new features
 
