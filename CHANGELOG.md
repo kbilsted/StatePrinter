@@ -4,12 +4,20 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
+## v2.1.207-rc
+
+Added
+
+  * Functionality for controlling automatic test rewrite using an environment variable.
+
+  
 ## v2.1.198-rc
 
 Added
 
   * Functionality for including or excluding fields and properties based on one or more type descriptions. See IncludeByType() and ExcludeByType()
 
+  
 ## v2.1.186 
 
 Fixed

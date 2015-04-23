@@ -53,5 +53,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.1.0.0")]     // Change this upon breaking changes
-[assembly: AssemblyFileVersion("2.1.198.0")] // Bump this at every release
-[assembly: AssemblyInformationalVersion("2.0.198-rc")] // Customer public info (setting a version across multiple products each possibly with their own versioning)
+[assembly: AssemblyFileVersion("2.1.207.0")] // Bump this at every release
+[assembly: AssemblyInformationalVersion("2.0.207-rc")] // Customer public info (setting a version across multiple products each possibly with their own versioning)

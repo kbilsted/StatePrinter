@@ -142,7 +142,8 @@ namespace StatePrinter.TestAssistance
           UnitTestLocationInfo info)
         {
             var escapedActual = stringUtils.Escape(actual);
-            bool rewriteTest = info != null && printer.Configuration.Test.AutomaticTestRewrite(info);
+            bool rewriteTest = info != null 
+                && printer.Configuration.Test.AutomaticTestRewrite(info);
 
             var message = printer.Configuration.Test.AssertMessageCreator(
                 expected,

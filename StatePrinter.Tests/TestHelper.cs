@@ -53,8 +53,7 @@ namespace StatePrinter.Tests
                 .SetNewlineDefinition(" ")
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                //.Test.SetAutomaticTestRewrite(x => true);
-                .Test.SetAutomaticTestRewrite(x => false);
+                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 
             return cfg;
         }

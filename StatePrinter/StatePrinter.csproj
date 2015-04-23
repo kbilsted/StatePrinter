@@ -84,6 +84,7 @@
     <Compile Include="OutputFormatters\OutputFormatterHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatePrinter.cs" />
+    <Compile Include="TestAssistance\EnvironmentReader.cs" />
     <Compile Include="TestAssistance\Asserter.cs" />
     <Compile Include="TestAssistance\DefaultAssertMessage.cs" />
     <Compile Include="TestAssistance\FileRepository.cs" />

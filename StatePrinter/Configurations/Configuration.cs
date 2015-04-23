@@ -111,7 +111,6 @@ namespace StatePrinter.Configurations
         public IOutputFormatter OutputFormatter;
 
         
-        
         public Configuration SetOutputFormatter(IOutputFormatter formatter)
         {
             if (formatter == null)
