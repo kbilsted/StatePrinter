@@ -34,6 +34,8 @@ namespace StatePrinter.Tests.TestingAssistance
             var org = Environment.GetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, EnvironmentVariableTarget.User);
             try
             {
+                Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, "false", EnvironmentVariableTarget.User);
+
                 var reader = new EnvironmentReader();
                 Assert.AreEqual(false, reader.UseTestAutoRewrite());
 

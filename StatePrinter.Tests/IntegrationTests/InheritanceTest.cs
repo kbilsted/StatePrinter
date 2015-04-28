@@ -18,8 +18,6 @@
 // under the License.
 
 using NUnit.Framework;
-using StatePrinter.Configurations;
-using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
@@ -40,17 +38,6 @@ namespace StatePrinter.Tests.IntegrationTests
     [TestFixture]
     class InheritanceTest
     {
-        Stateprinter printer;
-
-        [SetUp]
-        public void Setup()
-        {
-            var cfg = ConfigurationHelper.GetStandardConfiguration()
-                    .Test.SetAreEqualsMethod(Assert.AreEqual);
-            cfg.OutputFormatter = new CurlyBraceStyle(cfg);
-            printer = new Stateprinter(cfg);
-        }
-
         [Test]
         public void StringArray()
         {
@@ -66,7 +53,8 @@ namespace StatePrinter.Tests.IntegrationTests
     SameFieldInAB = ""A part""
     SomeFieldOnlyInB = 2
     SameFieldInAB = ""B part""
-}"; printer.Assert.IsSame(expected, printer.PrintObject(b));
+}"; 
+            TestHelper.Assert().PrintAreAlike(expected, b);
         }
     }
 }

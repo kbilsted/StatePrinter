@@ -41,7 +41,7 @@ namespace StatePrinter.Tests
             var cfg = ConfigurationHelper.GetStandardConfiguration()
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                .Test.SetAutomaticTestRewrite(x => false);
+                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 
             return new Stateprinter(cfg);
         }

@@ -41,7 +41,7 @@ namespace StatePrinter.Tests.TestingAssistance
             printer.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
             string expected = "boo";
-            printer.Assert.IsSame(expected, "actul");
+            printer.Assert.AreAlike(expected, "actul");
 
             Assert.AreEqual("boo", assertMock.Expected);
             Assert.AreEqual("actul", assertMock.Actual);
@@ -119,7 +119,7 @@ reported by the callstackreflector
 
             string expected = @"expect";
 
-            printer.Assert.IsSame(expected, "actul");
+            printer.Assert.AreAlike(expected, "actul");
         }
     }
 }

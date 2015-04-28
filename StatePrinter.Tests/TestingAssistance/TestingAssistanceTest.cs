@@ -93,7 +93,7 @@ namespace StatePrinter.Tests.TestingAssistance
         }
 
         [Test]
-        public void AreEquals_Escaping_WhenConfigured()
+        public void AreEquals_Escaping_To_Csharp_format_when_required()
         {
             var assertMock = new AreEqualsMethodMock();
             Asserter assert = TestHelper.Assert();

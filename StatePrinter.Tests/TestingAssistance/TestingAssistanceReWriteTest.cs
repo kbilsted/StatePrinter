@@ -22,30 +22,34 @@ using NUnit.Framework;
 namespace StatePrinter.Tests.TestingAssistance
 {
     
+    /// <summary>
+    /// These tests are a bit weird, in that they autocorrect themselves. Ie. we cannot make them fail as they rewrite.
+    /// 
+    /// used for manually testing that the rewrite still works.
+    /// </summary>
     [TestFixture]
     class TestingAssistanceRewriteTest
     {
-
         [Test]
         [Explicit]
         public void Autocorrection_works_var()
         {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.Test.SetAutomaticTestRewrite((x) => true);
+            var assert = TestHelper.Assert();
+            assert.Configuration.Test.SetAutomaticTestRewrite((x) => true);
 
             var expected = @"""test auto""";
-            printer.Assert.PrintIsSame(expected, "test auto");
+            assert.PrintAreAlike(expected, "test auto");
         }
 
         [Test]
         [Explicit]
         public void Autocorrection_works_string()
         {
-            var printer = TestHelper.CreateTestPrinter();
-            printer.Configuration.Test.SetAutomaticTestRewrite((x) => true);
+            var assert = TestHelper.Assert();
+            assert.Configuration.Test.SetAutomaticTestRewrite((x) => true);
 
             string expected = @"""test auto""";
-            printer.Assert.PrintIsSame(expected, "test auto");
+            assert.PrintAreAlike(expected, "test auto");
         }
     }
 }

@@ -68,6 +68,14 @@ namespace StatePrinter.TestAssistance
         }
 
         /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintEquals(string expected, object objectToPrint)
+        {
+            AreEqual(expected, printer.PrintObject(objectToPrint));
+        }
+
+        /// <summary>
         /// Assert that two strings are the "same" ignoring differences in line ending characters \r, \n. 
         /// For all practical purposes, this method rectifies some of the many problems with source files stored in 
         /// different methods on diffrent operating systems.
@@ -81,6 +89,15 @@ namespace StatePrinter.TestAssistance
         public void AreAlike(string expected, string actual)
         {
             AreEqual(stringUtils.UnifyNewLines(expected), stringUtils.UnifyNewLines(actual));
+        }
+
+
+        /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintAreAlike(string expected, object objectToPrint)
+        {
+            AreAlike(expected, printer.PrintObject(objectToPrint));
         }
 
         /// <summary>
@@ -103,20 +120,11 @@ namespace StatePrinter.TestAssistance
         /// <summary>
         /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
         /// </summary>
+        [Obsolete("Instead use PrintAreAlike(). The IsSame() has a special meaning unit testing frameworks that we do not follow. E.g. NUnit: http://www.nunit.org/index.php?p=identityAsserts&r=2.6.3 and XUnit: https://github.com/xunit/xunit/blob/master/src/xunit.assert/Asserts/IdentityAsserts.cs  . Hence its name is confusing.")]
         public void PrintIsSame(string expected, object objectToPrint)
         {
             IsSame(expected, printer.PrintObject(objectToPrint));
         }
-        
-        /// <summary>
-        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
-        /// </summary>
-        public void PrintEquals(string expected, object objectToPrint)
-        {
-            AreEqual(expected, printer.PrintObject(objectToPrint));
-        }
-
-       
 
         /// <summary>
         /// Emulate Nunits Assert.That
