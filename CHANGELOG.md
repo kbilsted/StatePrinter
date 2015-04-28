@@ -15,10 +15,10 @@ Added
 
 Added
 
-  * Functionality for including or excluding fields and properties based on one or more type descriptions. See IncludeByType() and ExcludeByType()
+  * Functionality for including or excluding fields and properties based on one or more type descriptions. See `IncludeByType()` and `ExcludeByType()`.
 
   
-## v2.1.186 
+## v2.1.186-rc 
 
 Fixed
 

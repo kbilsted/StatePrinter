@@ -179,7 +179,7 @@ Simply extend the above `Helper.CreatePrinter()` with
 printer.Configuration.SetAutomaticTestRewrite( (fileName) => true );
 ```
 
-meaning that, for any unit test file executed, allow automatic re-writing of expected values.
+meaning that, for any unit test file executed, allow automatic re-writing of expected values. Notice, that this is just one way to do the configuration. See section "best practices" for a superior approach.
 
  
 ## 2.2 Create the test
@@ -283,6 +283,59 @@ Notice though, that when you use the `Include` or `AddFilter` functionality, you
 
 As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
 
+```C#
+[Test]
+public void TestIncludeByType()
+{
+     var sut = new AtoD();
+     Asserter assert;
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { A = 1 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+ }
+
+ [Test]
+ public void TestExcludeByType()
+ {
+     var sut = new AtoD();
+     Asserter assert;
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { }", sut);
+ }
+```
 
 ```C#
 [Test]
@@ -354,7 +407,7 @@ Need more explanation here. For now look at: https://github.com/kbilsted/StatePr
 
 # 6. Best practices
 
-## StatePrinter configuration
+## 6.1 StatePrinter configuration
 
 The bast practices when using StatePrinter for unit testing is different from using it to do ToString-implementations. The caching of field harvesting of types is not compatible with using the `Include<>`, `Exclude<>` and filter properties of the `ProjectionHarvester`. Thus to ensure correctness of our tests and to ensure that our tests are independent of each other, the best strategy is to use a fresh instance of StatePrinter in each test.
 
@@ -397,11 +450,36 @@ public void Foo()
 
 
 
-## Asserting
+## 6.2 Asserting
 
 When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
 With automatic rewrite, there are no issues with copy-pasting, and thus it is more right to use the AreEqual variant which does not modify the input before comparison.
+
+
+
+## 6.3 Smoother automatic rewrite control
+
+In the above example, we configure the automatic rewrite editing the code, for the `SetAutomaticTestRewrite()` call. This is both very a bit cumbersome, and has the disadvantage, that you may accidently commit setting automatic rewrite to `true`. A smoother solution is to use an environment variable to turn on/off the automatic rewrites. You can then edit this variable through your shell. To do this you can configure with the following: 
+
+```C#
+// requires stateprinter v2.1.xx
+var cfg = ConfigurationHelper
+           .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
+```
+and then use the functions
+
+```PowerShell
+function DoAutoRewrite() 
+{ 
+    [Environment]::SetEnvironmentVariable("StatePrinter_UseTestAutoRewrite", "true", "User")
+}
+
+function ForbidAutoRewrite() 
+{ 
+    [Environment]::SetEnvironmentVariable("StatePrinter_UseTestAutoRewrite", "false", "User")
+}
+```
 
 
 
