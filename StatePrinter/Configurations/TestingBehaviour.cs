@@ -87,7 +87,18 @@ namespace StatePrinter.Configurations
             bool willPerformAutomaticRewrite,
             UnitTestLocationInfo location);
 
-        public CreateAssertMessageCallback AssertMessageCreator { get; set; }
-        
+        public CreateAssertMessageCallback AssertMessageCreator { get; private set; }
+
+        /// <summary>
+        /// Set the method to be called when an assert message is to be created
+        /// </summary>
+        public Configuration SetAssertMessageCreator(CreateAssertMessageCallback assertMessageCreator)
+        {
+            if (assertMessageCreator == null)
+                throw new ArgumentNullException("indicator");
+            AssertMessageCreator = assertMessageCreator;
+
+            return configuration;
+        }
     }
 }

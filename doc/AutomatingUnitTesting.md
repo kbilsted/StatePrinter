@@ -1,4 +1,4 @@
-# Semi/full automatic unit testing with StatePrinter
+﻿# Semi/full automatic unit testing with StatePrinter
 
 This document has the focus of how to use StatePrinter to improve the speed you flesh out your unit tests, make them more readable and even make them automatically re-write them selves. [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) explains in finer details why you should use StatePrinter.
 
@@ -21,12 +21,15 @@ This document explains a radically different approach to writing and maintaining
    * [2.3 Run the test](#23-run-the-test)
    * [2.4 Inspect and commit](#24-inspect-and-commit)
  * [3. Integrating with your unit test framework](#3-integrating-with-your-unit-test-framework)
- * [4. Configuration - Restricting fields harvested](#4-configuration---restricting-fields-harvested)
-   * [4.1 Filtering by use of Types](#41-filtering-by-use-of-types)
+ * [4. Configuration](#4-configuration)
+   * [4.1 Configuring the error message](#41-configuring-the-error-message)
+   * [4.2 Restricting fields harvested](#42-restricting-fields-harvested)
+   * [4.3 Filtering by use of Types](#43-filtering-by-use-of-types)
  * [5. Stateprinter.Assert](#5-stateprinterassert)
  * [6. Best practices](#6-best-practices)
-   * [StatePrinter configuration](#stateprinter-configuration)
-   * [Asserting](#asserting)
+   * [6.1 StatePrinter configuration](#61-stateprinter-configuration)
+   * [6.2 Asserting](#62-asserting)
+   * [6.3 Smoother automatic rewrite control](#63-smoother-automatic-rewrite-control)
 
 
 
@@ -226,7 +229,23 @@ printer.Configuration.SetAreEqualsMethod( Nunit.Framework.Assert.AreEquals );
 
 
 
-# 4. Configuration - Restricting fields harvested
+
+
+# 4. Configuration 
+
+## 4.1 Configuring the error message
+
+The error message shown when a test is failing is fully configurable. This enables to cater for specific needs such as fully printing the content of the actual and expected values. Use
+
+```C#
+printer.Configuration.Test.SetAssertMessageCreator( ... );
+```
+
+For inspiration grok the default implementation at [StatePrinter/TestAssistance/DefaultAssertMessage.cs](DefaultAssertMessage.cs)
+
+
+
+## 4.2 Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -279,7 +298,7 @@ Notice though, that when you use the `Include` or `AddFilter` functionality, you
 
 
 
-## 4.1 Filtering by use of Types
+## 4.3 Filtering by use of Types
 
 As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
 
@@ -467,7 +486,7 @@ In the above example, we configure the automatic rewrite editing the code, for t
 var cfg = ConfigurationHelper
            .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 ```
-and then use the functions
+and then use these functions in PowerShell
 
 ```PowerShell
 function DoAutoRewrite() 
