@@ -4,31 +4,20 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
-## v2.1.207-rc
+## v2.1.xx
 
 Added
 
   * Functionality for controlling automatic test rewrite using an environment variable.
-
-  
-## v2.1.198-rc
-
-Added
-
   * Functionality for including or excluding fields and properties based on one or more type descriptions. See `IncludeByType()` and `ExcludeByType()`.
-
-  
-## v2.1.186-rc 
+  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated). Similar story for `PrintAreAlike` replacing `PrintIsSame()`. 
+  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
+  * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
 
 Fixed
 
   * [#22 Make error message configurable upon assertion failure](https://github.com/kbilsted/StatePrinter/issues/22)
 
-Added
-
-  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated).
-  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
-  * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
 
   
   
