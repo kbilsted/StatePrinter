@@ -1,4 +1,4 @@
-# Semi/full automatic unit testing with StatePrinter
+﻿# Semi/full automatic unit testing with StatePrinter
 
 This document has the focus of how to use StatePrinter to improve the speed you flesh out your unit tests, make them more readable and even make them automatically re-write them selves. [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) explains in finer details why you should use StatePrinter.
 
@@ -25,8 +25,9 @@ This document explains a radically different approach to writing and maintaining
    * [4.1 Filtering by use of Types](#41-filtering-by-use-of-types)
  * [5. Stateprinter.Assert](#5-stateprinterassert)
  * [6. Best practices](#6-best-practices)
-   * [StatePrinter configuration](#stateprinter-configuration)
-   * [Asserting](#asserting)
+   * [6.1 StatePrinter configuration](#61-stateprinter-configuration)
+   * [6.2 Asserting](#62-asserting)
+   * [6.3 Smoother automatic rewrite control](#63-smoother-automatic-rewrite-control)
 
 
 
