@@ -210,6 +210,17 @@ namespace StatePrinter.Configurations
         {
             return Test.SetAreEqualsMethod(areEqualsMethod);
         }
+        
+        /// <summary>
+        /// Evaluate the function for each failing test. <para></para>
+        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
+        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a <see cref="Lazy"/>
+        /// </summary>
+        [Obsolete("Use the Configuration.Test.SetAutomaticTestRewrite instead")]
+        public Configuration SetAutomaticTestRewrite(TestingBehaviour.TestRewriteIndicator indicator)
+        {
+            return Test.SetAutomaticTestRewrite(indicator);
+        }
 
         public Func<FileRepository> FactoryFileRepository = () => new FileRepository();
     }
