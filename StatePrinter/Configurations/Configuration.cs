@@ -49,7 +49,20 @@ namespace StatePrinter.Configurations
         /// <summary>
         /// Specifies the indentation size.
         /// </summary>
-        public readonly string IndentIncrement;
+        public string IndentIncrement { get; private set; }
+
+        /// <summary>
+        /// Set the definition of the newline. The default configuration is a <see cref="Environment.NewLine"/>
+        /// </summary>
+        public Configuration SetIndentIncrement(string indention)
+        {
+            if (indention == null)
+                throw new ArgumentNullException("indention");
+            IndentIncrement = indention;
+
+            return this;
+        }
+
 
         /// <summary>
         /// The culture to use when generating string output
@@ -145,6 +158,9 @@ namespace StatePrinter.Configurations
         /// </summary>
         public Configuration Add(IValueConverter handler)
         {
+            if (handler == null)
+                throw new ArgumentNullException("handler");
+
             valueConverters.Push(handler);
             return this;
         }
@@ -155,6 +171,9 @@ namespace StatePrinter.Configurations
         /// </summary>
         public Configuration Add(IFieldHarvester handler)
         {
+            if (handler == null)
+                throw new ArgumentNullException("handler");
+
             fieldHarvesters.Push(handler);
             return this;
         }
