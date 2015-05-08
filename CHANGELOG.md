@@ -13,6 +13,8 @@ Added
   * Added `AreAlike()`, replacing `IsSame()` (which is deprecated). Similar story for `PrintAreAlike` replacing `PrintIsSame()`. 
   * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
   * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
+  * Obsoleted a lot of methods, describing the alternative API introduced in v2.1
+  
 
 Fixed
 
