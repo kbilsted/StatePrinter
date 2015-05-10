@@ -4,7 +4,7 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
-## v2.1.xx
+## v2.1.220
 
 Added
 
