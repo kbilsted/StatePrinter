@@ -19,7 +19,7 @@
 
 using System;
 using StatePrinter.Configurations;
-
+using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.TestAssistance
 {
@@ -35,9 +35,18 @@ namespace StatePrinter.TestAssistance
     public class Asserter
     {
         readonly Stateprinter printer;
-        
+        readonly StringUtils stringUtils = new StringUtils();
+
+        /// <summary>
+        /// The StatePrinter configuration
+        /// </summary>
         public Configuration Configuration { get { return printer.Configuration; } }
         
+        /// <summary>
+        /// Access an instance of <see cref="ProjectionHarvester"/> which can be configured to include or exclude a number of fields from a specified type.
+        /// </summary>
+        public ProjectionHarvester Project { get { return printer.Configuration.Project; } }
+
         internal Asserter(Stateprinter printer)
         {
             this.printer = printer;
@@ -52,45 +61,18 @@ namespace StatePrinter.TestAssistance
             if (expected == actual)
                 return;
             
-            var escapedActual = Escape(actual);
-            var newExpected = string.Format("var expected = {0};", escapedActual);
-            var message = string.Format("{0}{0}Proposed output for unit test:{0}{0}{1}{0}", Environment.NewLine, newExpected);
-
             var reflector = new CallStackReflector();
             var info = reflector.TryGetLocation();
             
-            CallUnderlyingAssert(expected, actual, info, message, escapedActual);
+            CallUnderlyingAssert(expected, actual, info);
         }
 
-        void CallUnderlyingAssert(
-            string expected,
-            string actual,
-            UnitTestLocationInfo info,
-            string message,
-            string escapedActual)
+        /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintEquals(string expected, object objectToPrint)
         {
-            if (info == null)
-            {
-                Configuration.AreEqualsMethod(expected, actual, message);
-                return;
-            }
-
-            if (printer.Configuration.AutomaticTestRewrite(info.Filepath))
-            {
-                new TestRewriter(Configuration.FactoryFileRepository)
-                    .RewriteTest(info, expected, escapedActual);
-                
-                message =
-                    "Rewritting test expectations in '" 
-                    + info.Filepath 
-                    + "'."+ @"
-Compile and re-run to see green lights.
-New expectations:
-"
-                    + escapedActual;
-            }
-
-            Configuration.AreEqualsMethod(expected, actual, message);
+            AreEqual(expected, printer.PrintObject(objectToPrint));
         }
 
         /// <summary>
@@ -104,40 +86,44 @@ New expectations:
         /// Upon a failure, a suggested string for correcting the test is printed.
         /// </para>
         /// </summary>
+        public void AreAlike(string expected, string actual)
+        {
+            AreEqual(stringUtils.UnifyNewLines(expected), stringUtils.UnifyNewLines(actual));
+        }
+
+
+        /// <summary>
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// </summary>
+        public void PrintAreAlike(string expected, object objectToPrint)
+        {
+            AreAlike(expected, printer.PrintObject(objectToPrint));
+        }
+
+        /// <summary>
+        /// Assert that two strings are the "same" ignoring differences in line ending characters \r, \n. 
+        /// For all practical purposes, this method rectifies some of the many problems with source files stored in 
+        /// different methods on diffrent operating systems.
+        /// <para>
+        /// This method calls <see cref="AreEqual"/> after first unifiying the line endings. "\r" and "\r\n" are changed into "\n"
+        /// </para>
+        /// <para>
+        /// Upon a failure, a suggested string for correcting the test is printed.
+        /// </para>
+        /// </summary>
+        [Obsolete("Instead use AreAlike(). The IsSame() has a special meaning unit testing frameworks that we do not follow. E.g. NUnit: http://www.nunit.org/index.php?p=identityAsserts&r=2.6.3 and XUnit: https://github.com/xunit/xunit/blob/master/src/xunit.assert/Asserts/IdentityAsserts.cs  . Hence its name is confusing.")]
         public void IsSame(string expected, string actual)
         {
-            AreEqual(UnifyNewLines(expected), UnifyNewLines(actual));
+            AreAlike(expected, actual);
         }
 
         /// <summary>
         /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
         /// </summary>
+        [Obsolete("Instead use PrintAreAlike(). The IsSame() has a special meaning unit testing frameworks that we do not follow. E.g. NUnit: http://www.nunit.org/index.php?p=identityAsserts&r=2.6.3 and XUnit: https://github.com/xunit/xunit/blob/master/src/xunit.assert/Asserts/IdentityAsserts.cs  . Hence its name is confusing.")]
         public void PrintIsSame(string expected, object objectToPrint)
         {
             IsSame(expected, printer.PrintObject(objectToPrint));
-        }
-        
-        /// <summary>
-        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
-        /// </summary>
-        public void PrintEquals(string expected, object objectToPrint)
-        {
-            AreEqual(expected, printer.PrintObject(objectToPrint));
-        }
-
-        string UnifyNewLines(string text)
-        {
-            return text
-                .Replace("\r\n", "\n")
-                .Replace("\r", "\n");
-        }
-
-        string Escape(string actual)
-        {
-            var needEscaping = actual.Contains("\"") || actual.Contains("\n");
-            if(needEscaping)
-               return string.Format("@\"{0}\"", actual.Replace("\"", "\"\""));
-            return string.Format("\"{0}\"", actual);
         }
 
         /// <summary>
@@ -145,7 +131,45 @@ New expectations:
         /// </summary>
         public void That(string actual, Expected expected)
         {
-            AreEqual(expected.ExpectedValue, actual);
+            switch (expected.Kind)
+            {
+                case Expected.ComparisonKind.AreEquals:
+                   AreEqual(expected.ExpectedValue, actual);
+                    break;
+                case Expected.ComparisonKind.AreAlike:
+                   AreAlike(expected.ExpectedValue, actual);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        void CallUnderlyingAssert(
+          string expected,
+          string actual,
+          UnitTestLocationInfo info)
+        {
+            var escapedActual = stringUtils.Escape(actual);
+            bool rewriteTest = info != null 
+                && printer.Configuration.Test.AutomaticTestRewrite(info);
+
+            var message = printer.Configuration.Test.AssertMessageCreator(
+                expected,
+                actual,
+                escapedActual,
+                rewriteTest,
+                info);
+
+            if (rewriteTest)
+            {
+                var rewriter = new TestRewriter(Configuration.FactoryFileRepository);
+                rewriter.RewriteTest(
+                    info,
+                    expected,
+                    escapedActual);
+            }
+
+            Configuration.Test.AreEqualsMethod(expected, actual, message);
         }
     }
 
@@ -154,7 +178,10 @@ New expectations:
     /// </summary>
     public class Expected
     {
+        public ComparisonKind Kind = ComparisonKind.AreEquals;
         public string ExpectedValue;
+
+        public enum ComparisonKind { AreEquals, AreAlike }
     }
 
     /// <summary>
@@ -168,6 +195,14 @@ New expectations:
         public static Expected EqualTo(string exptected)
         {
             return new Expected() { ExpectedValue = exptected };
+        }
+
+        /// <summary>
+        /// Different syntax for calling Assert.AreAlike
+        /// </summary>
+        public static Expected AlikeTo(string exptected)
+        {
+            return new Expected() { ExpectedValue = exptected, Kind = Expected.ComparisonKind.AreAlike };
         }
     }
 }

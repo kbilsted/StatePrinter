@@ -84,6 +84,10 @@ namespace StatePrinter
             return result;
         }
 
+        /// <summary>
+        /// Lazily create an asserter based on the configuration "Configuration.Test.AreEqualsMethod". 
+        /// Throws exception if not configured.
+        /// </summary>
         public Asserter Assert
         {
             get
@@ -91,13 +95,12 @@ namespace StatePrinter
                 // lazy fetch so not to require people to set up an asserter when it is not used
                 if (asserter == null)
                 {
-                    if (Configuration.AreEqualsMethod == null)
+                    if (Configuration.Test.AreEqualsMethod == null)
                     {
-                        var message =
-                            "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
-                            + "e.g. use the value: 'Nunit.Framework.Assert.AreEqual' "
-                            + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
-                            + "Parameter name: Configuration.AreEqualsMethod";
+                        const string message = "The configuration has no value for AreEqualsMethod which is to point to your testing framework, "
+                                               + "e.g. use the value: 'Nunit.Framework.Assert.AreEqual' "
+                                               + "or the more long-winded: '(expected, actual, msg) => Assert.AreEqual(expected, actual, msg)'.\r\n"
+                                               + "Parameter name: Configuration.AreEqualsMethod";
                         throw new ArgumentNullException("Configuration.AreEqualsMethod", message);
                     }
                     asserter = new Asserter(this);

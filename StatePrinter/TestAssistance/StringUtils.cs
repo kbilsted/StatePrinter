@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Kasper B. Graversen
+// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -17,44 +17,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using NUnit.Framework;
-
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinter.TestAssistance
 {
-    class A
+    public class StringUtils
     {
-        public int SomeFieldOnlyInA;
-        public string SameFieldInAB;
-    }
-
-
-    class B : A
-    {
-        public int SomeFieldOnlyInB;
-        public new string SameFieldInAB;
-    }
-
-
-    [TestFixture]
-    class InheritanceTest
-    {
-        [Test]
-        public void StringArray()
+        public string UnifyNewLines(string text)
         {
-            B b = new B();
-            ((A)b).SomeFieldOnlyInA = 1;
-            ((A)b).SameFieldInAB = "A part";
-            b.SomeFieldOnlyInB = 2;
-            b.SameFieldInAB = "B part";
+            return text
+                .Replace("\r\n", "\n")
+                .Replace("\r", "\n");
+        }
 
-            var expected = @"new B()
-{
-    SomeFieldOnlyInA = 1
-    SameFieldInAB = ""A part""
-    SomeFieldOnlyInB = 2
-    SameFieldInAB = ""B part""
-}"; 
-            TestHelper.Assert().PrintAreAlike(expected, b);
+        public string Escape(string actual)
+        {
+            var needEscaping = actual.Contains("\"") || actual.Contains("\n");
+            if (needEscaping)
+                return string.Format("@\"{0}\"", actual.Replace("\"", "\"\""));
+            return string.Format("\"{0}\"", actual);
         }
     }
 }

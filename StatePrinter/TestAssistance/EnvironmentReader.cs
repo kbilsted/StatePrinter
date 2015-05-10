@@ -1,4 +1,4 @@
-﻿// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014-2015 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -17,44 +17,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using NUnit.Framework;
+using System;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinter.TestAssistance
 {
-    class A
+    public class EnvironmentReader
     {
-        public int SomeFieldOnlyInA;
-        public string SameFieldInAB;
-    }
+        public const string Usetestautorewrite = "StatePrinter_UseTestAutoRewrite";
 
-
-    class B : A
-    {
-        public int SomeFieldOnlyInB;
-        public new string SameFieldInAB;
-    }
-
-
-    [TestFixture]
-    class InheritanceTest
-    {
-        [Test]
-        public void StringArray()
+        public bool UseTestAutoRewrite()
         {
-            B b = new B();
-            ((A)b).SomeFieldOnlyInA = 1;
-            ((A)b).SameFieldInAB = "A part";
-            b.SomeFieldOnlyInB = 2;
-            b.SameFieldInAB = "B part";
-
-            var expected = @"new B()
-{
-    SomeFieldOnlyInA = 1
-    SameFieldInAB = ""A part""
-    SomeFieldOnlyInB = 2
-    SameFieldInAB = ""B part""
-}"; 
-            TestHelper.Assert().PrintAreAlike(expected, b);
+            string result = Environment.GetEnvironmentVariable(
+                Usetestautorewrite, 
+                EnvironmentVariableTarget.User);
+            return "true".Equals(result);
         }
     }
 }
+

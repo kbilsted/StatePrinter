@@ -3,21 +3,21 @@
  
 This page highlights the pains and problems with how we write unit tests today. It is a philosophical discussion that applies to asserting in unit tests. To see how to use StatePrinter to remedy these problems please refer to https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingUnitTesting.md
 
-There are five (if not more) pain points that I have discovered through my years as a developer. Don't get me wrong. I love tests! They are an absolute required part of software development. That being said, the way we do unit testing today is far to laborious and often the claim that unit tests are a ressource of documentation is far from the truth.
+There are five (if not more) pain points that I have discovered through my years as a developer. Don't get me wrong. I love tests! They are an absolute required part of software development. That being said, the way we do unit testing today is far to laborious and often the claim that unit tests are a resource of documentation is far from the truth.
 
 
 #### 1. Writing tests is laborious task. 
 
 When I type and re-type over and over again: `Assert.This`, `Assert.That`, ... can't help but wonder why the computer cannot automate this stuff for me. All that needless typing takes time and drains my energy.
 
-*When using Stateprinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.*
+*When using StatePrinter, the asserts are generated for you whenever there is a mismatch between expected and actual values.*
 
 
 #### 2. Code and test easily gets out of sync
 
 When the code changes, say by adding a field to a class, you need to add asserts in some of your tests. Locating  where, though, is an entirely manual process. On larger project where no one has the full overview of all classes, the needed changes are not performed in all the places it should. 
 
-A similar situation arises when merging code from one branch to another. Say you merge a bug fix or feature from a release branch to the development branch, what I observe over and over again is that the code gets merged, all the tests are run and then the merge is committed. People forget to revisit and double check the entire test suite to figure out there are tests existing on the development branch and not on the branch from where the merge occured, an adjust these accordingly.
+A similar situation arises when merging code from one branch to another. Say you merge a bug fix or feature from a release branch to the development branch, what I observe over and over again is that the code gets merged, all the tests are run and then the merge is committed. People forget to revisit and double check the entire test suite to figure out there are tests existing on the development branch and not on the branch from where the merge occurred, an adjust these accordingly.
 
 *When using Stateprinter, object graphs are compared rather than single fields. Thus, when a new field is created, all relevant tests fail. You can adjust the printing to specific fields, but you lose the ability to automatically detect changes in the graph.*
 
@@ -26,7 +26,7 @@ A similar situation arises when merging code from one branch to another. Say you
 
 Ironically, while tests initially makes you code faster and with more confidence, tests, or rather the way we do asserts, can easily be detrimental to code changes later on. A fact of life is that business requirements change. When they do, you have to change the implementation and all the code. Most of the time, a hand full of tests are unit testing the heart of the requirements, while the other tests, say module-, integration- and acceptance-tests serve to put into perspective the requirement executed in relation to other data and other requirements. Most of the time when correcting the asserts of such tests is time consuming, annoying. You no longer feel free, you feel shackled and dread the next requirement change that yet again forces you to drone your days away reconfiguring your asserts. 
 
-*With StatePrinter's special assert methods, you can easilty turn on automatic assert rewritting of your test to use new values returned from you code. You still need to make sure the new expected values are correct, but this now becomes a reading excersice - all the tedious editing has disappeared. No more running your tests again and again only to be able to update the next assert in line. Only to run the test again to fix the next assert.*
+*With StatePrinter's special assert methods, you can easily turn on automatic assert rewriting of your test to use new values returned from you code. You still need to make sure the new expected values are correct, but this now becomes a reading exercise - all the tedious editing has disappeared. No more running your tests again and again only to be able to update the next assert in line. Only to run the test again to fix the next assert.*
 
 
 #### 4.a Poor readability I
@@ -77,7 +77,7 @@ When business objects grow large in number of fields, the opposite holds true fo
 From the philosophical perspective to some concrete examples. Here we express concerns with typical issues I see in testing  especially enterprise applications. Please feel contact me with more good examples.
 
 
-### Example 1 - Testing against Xml
+### Example 1 - Testing against XML
 
 ```C#
 [Test]
@@ -127,7 +127,7 @@ public void TestXML()
     </Orders>
   </Customer>";
   
- Helper.GetPrinter().Assert.PrintIsSame(expected, customerElements);
+ TestHelper.Assert().PrintAreAlike(expected, customerElements);
 ```
 
 
@@ -169,9 +169,9 @@ public void AllocationTest()
   Assert.That(allocateData.Tax, Is.EqualTo(allocation.Tax));
 ```
 
-When reviewing code like this, I always question whether the comitter remembered to check all the fields. I can't really tell from the test if something has been forgotten. Notice also how cluttered the test is. More than 50% of the code is *IRRELEVANT*, I'm talking about the `Assert.That(.... Is.EqualTo())`.
+When reviewing code like this, I always question whether the committer remembered to check all the fields. I can't really tell from the test if something has been forgotten. Notice also how cluttered the test is. More than 50% of the code is *IRRELEVANT*, I'm talking about the `Assert.That(.... Is.EqualTo())`.
 
-With Stateprinter we are down to earth with much less clutter and all the irrelevant code stripped away.
+With StatePrinter we are down to earth with much less clutter and all the irrelevant code stripped away.
 
 ```C#
 [Test]
@@ -209,7 +209,7 @@ public void EndlessAssertsAlternative()
     Tax = 110
 }
 ";
- Helper.GetPrinter().Assert.PrintIsSame(expected, allocateData);
+ TestHelper.Assert().PrintAreAlike(expected, allocateData);
 ```
  
 ### Example 3 - Asserting on lists and arrays
@@ -247,33 +247,32 @@ Now there are a little more pain with arrays and lists when asserting. Did you n
 [Test]
 public void ExampleListAndArrays()
 {
-  var sut = new TaxvendorManager(products, vendors, year);
-  sut.AddVendor(JobType.JobType1, added1);
-  sut.AddVendor(JobType.JobType2, added2);
-  sut.AddVendor(JobType.JobType3, added3);
+  var vendorManager = new TaxvendorManager(products, vendors, year);
+  vendorManager.AddVendor(JobType.JobType1, added1);
+  vendorManager.AddVendor(JobType.JobType2, added2);
+  vendorManager.AddVendor(JobType.JobType3, added3);
 
-  var expected = @"new Boo[]()
-[0] = new Boo()
+  var expected = @"new VendorAllocation[]()
+[0] = new VendorAllocation()
 {
     Allocation = 100
     Price = 20
     Share = 20
 }
-[1] = new Boo()
+[1] = new VendorAllocation()
 {
     Allocation = 120
     Price = 550
     Share = 30
 }
-[2] = new Boo()
+[2] = new VendorAllocation()
 {
     Allocation = 880
     Price = 11
     Share = 50
-}
-";
+}";
 
-  Helper.GetPrinter().Assert.PrintIsSame(expected, sut.VendorJobSplit);
+  TestHelper.Assert().PrintAreAlike(expected, vendorManager.VendorJobSplit);
 ```
 
 

@@ -35,13 +35,13 @@ namespace StatePrinter.Tests.TestingAssistance
             var fakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
             var mock = new FileRepositoryMock(fakeReadContent);
             printer.Configuration.FactoryFileRepository = () => mock;
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            printer.Configuration.Test.SetAutomaticTestRewrite(x => true);
 
             var assertMock = new AreEqualsMethodMock();
-            printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
+            printer.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
             string expected = "boo";
-            printer.Assert.IsSame(expected, "actul");
+            printer.Assert.AreAlike(expected, "actul");
 
             Assert.AreEqual("boo", assertMock.Expected);
             Assert.AreEqual("actul", assertMock.Actual);
@@ -112,14 +112,14 @@ reported by the callstackreflector
 
             var fakeReadContent = new System.Text.UTF8Encoding(true).GetBytes(TestFileContent);
             printer.Configuration.FactoryFileRepository = () => new FileRepositoryMock(fakeReadContent);
-            printer.Configuration.SetAutomaticTestRewrite((x) => true);
+            printer.Configuration.Test.SetAutomaticTestRewrite((x) => true);
 
             var assertMock = new AreEqualsMethodMock();
-            printer.Configuration.SetAreEqualsMethod(assertMock.AreEqualsMock);
+            printer.Configuration.Test.SetAreEqualsMethod(assertMock.AreEqualsMock);
 
             string expected = @"expect";
 
-            printer.Assert.IsSame(expected, "actul");
+            printer.Assert.AreAlike(expected, "actul");
         }
     }
 }

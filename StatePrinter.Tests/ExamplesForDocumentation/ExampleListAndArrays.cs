@@ -66,7 +66,7 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
     Share = 50
 }";
 
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, vendorManager.VendorJobSplit);
+            TestHelper.Assert().PrintAreAlike(expected, vendorManager.VendorJobSplit);
         }
     }
 

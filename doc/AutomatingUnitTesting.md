@@ -5,7 +5,7 @@ This document has the focus of how to use StatePrinter to improve the speed you 
 
 This document explains a radically different approach to writing and maintaining asserts in unit tests. Read with an open mind!
 
-> We honor the dead for giving us the world we inherited, however, we must recoqnize we are doomed if we allow the dead to govern us.
+> We honor the dead for giving us the world we inherited, however, we must recognize we are doomed if we allow the dead to govern us.
 
 # Table of Content
  * [1. Using semi-automatic testing](#1-using-semi-automatic-testing)
@@ -21,8 +21,10 @@ This document explains a radically different approach to writing and maintaining
    * [2.3 Run the test](#23-run-the-test)
    * [2.4 Inspect and commit](#24-inspect-and-commit)
  * [3. Integrating with your unit test framework](#3-integrating-with-your-unit-test-framework)
- * [4. Configuration - Restricting fields harvested](#4-configuration---restricting-fields-harvested)
-   * [4.1 Filtering by use of Types](#41-filtering-by-use-of-types)
+ * [4. Configuration](#4-configuration)
+   * [4.1 Configuring the error message](#41-configuring-the-error-message)
+   * [4.2 Restricting fields harvested](#42-restricting-fields-harvested)
+   * [4.3 Filtering by use of Types](#43-filtering-by-use-of-types)
  * [5. Stateprinter.Assert](#5-stateprinterassert)
  * [6. Best practices](#6-best-practices)
    * [6.1 StatePrinter configuration](#61-stateprinter-configuration)
@@ -39,7 +41,7 @@ The work flow is as follows
 
 1. Create a test, with an empty expected (or change existing code that has tests)
 2. Run the tests
-3. Copy-paste test expectations from the stateprinter error message to the test
+3. Copy-paste test expectations from the StatePrinter error message to the test
 4. Inspect the changes before pushing code to the repository
 
  
@@ -49,7 +51,7 @@ To get started with the automatic asserting in unit testing, you first write you
 
 Remember, no asserts are to be written or maintained manually any more. 
 
-The below situation is comparable to havin gunit tests for business code that has changed, since last running the tests (i.e. they will fail upon execution).
+The below situation is comparable to having unit tests for business code that has changed, since last running the tests (i.e. they will fail upon execution).
 
 For example:
 
@@ -227,7 +229,23 @@ printer.Configuration.SetAreEqualsMethod( Nunit.Framework.Assert.AreEquals );
 
 
 
-# 4. Configuration - Restricting fields harvested
+
+
+# 4. Configuration 
+
+## 4.1 Configuring the error message
+
+The error message shown when a test is failing is fully configurable. This enables to cater for specific needs such as fully printing the content of the actual and expected values. Use
+
+```C#
+printer.Configuration.Test.SetAssertMessageCreator( ... );
+```
+
+For inspiration grok the default implementation at [StatePrinter/TestAssistance/DefaultAssertMessage.cs](DefaultAssertMessage.cs)
+
+
+
+## 4.2 Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -247,7 +265,7 @@ class A
 }
 ```
 
-You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties fieldharvester so it will by default include more than what you might be used to from using the normal field processor.
+You can *in a type safe manner, and using auto-completion of visual studio* include or exclude fields. Notice that the type is provided in the call (`A`) therefore the editor can help suggest which properties or fields to include or exclude. Unlike the normal field-harvester, the `ProjectiveHarvester` uses the FieldsAndProperties field harvester so it will by default include more than what you might be used to from using the normal field processor.
 
 ```C#
 Asserter assert = TestHelper.CreateShortAsserter();
@@ -276,14 +294,67 @@ assert.Project.AddFilter<A>(x => x.Where(y => y.SanitizedName != "X" && y.Saniti
 
 You can now easily configure what to dump when testing. 
 
-Notice though, that when you use the `Include` or `AddFilter` functionality, you are exluding yourself from failing tests when your business data is extended. So use it with care.
+Notice though, that when you use the `Include` or `AddFilter` functionality, you are excluding yourself from failing tests when your business data is extended. So use it with care.
 
 
 
-## 4.1 Filtering by use of Types
+## 4.3 Filtering by use of Types
 
 As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
 
+```C#
+[Test]
+public void TestIncludeByType()
+{
+     var sut = new AtoD();
+     Asserter assert;
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { A = 1 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+ }
+
+ [Test]
+ public void TestExcludeByType()
+ {
+     var sut = new AtoD();
+     Asserter assert;
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA>();
+     assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB>();
+     assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
+     assert.PrintEquals("new AtoD() { D = 4 }", sut);
+
+     assert = TestHelper.CreateShortAsserter();
+     assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
+     assert.PrintEquals("new AtoD() { }", sut);
+ }
+```
 
 ```C#
 [Test]
@@ -346,7 +417,7 @@ As of v2.0, StatePrinter ships with assert methods accessible from `printer.Asse
 
 * They wrap the current unit testing framework of your choice 
 * They code generate your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
-* Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as Resharper is incapable of proper line ending handling when copy/pasting.
+* Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as ReSharper is incapable of proper line ending handling when copy/pasting.
 
 Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
 
@@ -364,8 +435,8 @@ There are many ways of achieving this, but I found the best way to use a `TestHe
 Things to consider in the general case
 
 * The use of a specific culture to ensure that your tests work across platforms. For example, AppVeyor has a completely different setup than my local machine.
-* Setup type converters as you want them. E.g. do you want strings in the output to be enclosd in `""` or maybe you have attributes on your enum-values that you want to see in the output.
-* Hook up your unit testing framwork 
+* Setup type converters as you want them. E.g. do you want strings in the output to be enclosed in `""` or maybe you have attributes on your enum-values that you want to see in the output.
+* Hook up your unit testing framework 
 
 You come a long way with the following code
 
@@ -400,7 +471,7 @@ public void Foo()
 
 ## 6.2 Asserting
 
-When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as Resharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
+When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as ReSharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
 With automatic rewrite, there are no issues with copy-pasting, and thus it is more right to use the AreEqual variant which does not modify the input before comparison.
 
@@ -408,14 +479,14 @@ With automatic rewrite, there are no issues with copy-pasting, and thus it is mo
 
 ## 6.3 Smoother automatic rewrite control
 
-In the above example, we configure the automatic rewrite editing the code, for the `SetAutomaticTestRewrite()` call. This is both very a bit cumbersome, and has the disadvantage, that you may accidently commit setting automatic rewrite to `true`. A smoother solution is to use an environment variable to turn on/off the automatic rewrites. You can then edit this variable through your shell. To do this you can configure with the following: 
+In the above example, we configure the automatic rewrite editing the code, for the `SetAutomaticTestRewrite()` call. This is both very a bit cumbersome, and has the disadvantage, that you may accidentally commit setting automatic rewrite to `true`. A smoother solution is to use an environment variable to turn on/off the automatic rewrites. You can then edit this variable through your shell. To do this you can configure with the following: 
 
 ```C#
 // requires stateprinter v2.1.xx
 var cfg = ConfigurationHelper
            .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 ```
-and then use the functions
+and then use these functions in PowerShell
 
 ```PowerShell
 function DoAutoRewrite() 
