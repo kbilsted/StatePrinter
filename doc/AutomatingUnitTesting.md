@@ -1,4 +1,4 @@
-﻿# Semi/full automatic unit testing with StatePrinter
+# Semi/full automatic unit testing with StatePrinter
 
 This document focuses on how to use StatePrinter to improve the speed you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests suffer that do not StatePrinter.
 
@@ -6,18 +6,18 @@ This document focuses on how to use StatePrinter to improve the speed you flesh 
 
 # Table of Content
  * [Introduction](#introduction)
- * [1. Strategy 1: Manual asserting with automatic consolidation](#1-strategy-1:-manual-asserting-with-automatic-consolidation)
+ * [1. Strategy 1.. Manual asserting with automatic consolidation](#1-strategy-1-manual-asserting-with-automatic-consolidation)
    * [1.1 Creating a test](#11-creating-a-test)
    * [1.3 Instruct the use of automatic re-writing](#13-instruct-the-use-of-automatic-re-writing)
    * [1.4 Inspect and commit](#14-inspect-and-commit)
- * [2. Strategy 2: Semi-automatic testing](#2-strategy-2:-semi-automatic-testing)
+ * [2. Strategy 2.. Semi-automatic testing](#2-strategy-2-semi-automatic-testing)
    * [2.1 Create the test](#21-create-the-test)
    * [2.2 Run the test](#22-run-the-test)
    * [2.3 Copy-paste the generated asserts](#23-copy-paste-the-generated-asserts)
    * [2.4 Inspect and commit](#24-inspect-and-commit)
      * [Short cut helpers](#short-cut-helpers)
      * [Conclusions](#conclusions)
- * [3. Strategy 3: Full automatic unit tests](#3-strategy-3:-full-automatic-unit-tests)
+ * [3. Strategy 3.. Full automatic unit tests](#3-strategy-3-full-automatic-unit-tests)
    * [3.1. Instruct StatePrinter to allow auto-rewriting](#31-instruct-stateprinter-to-allow-auto-rewriting)
    * [3.2 Create the test](#32-create-the-test)
    * [3.3 Run the test](#33-run-the-test)
@@ -43,7 +43,7 @@ This document explains a radically different approach to writing and maintaining
 
 
 
-# 1. Strategy 1: Manual asserting with automatic consolidation
+# 1. Strategy 1.. Manual asserting with automatic consolidation
 
 The straight forward way to using Stateprinter is to only use it for generating values for your asserts. In turn, this will enable to you to quickly rectify your asserts when inner logic of your business code changes. For the most part, it's business as usual and we have not really solved the problems with unit testing presented in [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md). 
 
@@ -139,7 +139,7 @@ When the automatic rewrite is allowed, running the unit tests will make them gre
  
 
  
-# 2. Strategy 2: Semi-automatic testing
+# 2. Strategy 2.. Semi-automatic testing
 
 The work flow is as follows
 
@@ -265,7 +265,7 @@ If you don't like the output format of the `expected` variable, read  [configura
 
 
 
-# 3. Strategy 3: Full automatic unit tests
+# 3. Strategy 3.. Full automatic unit tests
 
 The work flow is as follows
 
