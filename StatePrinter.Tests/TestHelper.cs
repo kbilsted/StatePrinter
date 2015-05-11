@@ -31,26 +31,31 @@ namespace StatePrinter.Tests
             return CreateTestPrinter().Assert;
         }
 
+        public static Asserter CreateShortAsserter()
+        {
+            return new Stateprinter(CreateTestConfiguration()).Assert;
+        }
+
         public static Stateprinter CreateTestPrinter()
         {
             var cfg = ConfigurationHelper.GetStandardConfiguration()
-                .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
-                .SetAutomaticTestRewrite((x) => false);
+                .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 
             return new Stateprinter(cfg);
         }
 
         public static Configuration CreateTestConfiguration()
         {
-            var res = ConfigurationHelper
+            var cfg = ConfigurationHelper
                 .GetStandardConfiguration("")
                 .SetNewlineDefinition(" ")
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
-                .SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                .SetAutomaticTestRewrite((x) => false);
+                .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
+                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 
-            return res;
+            return cfg;
         }
     }
 }

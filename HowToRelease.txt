@@ -5,3 +5,4 @@ Steps for creating a new release
 * Update CHANGELOG.md
 * Update StatePrinter.nuspec
 * Run DeployToNuget.cmd
+* Add release on github.com

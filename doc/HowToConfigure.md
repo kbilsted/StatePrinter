@@ -1,19 +1,22 @@
-#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter configuration
+﻿#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter configuration
 
-**Table of content**
-* [2. Configuration](#2-configuration)
- * [2.1 Stacked configuration principle](#21-stacked-configuration-principle)
- * [2.2 Simple changes](#22-simple-changes)
- * [2.3 Culture specific printing](#23-culture-specific-printing)
- * [2.4 Output as a single line](#24-output-as-a-single-line)
- * [2.5 Field harvesting](#25-field-harvesting)
- * [2.6 Simple value printing](#26-simple-value-printing)
- * [2.7 Output formatting](#27-output-formatting)
+# Table of Content
+ * [1. Configuration of StatePrinter](#1-configuration-of-stateprinter)
+   * [1.1 Stacked configuration principle](#11-stacked-configuration-principle)
+   * [1.2 Simple changes](#12-simple-changes)
+   * [1.3 Culture specific printing](#13-culture-specific-printing)
+   * [1.4 Output as a single line](#14-output-as-a-single-line)
+   * [1.5 Field harvesting](#15-field-harvesting)
+   * [1.6 Simple value printing](#16-simple-value-printing)
+   * [1.7 Output formatting](#17-output-formatting)
+     * [Curly style](#curly-style)
+     * [JSon style](#json-style)
+     * [XML style](#xml-style)
 
  
  
 
-# 2. Configuration
+# 1. Configuration of StatePrinter
 
 Most of the inner workings of the StatePrinter is configurable. The configuration can be broken down to three parts each of which represents a sub-process of the state printer. Since the configuration is made through code, we'll just as well explain the interfaces.
 
@@ -24,7 +27,7 @@ Most of the inner workings of the StatePrinter is configurable. The configuratio
 Finally, culture specific printing of dates and numbers are supported.
 
 
-## 2.1 Stacked configuration principle
+## 1.1 Stacked configuration principle
 
 The Stateprinter has a configuration object that for the most cases be initialized with default behaviour. Don't worry about what they are, since you can easily re-configure the before use. This is due to the FILO principle. The StatePrinter retrieved configuration items in the reverse order they are added and stops when the first match has been found. The defaults are thus a cushion, a nice set of fall-back values.
 
@@ -39,7 +42,14 @@ var cfg = ConfigurationHelper.GetStandardConfiguration();
 var printer = new Stateprinter(cfg);
 ```
 
-which really means
+Also notice that the configuration can be accessed directly from the Stateprinter. Eg.
+
+```C#
+var printer = new Stateprinter();
+printer.Configuration.xxx
+```
+
+The `GetStandardConfiguration()` means the following set of configurations.
 
 ```C#
 public static Configuration GetStandardConfiguration()
@@ -63,71 +73,76 @@ public static Configuration GetStandardConfiguration()
 }
 ```
 
-Once the StatePrinter has been initialized you should not change the configuration. A shallow clone of the configuration is made in the constructor to prevent you from shooting youself in the foot.
+Once the StatePrinter has been initialized you should not change the configuration. A shallow clone of the configuration is made in the constructor to prevent you from shooting yourself in the foot.
 
 Like wise, when implementing harvesters, outputformatters, etc. Do not worry about the stack of the configuration. Simply, through the interface you implement, return only the types you support. In case of an unsupported type, an automatic fall through mechanism will activate the next entity on the stack.
 
 
-## 2.2 Simple changes
+## 1.2 Simple changes
 
 The `Configuration` class should be rather self-documenting. We can change the public fields and properties like setting the indentation characters.
 
 ```C#
-var cfg = ConfigurationHelper.GetStandardConfiguration();
-cfg.IndentIncrement = " ";
-cfg.OutputAsSingleLine = true;
-
-var printer = new Stateprinter(cfg);
+var printer = new Stateprinter();
+printer.Configuration
+  .SetIndentIncrement(" ")
+  .SetNewlineDefinition("");
 ```
 
 
-## 2.3 Culture specific printing
+## 1.3 Culture specific printing
 
 The default culture is `CultureInfo.CurrentCulture`. You can change the `Culture` field in the configuration to suit your needs. 
 
-      const decimal decimalNumber = 12345.343M;
-      var dateTime = new DateTime(2010, 2, 28, 22, 10, 59);
+```C#
+const decimal decimalNumber = 12345.343M;
+var dateTime = new DateTime(2010, 2, 28, 22, 10, 59);
+```
 
 First the us culture
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.Culture = new CultureInfo("en-US");
-      var printer = new Stateprinter(cfg);
-
-      Assert.AreEqual("12345.343\r\n", printer.PrintObject(decimalNumber));
-      Assert.AreEqual("2/28/2010 10:10:59 PM\r\n", printer.PrintObject(dateTime));
+```C#
+var printer = new Stateprinter();
+printer.Configuration
+  .SetCulture(new CultureInfo("en-US")
+  .SetNewlineDefinition(""));
+  
+Assert.AreEqual("12345.343", printer.PrintObject(decimalNumber));
+Assert.AreEqual("2/28/2010 10:10:59 PM", printer.PrintObject(dateTime));
+```
 
 The same input with a different culture
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.Culture = new CultureInfo("da-DK");
-      var printer = new Stateprinter(cfg);
-      Assert.AreEqual("12345,343\r\n", printer.PrintObject(decimalNumber));
-      Assert.AreEqual("28-02-2010 22:10:59\r\n", printer.PrintObject(dateTime));
-
-
-
-## 2.4 Output as a single line
-
-When you print really small object you may prefer to use the  which will print the state on a single line.
-
-When printing very small objects, it is some times preferable to print the state as a sinle line. Use the  `Configuration.SetNewlineDefinition("")` to achieve this. However, the method is more generally applicable. Any sequence of characters can be used as new lines, for example to enforce `LF`+`CR`.
-
-
-
-## 2.5 Field harvesting
-
-The StatePrinter comes with two pre-defined harvesters: The `AllFieldsHarvester` and `PublicFieldsHarvester`. By default we harvest all fields, but you can use whatever implementation you want.
-
 ```C#
-var cfg = ConfigurationHelper.GetStandardConfiguration();
-cfg.Add(new PublicFieldsHarvester());
+var printer = new Stateprinter();
+printer.Configuration
+  .SetCulture(new CultureInfo("da-DK")
+  .SetNewlineDefinition(""));
 
-var printer = new Stateprinter(cfg);
+Assert.AreEqual("12345,343", printer.PrintObject(decimalNumber));
+Assert.AreEqual("28-02-2010 22:10:59", printer.PrintObject(dateTime));
 ```
 
 
+
+## 1.4 Output as a single line
+
+When you print really small object you may prefer to use the  which will print the state on a single line.
+
+When printing very small objects, it is some times preferable to print the state as a single line. Use the  `Configuration.SetNewlineDefinition("")` to achieve this. However, the method is more generally applicable. Any sequence of characters can be used as new lines, for example to enforce `LF`+`CR`.
+
+
+
+## 1.5 Field harvesting
+
+The StatePrinter comes with a [number of pre-defined harvesters](https://github.com/kbilsted/StatePrinter/tree/master/StatePrinter/FieldHarvesters): For example, the `AllFieldsHarvester` and `PublicFieldsHarvester`. By default we harvest all fields, but you can use whatever implementation you want.  
+```C#
+var printer = new Stateprinter();
+printer.Configuration.Add(new PublicFieldsHarvester());
+```
+
 Field harvesting is simpler than you'd expect. While you may never need to write one yourself, let's walk through the PublicFieldsHarvester for the fun of it. The harvester basically works by harvesting all fields and filtering away those it does not want. We want all public fields, and all private fields if they are the backing fields of public fields.
+
 
 ```C#
 public class AllFieldsHarvester : IFieldHarvester
@@ -145,7 +160,7 @@ public class AllFieldsHarvester : IFieldHarvester
 }
 ```
 
-Notice that in `CanHandleType` we are free to setup any restriction. For example, it should apply only to classes in your department. Let's re-implement it.
+Notice that in `CanHandleType` we are free to set up any restriction. For example, it should apply only to classes in your department. Let's re-implement it.
 
 ```C#
 public bool CanHandleType(Type type)
@@ -159,13 +174,13 @@ The full selection of field harvesters are found at https://github.com/kbilsted/
 
 
 
-## 2.6 Simple value printing
+## 1.6 Simple value printing
 
 After we have harvested the fields of the object graph, we may desire to turn a complex object into a simple value. That is one that doesn't hold any nested structure. You'd be surprised of the amount of "garbage" values we would print if we revealed the whole state of the string or decimal instances. If you have any interest in such fields, feel free to supply your own implementation.
 
-Let's re-write how we print strings. We want them printed using the `'` delimiter rather than the `"`
+For a moment lets ignore that we can configure how strings are formatted using the existing functionality via `printer.Configuration.Add(new StringConverter("'")`. So we'll implement our own value converter for strings making them be printed using the `'` delimiter. 
 
-First we implement a `IValueConverter`
+We simply create a class and implement `IValueConverter`.
 
 ```C#
 public class StringToPlingConverter : IValueConverter
@@ -194,7 +209,7 @@ var printer = new Stateprinter(cfg);
 Due to the stacking principle our value converter is consulted before the standard implementation. The full selection of value converters are found at https://github.com/kbilsted/StatePrinter/tree/master/StatePrinter/ValueConverters
 
 
-## 2.7 Output formatting
+## 1.7 Output formatting
 
 the `IOutputFormatter` only contains a single method
 
@@ -227,91 +242,90 @@ The following three outputters are implemented:
 The curly style is reminiscent for C# code
 
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new CurlyBraceStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
-      
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      
-      printer.PrintObject(car);
+ ```C#
+var printer = new Stateprinter();
+printer.Configuration.SetOutputFormatter(new CurlyBraceStyle(printer.Configuration)));
+
+var course = new Course();
+course.Members.Add(new Student("Stan", course));
+course.Members.Add(new Student("Richy", course));
+
+printer.PrintObject(course);
+```
 
 Yields the output
 
-	new Course(), ref: 0
-	{
-	    Members = new List<Student>()
-	    Members[0] = new Student()
-	    {
-	        name = "Stan"
-	        course =  -> 0
-	    }
-	    Members[1] = new Student()
-	    {
-	        name = "Richy"
-	        course =  -> 0
-	    }
-	}
-
+```
+new Course(), ref: 0
+{
+    Members = new List<Student>()
+    Members[0] = new Student()
+    {
+        name = "Stan"
+        course =  -> 0
+    }
+    Members[1] = new Student()
+    {
+        name = "Richy"
+        course =  -> 0
+    }
+}
+```
 
 
 ### JSon style
 
 The JSon style follows the JSon format and describe cyclic references as paths from the root
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new JsonStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
-      
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      
-      printer.PrintObject(car);
+```C#
+printer.Configuration.SetOutputFormatter(new JsonStyle(printer.Configuration)));
+```
 
 Yields the output
 
-	{
-	    "Members" :
-	    [
-	        {
-	            "name" : "Stan",
-	            "course" :  root
-	        }
-	        {
-	            "name" : "Richy",
-	            "course" :  root
-	        }
-	    ]
-	}
-
+```
+{
+    "Members" :
+    [
+        {
+            "name" : "Stan",
+            "course" :  root
+        }
+        {
+            "name" : "Richy",
+            "course" :  root
+        }
+    ]
+}
+```
 
 
 ### XML style
 
 The Xml style is the most verbose
 
+```C#
+printer.Configuration.SetOutputFormatter(new XmlStyle(printer.Configuration)));
 
-      var cfg = ConfigurationHelper.GetStandardConfiguration();
-      cfg.OutputFormatter = new XmlStyle(cfg.IndentIncrement);
-      var printer = new Stateprinter(cfg);
-      
-      var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-      
-      printer.PrintObject(car);
+var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
+printer.PrintObject(car);
+```
 
 Yields the output
 
-
-	<ROOT type='Car'>
-	    <StereoAmplifiers>null</StereoAmplifiers>
-	    <steeringWheel type='SteeringWheel'>
-	        <Size>3</Size>
-	        <Grip type='FoamGrip'>
-	            <Material>"Plastic"</Material>
-	        </Grip>
-	        <Weight>525</Weight>
-	    </steeringWheel>
-	    <Brand>"Toyota"</Brand>
-	</ROOT>
-
+```
+<ROOT type='Car'>
+    <StereoAmplifiers>null</StereoAmplifiers>
+    <steeringWheel type='SteeringWheel'>
+        <Size>3</Size>
+        <Grip type='FoamGrip'>
+            <Material>"Plastic"</Material>
+        </Grip>
+        <Weight>525</Weight>
+    </steeringWheel>
+    <Brand>"Toyota"</Brand>
+</ROOT>
+```
 
 
 

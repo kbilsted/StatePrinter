@@ -8,7 +8,7 @@
 * [1.4 Best practices](#14-best-practices)
 
 
-If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With the stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
+If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With the Stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
 
 
 ## 1.1 Simple example usage
@@ -35,7 +35,9 @@ And with the code
 Console.WriteLine( new AClassWithToString() );
 ```
 
-we get (curlybrace-style)
+We get various output. The output styles are easily configured using the `printer.Configuration.SetOutputStyle()`
+
+we get (**curlybrace-style**)
 
 ```C#
 	new AClassWithToString()
@@ -50,7 +52,7 @@ we get (curlybrace-style)
 	}
 ```
 
-or (json-style)
+or (**json-style**)
 
 ```JSON
 {
@@ -66,7 +68,7 @@ or (json-style)
 }
 ```
 
-or (xml-style)
+or (**xml-style**)
  
 ```XML
 <ROOT type='AClassWithToString'>

@@ -17,39 +17,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
+
 using NUnit.Framework;
+
+using StatePrinter.TestAssistance;
 
 namespace StatePrinter.Tests.TestingAssistance
 {
-    
-    /// <summary>
-    /// These tests are a bit weird, in that they autocorrect themselves. Ie. we cannot make them fail as they rewrite.
-    /// 
-    /// used for manually testing that the rewrite still works.
-    /// </summary>
     [TestFixture]
-    class TestingAssistanceRewriteTest
+    class EnvironmentReaderTest
     {
         [Test]
-        [Explicit]
-        public void Autocorrection_works_var()
+        public void TestReadUseAutoReWrite()
         {
-            var assert = TestHelper.Assert();
-            assert.Configuration.Test.SetAutomaticTestRewrite((x) => true);
+            var org = Environment.GetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, EnvironmentVariableTarget.User);
+            try
+            {
+                Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, "false", EnvironmentVariableTarget.User);
 
-            var expected = @"""test auto""";
-            assert.PrintAreAlike(expected, "test auto");
-        }
+                var reader = new EnvironmentReader();
+                Assert.AreEqual(false, reader.UseTestAutoRewrite());
 
-        [Test]
-        [Explicit]
-        public void Autocorrection_works_string()
-        {
-            var assert = TestHelper.Assert();
-            assert.Configuration.Test.SetAutomaticTestRewrite((x) => true);
-
-            string expected = @"""test auto""";
-            assert.PrintAreAlike(expected, "test auto");
+                Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, "true", EnvironmentVariableTarget.User);
+                Assert.AreEqual(true, reader.UseTestAutoRewrite());
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, org, EnvironmentVariableTarget.User);
+            }
         }
     }
 }

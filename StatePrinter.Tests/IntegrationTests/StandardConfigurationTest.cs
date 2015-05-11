@@ -24,6 +24,20 @@ using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
+
+
+    [TestFixture]
+    class StatePrinterTest
+    {
+        [Test]
+        public void Instantiate()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Stateprinter(null));
+            Assert.Throws<ArgumentNullException>(() => new StatePrinter(null));
+            
+        }
+    }
+
     [TestFixture]
     class StandardConfigurationTests
     {

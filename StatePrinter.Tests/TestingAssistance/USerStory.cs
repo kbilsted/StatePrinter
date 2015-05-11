@@ -20,7 +20,6 @@
 
 using NUnit.Framework;
 
-using StatePrinter.Configurations;
 using Is = StatePrinter.TestAssistance.Is;
 
 namespace StatePrinter.Tests.TestingAssistance
@@ -31,17 +30,27 @@ namespace StatePrinter.Tests.TestingAssistance
         [Test]
         public void IsSame_differentNewlines()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
-            var printer = new Stateprinter(cfg);
+            TestHelper.Assert().IsSame("a\n", "a\r\n");
+            TestHelper.Assert().IsSame("a\r\n", "a\n");
+            TestHelper.Assert().IsSame("a\r", "a\n");
+            TestHelper.Assert().IsSame("a\r", "a\r\n");
 
-            printer.Assert.IsSame("a\n", "a\r\n");
-            printer.Assert.IsSame("a\r\n", "a\n");
-            printer.Assert.IsSame("a\r", "a\n");
-            printer.Assert.IsSame("a\r", "a\r\n");
+            TestHelper.Assert().PrintIsSame("\"a\r\"", "a\r\n");
+            TestHelper.Assert().PrintIsSame("\"a\r\"", "a\r");
+            TestHelper.Assert().PrintEquals("\"a\r\"", "a\r");
+        }
 
-            printer.Assert.PrintIsSame("\"a\r\"", "a\r\n");
-            printer.Assert.PrintIsSame("\"a\r\"", "a\r");
-            printer.Assert.PrintEquals("\"a\r\"", "a\r");
+        [Test]
+        public void AreAlike_differentNewlines()
+        {
+            TestHelper.Assert().AreAlike("a\n", "a\r\n");
+            TestHelper.Assert().AreAlike("a\r\n", "a\n");
+            TestHelper.Assert().AreAlike("a\r", "a\n");
+            TestHelper.Assert().AreAlike("a\r", "a\r\n");
+
+            TestHelper.Assert().PrintAreAlike("\"a\r\"", "a\r\n");
+            TestHelper.Assert().PrintAreAlike("\"a\r\"", "a\r");
+            TestHelper.Assert().PrintEquals("\"a\r\"", "a\r");
         }
     }
 
@@ -52,29 +61,20 @@ namespace StatePrinter.Tests.TestingAssistance
         [Test]
         public void AreEquals_without()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
-            var printer = new Stateprinter(cfg);
-
-            printer.Assert.AreEqual("a", "b");
+            TestHelper.Assert().AreEqual("a", "b");
         }
 
         [Test]
         public void That_without()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
-            var printer = new Stateprinter(cfg);
-
-            printer.Assert.That("a", Is.EqualTo("b"));
+            TestHelper.Assert().That("a", Is.EqualTo("b"));
         }
 
 
         [Test]
         public void AreEquals_with()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration(Assert.AreEqual);
-            var printer = new Stateprinter(cfg);
-
-            printer.Assert.AreEqual("a", "\"b\"");
+            TestHelper.Assert().AreEqual("a", "\"b\"");
         }
 
     }

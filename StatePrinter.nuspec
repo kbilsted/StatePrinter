@@ -2,18 +2,23 @@
 <package>
   <metadata>
     <id>StatePrinter</id>
-    <version>2.0.169</version>
+    <version>2.1.220</version>
     <description>
       An open source utility to turn object graphs into strings. Automate your ToString and unit tests asserts.
     </description>
     <releaseNotes>
-      * Added assertion helper methods Stateprinter.Assert.AreEqual, Stateprinter.Assert.IsSame, Stateprinter.Assert.PrintIsSame and Stateprinter.Assert.That. 
-      * Added automatic write and re-write of expected values in unit tests. You provide the SUT and the call the stuff, StatePrinter providesthe expected values for your pleasurable inspection.
-      * Improves the unit test experience by printing a suggested expected string as C# code.
-      * Added configuration of how line-endings are generated during state printing. This is to mitigate problems due to different operating systems uses different line-endings.
-      * Added a AllFieldsAndPropertiesHarvester which is able to harvest properties and fields.
-      * StringConverter is now configurable with respect to quote character.
-      * BREAKING CHANGE: Projective harvester is now using the AllFieldsAndPropertiesHarvester rather instead of the FieldHarvester. This means both fields and properties are now harvested.
+Fixed
+
+  #22 Make error message configurable upon assertion failure (https://github.com/kbilsted/StatePrinter/issues/22)
+
+Added
+
+  * Functionality for controlling automatic test rewrite using an environment variable.
+  * Functionality for including or excluding fields and properties based on one or more type descriptions. See `IncludeByType()` and `ExcludeByType()`.
+  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated). Similar story for `PrintAreAlike` replacing `PrintIsSame()`. 
+  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
+  * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
+  * Obsoleted a lot of methods, describing the alternative API introduced in v2.1
     </releaseNotes>
     <tags>UnitTest ToString Serialization Approvals Test Testing ApprovalsTest</tags>
     <copyright>Copyright 2014-2015</copyright>

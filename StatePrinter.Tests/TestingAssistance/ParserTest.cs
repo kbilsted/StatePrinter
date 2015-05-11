@@ -43,7 +43,7 @@ namespace StatePrinter.Tests.TestingAssistance
         public void NoEscapingOfNewExpected()
         {
             var r = sut.ReplaceExpected("Assert.AreEqual(\"hello\", sut.Do());", 1, "hello", "boo");
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(@"""Assert.AreEqual(boo, sut.Do());""", r);
+            TestHelper.Assert().PrintAreAlike(@"""Assert.AreEqual(boo, sut.Do());""", r);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace StatePrinter.Tests.TestingAssistance
   printer.Assert.Here(boo, ...)
   iu of""";
 
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+            TestHelper.Assert().PrintAreAlike(expected, r);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace StatePrinter.Tests.TestingAssistance
   printer.Assert.Here(...)
   iu of""";
 
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+            TestHelper.Assert().PrintAreAlike(expected, r);
         }
 
 
@@ -119,7 +119,7 @@ var expected = boo;
 qwe ert
 printer.Assert.Here(...)
 iu of""";
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+            TestHelper.Assert().PrintAreAlike(expected, r);
         }
 
 
@@ -141,7 +141,7 @@ qwe ert
 printer.Assert.Here(...)
 iu of""";
 
-            TestHelper.CreateTestPrinter().Assert.PrintIsSame(expected, r);
+            TestHelper.Assert().PrintAreAlike(expected, r);
         }
 
 

@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using StatePrinter.Configurations;
+using StatePrinter.FieldHarvesters;
 using StatePrinter.ValueConverters;
 
 namespace StatePrinter.Tests.Configurations
@@ -44,9 +45,17 @@ namespace StatePrinter.Tests.Configurations
         {
             var sut = new Configuration();
             Assert.Throws<ArgumentNullException>(() => sut.SetCulture(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetIndentIncrement(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetNewlineDefinition(null));
+            Assert.Throws<ArgumentNullException>(() => sut.SetOutputFormatter(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetAreEqualsMethod(null));
-            Assert.Throws<ArgumentNullException>(() => sut.SetAutomaticTestRewrite(null));
+
+            Assert.Throws<ArgumentNullException>(() => sut.Add((IFieldHarvester)null));
+            Assert.Throws<ArgumentNullException>(() => sut.Add((IValueConverter)null));
+
+
+            Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod(null));
+            Assert.Throws<ArgumentNullException>(() => sut.Test.SetAutomaticTestRewrite(null));
         }
     }
 }
