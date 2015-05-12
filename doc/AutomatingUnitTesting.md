@@ -6,18 +6,19 @@ This document focuses on how to use StatePrinter to improve the speed you flesh 
 
 # Table of Content
  * [Introduction](#introduction)
- * [1. Strategy 1.. Manual asserting with automatic consolidation](#1-strategy-1-manual-asserting-with-automatic-consolidation)
+ * [1. Strategy 1: Manual asserting with automatic consolidation](#1-strategy-1-manual-asserting-with-automatic-consolidation)
    * [1.1 Creating a test](#11-creating-a-test)
+   * [1.2 Eventually business code changes...](#12-eventually-business-code-changes)
    * [1.3 Instruct the use of automatic re-writing](#13-instruct-the-use-of-automatic-re-writing)
    * [1.4 Inspect and commit](#14-inspect-and-commit)
- * [2. Strategy 2.. Semi-automatic testing](#2-strategy-2-semi-automatic-testing)
+ * [2. Strategy 2: Semi-automatic testing](#2-strategy-2-semi-automatic-testing)
    * [2.1 Create the test](#21-create-the-test)
    * [2.2 Run the test](#22-run-the-test)
    * [2.3 Copy-paste the generated asserts](#23-copy-paste-the-generated-asserts)
    * [2.4 Inspect and commit](#24-inspect-and-commit)
      * [Short cut helpers](#short-cut-helpers)
      * [Conclusions](#conclusions)
- * [3. Strategy 3.. Full automatic unit tests](#3-strategy-3-full-automatic-unit-tests)
+ * [3. Strategy 3: Full automatic unit tests](#3-strategy-3-full-automatic-unit-tests)
    * [3.1. Instruct StatePrinter to allow auto-rewriting](#31-instruct-stateprinter-to-allow-auto-rewriting)
    * [3.2 Create the test](#32-create-the-test)
    * [3.3 Run the test](#33-run-the-test)
@@ -36,14 +37,14 @@ This document focuses on how to use StatePrinter to improve the speed you flesh 
 
 # Introduction
 
-So far I've discovered **three different ways** you can use StatePrinter for leveraging your unit test mileage. The strategies introduced here are presented in "order of familiarity", thus we start out "slow" and let things get more insane as we go along. Hold on to your hats and make sure to read all strategies presented before you make up your mind with regards to the strategy that best suits your project or organization. 
+This document describes **three different strategies** that you can use StatePrinter for leveraging your unit test productivity. The strategies introduced here are presented in "order of familiarity", thus we start out "slow" and let things get more insane as we go along. Hold on to your hats and make sure to read all strategies presented before you make up your mind with regards to the strategy that best suits your project or organization. 
 
 This document explains a radically different approach to writing and maintaining asserts in unit tests. Read with an open mind.
 
 
 
 
-# 1. Strategy 1.. Manual asserting with automatic consolidation
+# 1. Strategy 1: Manual asserting with automatic consolidation
 
 The straight forward way to using Stateprinter is to only use it for generating values for your asserts. In turn, this will enable to you to quickly rectify your asserts when inner logic of your business code changes. For the most part, it's business as usual and we have not really solved the problems with unit testing presented in [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md). 
 
@@ -54,9 +55,9 @@ The work flow is as follows
 1. Write business code as usual
 2. Write tests using Stateprinter for generating the values of the asserts
 3. Run the test until they are *green*.
-4. Change the business code such that tests are *red*.
+4. Eventually business code changes, rendering some  tests *red*.
 5. Instruct Stateprinter to use auto-rewriting of unit test and issue a run of all unit tests
-6. Inspect the changes before pushing changes to both the business code *and tests*.
+6. Before commit, inspect the changes to both the business code *and tests*.
 
 The only real surprise here should be #5 - that we don't need to change the test when the code changes. How can this ever work? Allow me to assume you know how to write your business code.
 
@@ -114,21 +115,49 @@ static class Helper
 ```
  
 
+## 1.2 Eventually business code changes...
+ 
+So, time passes by, requirements changes. Eventually, so does the business code. Without going into too much detail, lets say for the sake of the discussion, that the total of the order changes from `43` to `42`. Naturally, this renders our test red. Now there could be many test asserting on the `Total`. 
+
+So rather than taking on this laborious endeavour of fixing the tests manually, we turn to StatePrinter's ability to automatically rewrite.
+ 
+ 
 ## 1.3 Instruct the use of automatic re-writing
 
 As of now we really haven't accomplished much. Seemingly, all we've done is to change asserts into operating on strings. And rightfully so. Because that is all we have achieved. So far. 
 
-The draw-dropping jolt of productivity boost arises when we allow Stateprinter to re-write our unit tests when the underlying code changes. You see, since we are invoking NUnit through Stateprinter (using the `PrintEquals()`), Stateprinter knows when the expected and actual values deviate, and it knows the deviation. Automatic re-write then simply is a matter of intelligently perform a search-and-replace in the unit test source code file.
+However, we can easily gain a draw-dropping productivity boost by instructing Stateprinter to re-write the expected results of our unit tests when the business code changes. Later in the other strategies, even more automation can be achieved. 
+
+The rewrite mechanism is as follows. Tests are executed through Stateprinter (e.g. using the `PrintEquals()`), who in turn calls the underlying testing framework the for the detailed error reporting (and which your infrastructure such as build server relies on). Stateprinter knows when the expected and actual values deviate, and it knows the deviation. Automatic re-write then simply is a matter of intelligently perform a search-and-replace in the unit test source code file.
 
 We achieve the goodies by adding to the configuration in `CreatePrinter()`:
 
 ```C#
-    .Test.SetAutomaticTestRewrite(filename => true)
+printer.Configuration.Test.SetAutomaticTestRewrite(filename => true)
 ```
 
 which means that for any unit test file name, allow a rewrite. Now this is very aggressive and just the thought of automatic rewrite scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
 
-When the automatic rewrite is allowed, running the unit tests will make them green. 
+When the automatic rewrite is allowed, running the unit tests will change the test into
+
+```C#
+[Test]
+public void TestProcessOrderImproved()
+{
+    var assert = CreatePrinter().Assert;
+
+    var sut = new OrderProcessor(a, b);
+    var actual = sut.Process(c, d);
+
+    assert.PrintEquals("1", actual.OrderNumber);
+    assert.PrintEquals("X-mas present", actual.OrderDescription);
+    assert.PrintEquals("42", actual.Total);
+}
+```
+
+Notice how the assert `actual.Total` is rewritten. 
+ 
+A problem with this approach, however, is that only the values of the asserts can be rewritten. Say that our imaginary change of business requirement was that the `Total` should be split the a `Total`and a `VAT Total`. This would require our test to get extended with yet another assert. With the current strategy, that is a manual procedure. Using the other strategies, this is an automated process.
  
  
 ## 1.4 Inspect and commit
@@ -139,14 +168,14 @@ When the automatic rewrite is allowed, running the unit tests will make them gre
  
 
  
-# 2. Strategy 2.. Semi-automatic testing
+# 2. Strategy 2: Semi-automatic testing
 
 The work flow is as follows
 
 1. Create a test, with an empty expected (or change existing code that has tests)
 2. Run the tests
 3. Copy-paste test expectations from the StatePrinter error message to the test
-4. Inspect the changes before pushing code to the repository
+4. Before commit, inspect the changes to both the business code *and tests*.
 
  
 ## 2.1 Create the test
@@ -265,14 +294,17 @@ If you don't like the output format of the `expected` variable, read  [configura
 
 
 
-# 3. Strategy 3.. Full automatic unit tests
+
+
+
+# 3. Strategy 3: Full automatic unit tests
 
 The work flow is as follows
 
 1. Instruct StatePrinter to allow auto-rewriting
 2. Create a test, with an empty expected (or change existing code that has tests)
 3. Run the test
-4. Inspect the changes before pushing to the repository
+6. Before commit, inspect the changes to both the business code *and tests*.
 
 This is a much simpler work flow than the semi-automatic approach since it does not involve any copy and pasting. You simply run your tests and they conform to the code. This is because StatePrinter will search/replace directly in your source code.
 
