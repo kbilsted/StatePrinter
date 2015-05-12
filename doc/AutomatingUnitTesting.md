@@ -304,7 +304,7 @@ The work flow is as follows
 1. Instruct StatePrinter to allow auto-rewriting
 2. Create a test, with an empty expected (or change existing code that has tests)
 3. Run the test
-6. Before commit, inspect the changes to both the business code *and tests*.
+4. Before commit, inspect the changes to both the business code *and tests*.
 
 This is a much simpler work flow than the semi-automatic approach since it does not involve any copy and pasting. You simply run your tests and they conform to the code. This is because StatePrinter will search/replace directly in your source code.
 
