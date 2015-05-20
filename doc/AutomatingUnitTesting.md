@@ -1,6 +1,6 @@
 # Semi/full automatic unit testing with StatePrinter
 
-This document focuses on how to use StatePrinter to improve the speed you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests suffer that do not StatePrinter.
+This document focuses on how to use StatePrinter to improve the speed with which you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests, that do not StatePrinter, suffer from.
 
 > We honour the dead for giving us the world we inherited, however, we must recognize we are doomed if we allow the dead to govern us.
 
@@ -37,7 +37,7 @@ This document focuses on how to use StatePrinter to improve the speed you flesh 
 
 # Introduction
 
-This document describes **three different strategies** that you can use StatePrinter for leveraging your unit test productivity. The strategies introduced here are presented in "order of familiarity", thus we start out "slow" and let things get more insane as we go along. Hold on to your hats and make sure to read all strategies presented before you make up your mind with regards to the strategy that best suits your project or organization. 
+This document describes **three different strategies** for leveraging StatePrinter for optimal unit test productivity. The strategies introduced here are presented in "order of familiarity", thus we start out "slow" and let things get more insane as we go along. Hold on to your hats and make sure to read all strategies presented before you make up your mind with regards to the strategy that best suits your project or organization. 
 
 This document explains a radically different approach to writing and maintaining asserts in unit tests. Read with an open mind.
 
@@ -46,7 +46,7 @@ This document explains a radically different approach to writing and maintaining
 
 # 1. Strategy 1: Manual asserting with automatic consolidation
 
-The straight forward way to using Stateprinter is to only use it for generating values for your asserts. In turn, this will enable to you to quickly rectify your asserts when inner logic of your business code changes. For the most part, it's business as usual and we have not really solved the problems with unit testing presented in [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md). 
+The straight forward way to use Stateprinter is, to only use it for generating values for your asserts. In turn, this will enable to you to quickly rectify your asserts when inner logic of your business code changes. For the most part, it's business as usual and we have not really solved the problems with unit testing presented in [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md). 
 
 To a large degree, I see this way of using Stateprinter, as a way to introduce Stateprinter to your project/organization. You don't rock the boat too much, yet you are paving the way for further automation.  
 
@@ -74,9 +74,10 @@ public void TestProcessOrder()
     var sut = new OrderProcessor(a, b);
     var actual = sut.Process(c, d);
 
-    printer.Assert.AreEqual("1", printer.PrintObject(actual.OrderNumber));
-    printer.Assert.AreEqual("X-mas present", printer.PrintObject(actual.OrderDescription));
-    printer.Assert.AreEqual("43", printer.PrintObject(actual.Total));
+    // TODO: Er det ikke nedenstående der menes? Altså at nunits assert skal bruges?
+    Assert.AreEqual("1", printer.PrintObject(actual.OrderNumber));
+    Assert.AreEqual("X-mas present", printer.PrintObject(actual.OrderDescription));
+    Assert.AreEqual("43", printer.PrintObject(actual.Total));
 }
 ```
 
@@ -97,7 +98,7 @@ public void TestProcessOrderImproved()
 }
 ```
 
-Next you may wonder what that `CreatePrinter()` business is all about. It recommended to have a single source from which all unit testing Stateprinter instances are created. Let's create a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed a bit further down). Additionally, we change how string values are printed (with no surrounding `").
+Next you may wonder what that `CreatePrinter()` business is all about. It's recommended to have a single source from which all unit testing Stateprinter instances are created. Let's create a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed a bit further down). Additionally, we change how string values are printed (with no surrounding `").
 
 ```C#
 static class Helper
@@ -126,9 +127,9 @@ So rather than taking on this laborious endeavour of fixing the tests manually, 
 
 As of now we really haven't accomplished much. Seemingly, all we've done is to change asserts into operating on strings. And rightfully so. Because that is all we have achieved. So far. 
 
-However, we can easily gain a draw-dropping productivity boost by instructing Stateprinter to re-write the expected results of our unit tests when the business code changes. Later in the other strategies, even more automation can be achieved. 
+However, we can easily gain a jaw-dropping productivity boost by instructing Stateprinter to re-write the expected results of our unit tests when the business code changes. Later in the other strategies, even more automation can be achieved. 
 
-The rewrite mechanism is as follows. Tests are executed through Stateprinter (e.g. using the `PrintEquals()`), who in turn calls the underlying testing framework the for the detailed error reporting (and which your infrastructure such as build server relies on). Stateprinter knows when the expected and actual values deviate, and it knows the deviation. Automatic re-write then simply is a matter of intelligently perform a search-and-replace in the unit test source code file.
+The rewrite mechanism is as follows. Tests are executed through Stateprinter (e.g. using the `PrintEquals()`), who in turn calls the underlying testing framework the for the detailed error reporting (and which your infrastructure such as build server relies on). Stateprinter knows when the expected and actual values deviate, and it knows the deviation. Automatic re-write then simply is a matter of intelligently performing a search-and-replace in the unit test source code file.
 
 We achieve the goodies by adding to the configuration in `CreatePrinter()`:
 
@@ -136,7 +137,7 @@ We achieve the goodies by adding to the configuration in `CreatePrinter()`:
 printer.Configuration.Test.SetAutomaticTestRewrite(filename => true)
 ```
 
-which means that for any unit test file name, allow a rewrite. Now this is very aggressive and just the thought of automatic rewrite scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
+Which means that, for any unit test filename allow a rewrite. Now this is very aggressive and just the thought of automatic rewrite may scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
 
 When the automatic rewrite is allowed, running the unit tests will change the test into
 
@@ -157,12 +158,12 @@ public void TestProcessOrderImproved()
 
 Notice how the assert `actual.Total` is rewritten. 
  
-A problem with this approach, however, is that only the values of the asserts can be rewritten. Say that our imaginary change of business requirement was that the `Total` should be split the a `Total`and a `VAT Total`. This would require our test to get extended with yet another assert. With the current strategy, that is a manual procedure. Using the other strategies, this is an automated process.
+A problem with this approach, however, is that only the values of the asserts can be rewritten. Say that our imaginary change of business requirement was that the `Total` should be split into a `Total`and a `VAT Total`. This would require our test to get extended with yet another assert. With the current strategy, that is a manual procedure. Using the other strategies, this is an automated process.
  
  
 ## 1.4 Inspect and commit
 
-*"Now hold on a minute"*, I hear you say! You just generated the new asserts. How does StatePrinter know that the assert is correct? The answer is: It doesn't. StatePrinter does leave out the necessity to think, in fact you should not blindly trust the output. Just the same as when you blindly re-run your failing tests changing them assert-by-assert until they are green again (yes this happens on large enterprise systems so big no one knows all the lines of code). **StatePrinter simply takes away the typing when correcting tests.**
+*"Now hold on a minute"*, I hear you say! You just generated the new asserts. How does StatePrinter know that the assert is correct? The answer is: It doesn't. StatePrinter doesn't leave out the necessity to think. In fact you should not blindly trust the output. Just the same as when you blindly re-run your failing tests changing them assert-by-assert until they are green again (yes this happens on large enterprise systems so big no one knows all the lines of code). **StatePrinter simply takes away the typing when correcting tests.**
 
 
  
@@ -175,12 +176,12 @@ The work flow is as follows
 1. Create a test, with an empty expected (or change existing code that has tests)
 2. Run the tests
 3. Copy-paste test expectations from the StatePrinter error message to the test
-4. Before commit, inspect the changes to both the business code *and tests*.
+4. Before commit, inspect the changes to both the business code *and the tests*.
 
  
 ## 2.1 Create the test
 
-To get started with the automatic asserting in unit testing, you first write your business code and an *empty test* which only exercise the code under test. 
+To get started with automatic asserting in unit testing, you first write your business code and an *empty test* which only exercise the code under test. 
 
 Remember, no asserts are to be written or maintained manually any more. 
 
@@ -202,7 +203,7 @@ public void MakeOrderTest()
 }
 ```
 
-It is a good idea to have a single source from which all Stateprinter instances for unit testing are created. Thus the code snippets assume a `CreatePrinter()` is available. Let's creat a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed further down). 
+It is a good idea to have a single source from which all Stateprinter instances for unit testing are created. Thus the code snippets assume a `Helper` is available. Let's create a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed further down). 
 
 ```C#
 static class Helper
