@@ -1,4 +1,4 @@
-# Automatingunit testing with StatePrinter
+# Automating unit testing with StatePrinter
 
 This document focuses on how to use StatePrinter to improve the speed you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests suffer that do not StatePrinter.
 
