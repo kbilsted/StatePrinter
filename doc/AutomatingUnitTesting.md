@@ -1,6 +1,6 @@
 # Semi/full automatic unit testing with StatePrinter
 
-This document focuses on how to use StatePrinter to improve the speed with which you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests, that do not StatePrinter, suffer from.
+This document focuses on how to use StatePrinter to improve the speed with which you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests, that do not use StatePrinter, suffer from.
 
 > We honour the dead for giving us the world we inherited, however, we must recognize we are doomed if we allow the dead to govern us.
 
@@ -137,7 +137,7 @@ We achieve the goodies by adding to the configuration in `CreatePrinter()`:
 printer.Configuration.Test.SetAutomaticTestRewrite(filename => true)
 ```
 
-Which means that, for any unit test filename allow a rewrite. Now this is very aggressive and just the thought of automatic rewrite may scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
+Which means that, for any unit test filename, a rewrite is allowed. Now this is very aggressive and just the thought of automatic rewrite may scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
 
 When the automatic rewrite is allowed, running the unit tests will change the test into
 
@@ -220,7 +220,7 @@ static class Helper
 ```
 
 ## 2.2 Run the test
-Running the test will *fail*. This is quite intentional! Notice the text at the top of the below error message, it says *Proposed output*. This is in fact **proposed C# code, that you can paste directly into your test to make it green**. 
+Running the test will *fail*. This is quite intentional! Notice the text at the top of the error message below, it says *Proposed output*. This is in fact **proposed C# code, that you can paste directly into your test to make it green**. 
 
 ```C#
 Proposed output for unit test:
@@ -241,7 +241,7 @@ var expected = @"new Order()
 
 ## 2.3 Copy-paste the generated asserts
 
-Copy-paste the `expected` definition into your test. I've taken the liberty to replace `AreEquals()` with `IsSame()`. For now, sufice to say that `IsSame()` is a more lenient. 
+Copy-paste the `expected` definition into your test. I've taken the liberty to replace `AreEquals()` with `IsSame()`. For now, suffice to say that `IsSame()` is a more lenient. 
 
 Your test now looks like:
 
@@ -266,14 +266,14 @@ public void MakeOrderTest()
 
 ## 2.4 Inspect and commit
 
-*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is: It doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. **StatePrinter simply takes away the typing in testing.**
+*"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is: It doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think. In fact you should not blindly trust the output. **StatePrinter simply takes away the typing in testing.**
 
 
 ### Short cut helpers
 
 Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting in one go. This keeps typing at a minimum. We can re-write the above test simply as:
 
-
+// TODO: Explain PrintAreAlike you introduce below. Where does that come from? This is the 3 way of equal-asserting you use?
 ```C#
 [Test]
 public void MakeOrderTest()
@@ -288,9 +288,9 @@ public void MakeOrderTest()
 ### Conclusions
 
 * You get the assert creation for free
-* When the order-object is extended in the future, your the unit test failure message will tell you how to go green again. 
+* When the order-object is extended in the future, your unit test failure message will tell you how to go green again. 
  
-If you don't like the output format of the `expected` variable, read  [configuration](HowToConfigure.md) for heaps of ways to tweaking.
+If you don't like the output format of the `expected` variable, read  [configuration](HowToConfigure.md) for heaps of ways to tweak.
 
 
 
@@ -305,11 +305,11 @@ The work flow is as follows
 1. Instruct StatePrinter to allow auto-rewriting
 2. Create a test, with an empty expected (or change existing code that has tests)
 3. Run the test
-4. Before commit, inspect the changes to both the business code *and tests*.
+4. Before commit, inspect the changes to both the business code *and the tests*.
 
 This is a much simpler work flow than the semi-automatic approach since it does not involve any copy and pasting. You simply run your tests and they conform to the code. This is because StatePrinter will search/replace directly in your source code.
 
-Naturally, this is not suitable for all development situations. But very often  I find myself in the situation, where a simple code changes require significant time to fix-up several existing tests. Often times, these tests are integration test, acceptance tests. 
+Naturally, this is not suitable for all development situations. But very often  I find myself in the situation, where a simple code change requires significant time to fix-up several existing tests. Often times, these tests are integration and/or acceptance tests. 
 
 
 
@@ -318,15 +318,15 @@ Naturally, this is not suitable for all development situations. But very often  
 Simply extend the above `Helper.CreatePrinter()` with 
 
 ```C#
-printer.Configuration.SetAutomaticTestRewrite( (fileName) => true );
+printer.Configuration.SetAutomaticTestRewrite(fileName => true);
 ```
 
-meaning that, for any unit test file executed, allow automatic re-writing of expected values. Notice, that this is just one way to do the configuration. See section "best practices" for a superior approach.
+meaning that, for any unittest file executed, automatic re-writing of expected values is allowed. Notice, that this is just one way to do the configuration. See section "best practices" for a superior approach.
 
  
 ## 3.2 Create the test
 
-Create a new test or think of this as one of your existing tests where the business code has changes since last running this test.
+Create a new test or think of this as one of your existing tests where the business code has changed since last running this test.
 
 ```C#
 [Test]
@@ -388,7 +388,7 @@ For inspiration grok the default implementation at [StatePrinter/TestAssistance/
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
-* They may hold uninteresting values pollute the assert, e.g. a `Guid`
+* They may hold uninteresting values polluting the assert, e.g. a `Guid`
 * They may change value from execution to execution, e.g. `DateTime.Now`
 
 We can easily remedy this situation using the FieldHarvester abstraction described in the "configuration document", however, we do not feel inclined to create an implementation of the harvesting interface per class to be tested. The `ProjectiveHarvester` has a wealth of possibilities to transform (project) a type into another. That is, only include certain fields, only exclude certain fields, or create a filter programmatically. 
@@ -495,61 +495,6 @@ public void TestIncludeByType()
  }
 ```
 
-```C#
-[Test]
-public void TestIncludeByType()
-{
-     var sut = new AtoD();
-     Asserter assert;
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.IncludeByType<AtoD, IA>();
-     assert.PrintEquals("new AtoD() { A = 1 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.IncludeByType<AtoD, IA, IB>();
-     assert.PrintEquals("new AtoD() { A = 1 B = 2 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.IncludeByType<AtoD, IA, IB, IC>();
-     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.IncludeByType<AtoD, IA, IB, IC, ID>();
-     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
- }
-
- [Test]
- public void TestExcludeByType()
- {
-     var sut = new AtoD();
-     Asserter assert;
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.PrintEquals("new AtoD() { A = 1 B = 2 C = 3 D = 4 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.ExcludeByType<AtoD, IA>();
-     assert.PrintEquals("new AtoD() { B = 2 C = 3 D = 4 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.ExcludeByType<AtoD, IA, IB>();
-     assert.PrintEquals("new AtoD() { C = 3 D = 4 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.ExcludeByType<AtoD, IA, IB, IC>();
-     assert.PrintEquals("new AtoD() { D = 4 }", sut);
-
-     assert = TestHelper.CreateShortAsserter();
-     assert.Project.ExcludeByType<AtoD, IA, IB, IC, ID>();
-     assert.PrintEquals("new AtoD() { }", sut);
- }
-```
-
-
 # 6. Stateprinter.Assert
 
 As of v2.0, StatePrinter ships with assert methods accessible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
@@ -577,7 +522,7 @@ Things to consider in the general case
 * Setup type converters as you want them. E.g. do you want strings in the output to be enclosed in `""` or maybe you have attributes on your enum-values that you want to see in the output.
 * Hook up your unit testing framework 
 
-You come a long way with the following code
+You can come a long way with the following code
 
 ```C#
 static class Create
@@ -594,7 +539,7 @@ static class Create
 }
 ```
 
-Then you can use, and further fine-tune in your test like
+Then you can use, and further fine-tune your test like
 
 ```C#
 [Test]
@@ -610,15 +555,15 @@ public void Foo()
 
 ## 7.2 Asserting
 
-When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line ending. Line endings differ from operating system to operating system, and some tools such as ReSharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
+When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line endings. Line endings differ from operating system to operating system, and some tools such as ReSharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
-With automatic rewrite, there are no issues with copy-pasting, and thus it is more right to use the AreEqual variant which does not modify the input before comparison.
+With automatic rewrite, there are no issues with copy-pasting, and thus it is safer to use the AreEqual variant which does not modify the input before comparison.
 
 
 
 ## 7.3 Smoother automatic rewrite control
 
-In the above example, we configure the automatic rewrite editing the code, for the `SetAutomaticTestRewrite()` call. This is both very a bit cumbersome, and has the disadvantage, that you may accidentally commit setting automatic rewrite to `true`. A smoother solution is to use an environment variable to turn on/off the automatic rewrites. You can then edit this variable through your shell. To do this you can configure with the following: 
+In the above example, we configure the automatic rewrite editing the code, for the `SetAutomaticTestRewrite()` call. This is both a bit cumbersome, and has the disadvantage, that you may accidentally commit setting automatic rewrite to `true`. A smoother solution is to use an environment variable to turn on/off the automatic rewrites. You can then edit this variable through your shell. You can achieve this with the following configuration: 
 
 ```C#
 // requires stateprinter v2.1.xx
