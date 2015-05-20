@@ -621,8 +621,7 @@ In the above example, we configure the automatic rewrite editing the code, for t
 
 ```C#
 // requires stateprinter v2.1.xx
-var cfg = ConfigurationHelper
-           .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
+configuration.Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
 ```
 and then use these functions in PowerShell
 
