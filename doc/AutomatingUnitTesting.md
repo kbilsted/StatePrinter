@@ -8,7 +8,7 @@ This document focuses on how to use StatePrinter to improve the speed with which
  * [Introduction](#introduction)
  * [1. Strategy 1: Manual asserting with automatic consolidation](#1-strategy-1-manual-asserting-with-automatic-consolidation)
    * [1.1 Creating a test](#11-creating-a-test)
-   * [1.2 Eventually business code changes...](#12-eventually-business-code-changes)
+   * [1.2 Eventually the business code changes...](#12-eventually-the-business-code-changes)
    * [1.3 Instruct the use of automatic re-writing](#13-instruct-the-use-of-automatic-re-writing)
    * [1.4 Inspect and commit](#14-inspect-and-commit)
  * [2. Strategy 2: Semi-automatic testing](#2-strategy-2-semi-automatic-testing)
@@ -23,15 +23,19 @@ This document focuses on how to use StatePrinter to improve the speed with which
    * [3.2 Create the test](#32-create-the-test)
    * [3.3 Run the test](#33-run-the-test)
    * [3.4 Inspect and commit](#34-inspect-and-commit)
- * [4. Integrating with your unit test framework](#4-integrating-with-your-unit-test-framework)
- * [5. Configuration](#5-configuration)
-   * [5.1 Configuring the error message](#51-configuring-the-error-message)
-   * [5.2 Restricting fields harvested](#52-restricting-fields-harvested)
-   * [5.3 Filtering by use of Types](#53-filtering-by-use-of-types)
- * [6. Stateprinter.Assert](#6-stateprinterassert)
+ * [4. Assert methods: AreAlike, AreEquals, PrintAlike, PrintEquals](#4-assert-methods-arealike-areequals-printalike-printequals)
+   * [4.1 `AreEquals()`, `PrintEquals()`](#41-areequals-printequals)
+   * [4.2 `AreAlike()`, `PrintAlike()`](#42-arealike-printalike)
+   * [4.3 But wait... There is more!](#43-but-wait-there-is-more)
+   * [Conclusions](#conclusions)
+ * [5. Integrating with your unit testing framework](#5-integrating-with-your-unit-testing-framework)
+ * [6. Configuration](#6-configuration)
+   * [6.1 Configuring the error message](#61-configuring-the-error-message)
+   * [6.2 Restricting fields harvested](#62-restricting-fields-harvested)
+   * [6.3 Filtering by use of Types](#63-filtering-by-use-of-types)
  * [7. Best practices](#7-best-practices)
    * [7.1 StatePrinter configuration](#71-stateprinter-configuration)
-   * [7.2 Asserting](#72-asserting)
+   * [7.2 Asserting with `AreAlike()` and `AreEquals()`.](#72-asserting-with-arealike-and-areequals)
    * [7.3 Smoother automatic rewrite control](#73-smoother-automatic-rewrite-control)
 
 
@@ -61,9 +65,10 @@ The work flow is as follows
 
 The only real surprise here should be #5 - that we don't need to change the test when the code changes. How can this ever work? Allow me to assume you know how to write your business code.
 
+
 ## 1.1 Creating a test 
  
-For example:
+For example writing a test for some simple business code using Nunit:
 
 ```C#
 [Test]
@@ -74,31 +79,29 @@ public void TestProcessOrder()
     var sut = new OrderProcessor(a, b);
     var actual = sut.Process(c, d);
 
-    // TODO: Er det ikke nedenstående der menes? Altså at nunits assert skal bruges?
     Assert.AreEqual("1", printer.PrintObject(actual.OrderNumber));
     Assert.AreEqual("X-mas present", printer.PrintObject(actual.OrderDescription));
     Assert.AreEqual("43", printer.PrintObject(actual.Total));
 }
 ```
 
-Now no one in their right mind would see all that typing as an improvement. And really, you shouldn't have to since we already created a helper method abstracting away all the typing.
+Now no one in their right mind would see all that typing as an improvement. And really, you shouldn't have to since we already created a helper method in Stateprinter abstracting away all the typing.
 
 ```C#
 [Test]
 public void TestProcessOrderImproved()
 {
-    var assert = CreatePrinter().Assert;
-
     var sut = new OrderProcessor(a, b);
     var actual = sut.Process(c, d);
 
+    var assert = CreatePrinter().Assert;
     assert.PrintEquals("1", actual.OrderNumber);
     assert.PrintEquals("X-mas present", actual.OrderDescription);
     assert.PrintEquals("43", actual.Total);
 }
 ```
 
-Next you may wonder what that `CreatePrinter()` business is all about. It's recommended to have a single source from which all unit testing Stateprinter instances are created. Let's create a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed a bit further down). Additionally, we change how string values are printed (with no surrounding `").
+Although it may not look like it, we are still using Nunit as our test framework infrastructure. `Stateprinter.PrintEquals()` relies on an existing unit testing framework, typically Nunit, Xunit, etc. You may wonder *what that `CreatePrinter()` business is all about?* We recommend using a single source from which all unit testing Stateprinter instances are created. So let's go ahead and create a Stateprinter instance and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed a bit further down). Additionally, we change how string values are printed (to omit the surrounding `"`).
 
 ```C#
 static class Helper
@@ -116,9 +119,9 @@ static class Helper
 ```
  
 
-## 1.2 Eventually business code changes...
+## 1.2 Eventually the business code changes...
  
-So, time passes by, requirements changes. Eventually, so does the business code. Without going into too much detail, lets say for the sake of the discussion, that the total of the order changes from `43` to `42`. Naturally, this renders our test red. Now there could be many test asserting on the `Total`. 
+As time passes by, requirements change. Eventually, so does the business code. Without going into too much detail, lets say for the sake of the discussion, that the total of the order changes from `43` to `42`. Naturally, this renders our test red. Now there could be many test asserting on the `Total`. 
 
 So rather than taking on this laborious endeavour of fixing the tests manually, we turn to StatePrinter's ability to automatically rewrite.
  
@@ -137,7 +140,7 @@ We achieve the goodies by adding to the configuration in `CreatePrinter()`:
 printer.Configuration.Test.SetAutomaticTestRewrite(filename => true)
 ```
 
-Which means that, for any unit test filename, a rewrite is allowed. Now this is very aggressive and just the thought of automatic rewrite may scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
+Which means that, for any unit test filename, a rewrite of the source code is allowed. Now this is very aggressive and just the thought of automatic rewrite may scare you a little. That's why we in the [7. Best practices](#7.best-practices) section suggest you turn rewriting on/off using your shell.
 
 When the automatic rewrite is allowed, running the unit tests will change the test into
 
@@ -203,21 +206,7 @@ public void MakeOrderTest()
 }
 ```
 
-It is a good idea to have a single source from which all Stateprinter instances for unit testing are created. Thus the code snippets assume a `Helper` is available. Let's create a printer and bridge it to Nunit's Assert method (how to integrate with your favourite testing framework is detailed further down). 
 
-```C#
-static class Helper
-{
-    public static Stateprinter CreatePrinter()
-    { 
-        var printer = new Stateprinter();
-        printer.Configuration
-            Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual);
-        
-        return printer;
-    }
-}
-```
 
 ## 2.2 Run the test
 Running the test will *fail*. This is quite intentional! Notice the text at the top of the error message below, it says *Proposed output*. This is in fact **proposed C# code, that you can paste directly into your test to make it green**. 
@@ -241,7 +230,7 @@ var expected = @"new Order()
 
 ## 2.3 Copy-paste the generated asserts
 
-Copy-paste the `expected` definition into your test. I've taken the liberty to replace `AreEquals()` with `IsSame()`. For now, suffice to say that `IsSame()` is a more lenient. 
+Copy-paste the `expected` definition into your test. I've taken the liberty to replace `AreEquals()` with `AreAlike()`. For now, suffice to say that `AreAlike()` is a more lenient. 
 
 Your test now looks like:
 
@@ -260,7 +249,7 @@ public void MakeOrderTest()
        OrderName = ""X-mas present""
        Total = 43
     }";
-    printer.Assert.IsSame(expected, actual);    
+    printer.Assert.AreAlike(expected, actual);    
 }
 ```
 
@@ -273,7 +262,7 @@ public void MakeOrderTest()
 
 Now that we understand the basics of the framework, it is time to introduce a shorthand method for printing and asserting in one go. This keeps typing at a minimum. We can re-write the above test simply as:
 
-// TODO: Explain PrintAreAlike you introduce below. Where does that come from? This is the 3 way of equal-asserting you use?
+
 ```C#
 [Test]
 public void MakeOrderTest()
@@ -321,7 +310,7 @@ Simply extend the above `Helper.CreatePrinter()` with
 printer.Configuration.SetAutomaticTestRewrite(fileName => true);
 ```
 
-meaning that, for any unittest file executed, automatic re-writing of expected values is allowed. Notice, that this is just one way to do the configuration. See section "best practices" for a superior approach.
+This instructs Stateprinter to automatically re-write expected values in the source code of the unit test, to reflect changes in the business code. The configuration above is quite liberal in allowing this rewrite to occur for any unit test file executed. Notice, that this is just one way to do the configuration. See section "best practices" for a superior approach, that take a little more explaining.
 
  
 ## 3.2 Create the test
@@ -344,11 +333,36 @@ public void MakeOrderTest()
 
 ## 3.3 Run the test
 
-From within visual studio or using an external gui.
+From within visual studio or using an external GUI.
 
-The tests will go red, but the error message will notify you that the test has been re-written and thus upon re-execution will go green.
+The tests will go red, but the error message will notify you that the test has been re-written and thus upon re-execution will go green. If you refresh in Visual Studio or whatever editor, your unit test source code has changed such that the `expected` variable now holds the result from executing `sut.Foo()`.
+
+```C#
+[Test]
+public void MakeOrderTest()
+{ 
+    var sut = new BusinessCode(a, b);
+
+    var printer = Helper.CreatePrinter();
+    var actual = printer.PrintObject(sut.Foo(c, d));
+    
+    var expected = @"new Order()
+    {
+       OrderNo = 1
+       OrderName = ""X-mas present""
+       Total = 43
+    }";
+    printer.Assert.AreEquals(expected, actual);    
+}
+```
 
 
+Notice how the assert `actual.Total` is rewritten. 
+ 
+Different to the "Strategy 1" presented above, that should the number of fields of the order object change, such changes are automatically reflected in the rewrite. This is possible since the whole assert is formulated in terms of strings rather than C# code (and Stateprinter is really good at generating strings :-)
+ 
+ 
+ 
 ## 3.4 Inspect and commit
 
 *"Now hold on a minute"*, I hear you say! You just generated the output. How does StatePrinter know that the assert is correct? The answer is, that it doesn't. It merely outputs the state of the SUT (System Under Test). So StatePrinter does not prevent you from having to think, in fact you should not blindly trust the output. StatePrinter simply takes away the typing in testing.
@@ -357,22 +371,101 @@ The tests will go red, but the error message will notify you that the test has b
 
 
 
-# 4. Integrating with your unit test framework
+# 4. Assert methods: AreAlike, AreEquals, PrintAlike, PrintEquals
 
-Stateprinter is not dependent on any unit testing framework, yet it'll integrate with most if not all frameworks on the market. This is possible through explicit configuration where you tell how StatePrinter must call your testing frameworks' assert method. For Nunit the below suffices:
+We have now concluded the various strategies in which Stateprinter can be used in leveraging your unit tests. Occasionally, we have presented different assert methods. Now let's take the full tour of asserts. Generally, the assert methods hold the following properties
+
+* They are accessible from `printer.Assert.`
+* They wrap the current unit testing framework of your choice 
+* They code generate your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
+* Some of them are lenient to newline issues, by unifying the line ending representation before asserting.
+
+
+## 4.1 `AreEquals()`, `PrintEquals()`
+
+The "equals methods" compare byte for byte that the content of `expected` and `actual` are the same.
+
+Usage of `AreEquals()`
+
+```C#
+var printer = Helper.CreatePrinter();
+var actual = printer.PrintObject(sut.ProcessOrder(c, d));
+
+var expected = "bla bla bla";
+printer.Assert.AreEquals(expected, actual); 
+```    
+
+A shorter way to express this is to *combine the PrintObject with the AreEquals*. This is what the `PrintEquals()` is for.
+
+Usage of `PrintEquals()`
+
+```C#
+var printer = Helper.CreatePrinter();
+
+var expected = "bla bla bla";
+printer.Assert.PrintEquals(expected, sut.ProcessOrder(c, d)); 
+```    
+
+
+## 4.2 `AreAlike()`, `PrintAlike()`
+
+The "alike methods" first modifies the line endings of the `expected` and `actual` before passing on the values to the equals method. The modifications is a "unification" that ensures that differences only in `\r\n` and `\r` and `\n` between expected and actual, are ignored. 
+
+These assert methods are are particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud, e.g. AppVeyor, AppHabour) or when you face problems when copy/pasting the generated new expected values (as shown in strategy 2).
+
+
+Usage of `AreAlike()`
+
+```C#
+var printer = Helper.CreatePrinter();
+var actual = printer.PrintObject(sut.ProcessOrder(c, d));
+
+var expected = "bla bla bla";
+printer.Assert.AreAlike(expected, actual); 
+```    
+
+A shorter way to express this is to *combine the PrintObject with the AreAlike*. This is what the `PrintAlike()` is for.
+
+Usage of `PrintAlike()`
+
+```C#
+var printer = Helper.CreatePrinter();
+
+var expected = "bla bla bla";
+printer.Assert.PrintAlike(expected, sut.ProcessOrder(c, d)); 
+```    
+
+## 4.3 But wait... There is more!
+
+Support for the more fluent assert api has been provided. E.g. you are able to use `That(expected, It.IsEqualTo(actual))`. See further details in the source code https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs 
+
+
+## Conclusions
+
+When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. 
+
+With automatic rewrite, there are no issues with copy-pasting, and thus it is safer to use the AreEqual variant which does not modify line endings before comparison.
+
+
+
+
+
+
+# 5. Integrating with your unit testing framework
+
+Stateprinter is not dependent on any particular unit testing framework, in fact it will integrate with most if not all frameworks on the market. This is possible through explicit configuration where you tell how StatePrinter must call your testing frameworks' assert method. For Nunit the below suffices:
 
 ```C#
 var printer = new Stateprinter();
 printer.Configuration.Test.SetAreEqualsMethod( Nunit.Framework.Assert.AreEquals );
 ```
 
+and similar for other frameworks, you simply just have to tell Stateprinter the equals method you are using.
 
 
+# 6. Configuration 
 
-
-# 5. Configuration 
-
-## 5.1 Configuring the error message
+## 6.1 Configuring the error message
 
 The error message shown when a test is failing is fully configurable. This enables to cater for specific needs such as fully printing the content of the actual and expected values. Use
 
@@ -384,7 +477,7 @@ For inspiration grok the default implementation at [StatePrinter/TestAssistance/
 
 
 
-## 5.2 Restricting fields harvested
+## 6.2 Restricting fields harvested
 
 Now, there are situations where there are fields in your business objects that are uninteresting for your tests. Thus those fields represent a challenge to your test. 
 
@@ -424,7 +517,7 @@ var state = new A { X = DateTime.Now, Name = "Charly" };
 assert.PrintEquals("new A(){ Name = ""Charly""}", state);
 ```
 
-or programmatically
+or programatically
 
 ```C#
 Asserter assert = TestHelper.CreateShortAsserter();
@@ -437,7 +530,7 @@ Notice though, that when you use the `Include` or `AddFilter` functionality, you
 
 
 
-## 5.3 Filtering by use of Types
+## 6.3 Filtering by use of Types
 
 As of v2.1 you can specify filters by using other types. Say you have a class implementing multiple interfaces, you can specify to only include fields from specific interface(s).
 
@@ -495,17 +588,6 @@ public void TestIncludeByType()
  }
 ```
 
-# 6. Stateprinter.Assert
-
-As of v2.0, StatePrinter ships with assert methods accessible from `printer.Assert`. These assert methods are preferable to the ordinary assert methods of your unit testing framework:
-
-* They wrap the current unit testing framework of your choice 
-* They code generate your expected values. It is almost fully automatic to write your asserts and update them when the code changes.
-* Some of them are lenient to newline issues by unifying the line ending representation before asserting. This is particularly nice when you are coding and testing on multiple operating systems (such as deploying to the cloud) or when you plugins such as ReSharper is incapable of proper line ending handling when copy/pasting.
-
-Need more explanation here. For now look at: https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter/TestAssistance/Asserter.cs
-
-
 
 
 # 7. Best practices
@@ -553,11 +635,11 @@ public void Foo()
 
 
 
-## 7.2 Asserting
+## 7.2 Asserting with `AreAlike()` and `AreEquals()`.
 
 When not using automatic rewrite, I prefer the `AreAlike()` over the `AreEquals()`. I've come to really appreciate the `AreAlike()` method since it ignores differences in line endings. Line endings differ from operating system to operating system, and some tools such as ReSharper seems to have problems when copying from its output window into tests. Here the line endings are truncated to `\n`. 
 
-With automatic rewrite, there are no issues with copy-pasting, and thus it is safer to use the AreEqual variant which does not modify the input before comparison.
+With automatic rewrite, there are no issues with copy-pasting, and thus it is safer to use the AreEqual variant which does not modify line endings before comparison.
 
 
 
