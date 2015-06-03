@@ -5,8 +5,8 @@
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=master)](https://coveralls.io/r/kbilsted/StatePrinter?branch=master)
-[![Stats](https://img.shields.io/badge/Code_lines-3,3_K-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-1,5_K-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Code_lines-3,4_K-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-2,0_K-ff69b4.svg)]()
 
 [![Join the chat at https://gitter.im/kbilsted/StatePrinter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kbilsted/StatePrinter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 

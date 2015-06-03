@@ -1,4 +1,4 @@
-# Automating unit testing with StatePrinter
+﻿# Automating unit testing with StatePrinter
 
 This document focuses on how to use StatePrinter to improve the speed with which you flesh out, and maintain, your unit tests. Whereas [The problems with traditional unit testing](TheProblemsWithTraditionalUnitTesting.md) highlights the problems many tests, that do not use StatePrinter, suffer from.
 
@@ -148,11 +148,10 @@ When the automatic rewrite is allowed, running the unit tests will change the te
 [Test]
 public void TestProcessOrderImproved()
 {
-    var assert = CreatePrinter().Assert;
-
     var sut = new OrderProcessor(a, b);
     var actual = sut.Process(c, d);
 
+    var assert = CreatePrinter().Assert;
     assert.PrintEquals("1", actual.OrderNumber);
     assert.PrintEquals("X-mas present", actual.OrderDescription);
     assert.PrintEquals("42", actual.Total);
