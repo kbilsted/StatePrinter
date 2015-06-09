@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
@@ -40,11 +41,11 @@ namespace StatePrinter.FieldHarvesters
         /// We ignore all properties as they, in the end, will only point to some computated state or other fields.
         /// Hence they do not provide information about the actual state of the object.
         /// </summary>
-        public List<SanitiedFieldInfo> GetFields(Type type)
+        public List<SanitizedFieldInfo> GetFields(Type type)
         {
             return GetFields(type, flags)
-              .Select(x => new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), (object o) => x.GetValue(o)))
-              .ToList();
+                .Select(GetSanitizedFieldInfoForFieldOrProperty)
+                .ToList();
         }
 
         /// <summary>
@@ -62,59 +63,44 @@ namespace StatePrinter.FieldHarvesters
             return GetFields(type.BaseType, flags).Concat(type.GetFields(flags));
         }
 
-        public List<SanitiedFieldInfo> GetFieldsAndProperties(Type type)
+        public List<SanitizedFieldInfo> GetFieldsAndProperties(Type type)
         {
-            var fieldsAndProps = GetFieldsAndProperties(type, flags)
-                .Select(x =>
-                    {
-                        Func<object, object> valueFetcher;
-                        switch (x.MemberType)
-                        {
-                            case MemberTypes.Field:
-                                valueFetcher = o => ((FieldInfo)x).GetValue(o);
-                                break;
-                            case MemberTypes.Property:
-                                valueFetcher = o => ((PropertyInfo)x).GetValue(o, null);
-                                break;
-                            default:
-                                throw new Exception("Membertype not supported.");
-                        }
-                        return new SanitiedFieldInfo(x, SanitizeFieldName(x.Name), valueFetcher);
-                    });
-
-            return fieldsAndProps.ToList();
+            IEnumerable<MemberInfo> fieldsAndProps =
+                GetFieldsAndProperties(type, flags)
+                    .Where(x => x.MemberType == MemberTypes.Field || x.MemberType == MemberTypes.Property);
+            return fieldsAndProps.Select(GetSanitizedFieldInfoForFieldOrProperty).ToList();
         }
 
-    /// <summary>
-    /// Returns all Membertype.Field and Membertype.Property except backing-fields
-    /// </summary>
-    public IEnumerable<MemberInfo> GetFieldsAndProperties(Type type, BindingFlags flags)
-    {
-      if (type == null)
-        return Enumerable.Empty<MemberInfo>();
+        /// <summary>
+        /// Returns all Membertype.Field and Membertype.Property except backing-fields
+        /// </summary>
+        public IEnumerable<MemberInfo> GetFieldsAndProperties(Type type, BindingFlags flags)
+        {
+            if (type == null)
+                return Enumerable.Empty<MemberInfo>();
 
-      if (!IsHarvestable(type))
-        return Enumerable.Empty<MemberInfo>();
+            if (!IsHarvestable(type))
+                return Enumerable.Empty<MemberInfo>();
 
-      return
-        GetFieldsAndProperties(type.BaseType, flags)
-          .Concat(type.GetMembers(flags))
-          .Where(x => NonBackingFieldFilter(x) || IndexerFilter(x)); 
-    }
+            return
+              GetFieldsAndProperties(type.BaseType, flags)
+                .Concat(type.GetMembers(flags))
+                .Where(x => NonBackingFieldFilter(x) || IndexerFilter(x));
+        }
 
-    static bool NonBackingFieldFilter(MemberInfo x)
-    {
-      return x.MemberType == MemberTypes.Field 
-        && !x.Name.EndsWith(BackingFieldSuffix);
-    }
+        static bool NonBackingFieldFilter(MemberInfo x)
+        {
+            return x.MemberType == MemberTypes.Field
+              && !x.Name.EndsWith(BackingFieldSuffix);
+        }
 
-    static bool IndexerFilter(MemberInfo x)
-    {
-      var p = x as PropertyInfo;
-      return x.MemberType == MemberTypes.Property //
-        && p.GetIndexParameters().Length == 0 // no indexed properties
-        && p.GetGetMethod(true) != null;  // must have getter
-    }
+        static bool IndexerFilter(MemberInfo x)
+        {
+            var p = x as PropertyInfo;
+            return x.MemberType == MemberTypes.Property //
+              && p.GetIndexParameters().Length == 0 // no indexed properties
+              && p.GetGetMethod(true) != null;  // must have getter
+        }
 
         /// <summary>
         /// Tell if the type makes any sense to dump
@@ -138,6 +124,21 @@ namespace StatePrinter.FieldHarvesters
             return fieldName.StartsWith("<")
               ? fieldName.Substring(1).Replace(BackingFieldSuffix, "")
               : fieldName;
+        }
+
+        SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo)
+        {
+            if (memberInfo is FieldInfo || memberInfo is PropertyInfo)
+            {
+                var p = Expression.Parameter(typeof(object), "p");
+                var castparam = Expression.Convert(p, memberInfo.DeclaringType);
+                var field = Expression.PropertyOrField(castparam, memberInfo.Name);
+                var castRes = Expression.Convert(field, typeof(object));
+                var exp = Expression.Lambda<Func<object, object>>(castRes, p).Compile();
+                return new SanitizedFieldInfo(memberInfo, SanitizeFieldName(memberInfo.Name), exp);
+            }
+
+            throw new ArgumentException("Parameter memberInfo must be of type FieldInfo or PropertyInfo.");
         }
     }
 }
