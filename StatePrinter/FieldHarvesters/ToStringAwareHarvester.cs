@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
@@ -60,12 +61,12 @@ namespace StatePrinter.FieldHarvesters
         ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
         ///   Hence they do not provide information about the actual state of the object.
         /// </summary>
-        public List<SanitiedFieldInfo> GetFields(Type type)
+        public List<SanitizedFieldInfo> GetFields(Type type)
         {
             Func<object, object> valueProvider = (o) => methodInfos[type].Invoke(o, new object[0]);
-            var syntesizedField = new SanitiedFieldInfo(null, "ToString()", valueProvider);
+            var syntesizedField = new SanitizedFieldInfo(null, "ToString()", valueProvider);
 
-            return new List<SanitiedFieldInfo>() { syntesizedField };
+            return new List<SanitizedFieldInfo>() { syntesizedField };
         }
 
         /// <summary>

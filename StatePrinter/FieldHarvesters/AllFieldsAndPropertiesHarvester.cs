@@ -43,7 +43,7 @@ namespace StatePrinter.FieldHarvesters
         ///   We ignore all properties as they, in the end, will only point to some computed state or other fields.
         ///   Hence they do not provide information about the actual state of the object.
         /// </summary>
-        public List<SanitiedFieldInfo> GetFields(Type type)
+        public List<SanitizedFieldInfo> GetFields(Type type)
         {
             return harvestHelper.GetFieldsAndProperties(type);
         }
