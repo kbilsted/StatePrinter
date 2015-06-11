@@ -23,9 +23,15 @@ using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
 {
+    /// <summary>
+    /// Run-time code generation is much faster than using ordinary reflection such 
+    /// </summary>
     public class RunTimeCodeGenerator
     {
-        public Func<object, object> GetExpressionForFieldOrPropertyGetter(MemberInfo memberInfo)
+        /// <summary>
+        /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
+        /// </summary>
+        public Func<object, object> CreateGetter(MemberInfo memberInfo)
         {
             if (!(memberInfo is FieldInfo) && !(memberInfo is PropertyInfo))
             {
