@@ -61,6 +61,7 @@
     <Compile Include="Configurations\TestingBehaviour.cs" />
     <Compile Include="FieldHarvesters\AllFieldsAndPropertiesHarvester.cs" />
     <Compile Include="FieldHarvesters\PublicFieldsHarvester.cs" />
+    <Compile Include="FieldHarvesters\RunTimeCodeGenerator.cs" />
     <Compile Include="FieldHarvesters\SanitizedFieldInfo.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvester.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvester.cs" />
