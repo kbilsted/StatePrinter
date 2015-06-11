@@ -5,6 +5,7 @@
 [![Nuget](https://img.shields.io/nuget/v/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Nuget](https://img.shields.io/nuget/vpre/stateprinter.svg)](http://nuget.org/packages/stateprinter)
 [![Coverage Status](https://coveralls.io/repos/kbilsted/StatePrinter/badge.svg?branch=master)](https://coveralls.io/r/kbilsted/StatePrinter?branch=master)
+[![License](http://img.shields.io/badge/License-Apache_2-red.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Stats](https://img.shields.io/badge/Code_lines-3,4_K-ff69b4.svg)]()
 [![Stats](https://img.shields.io/badge/Doc_lines-2,0_K-ff69b4.svg)]()
 
