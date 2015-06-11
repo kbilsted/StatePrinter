@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
@@ -30,6 +29,7 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public class HarvestHelper
     {
+        readonly RunTimeCodeGenerator runTimeCodeGenerator = new RunTimeCodeGenerator();
         internal const string BackingFieldSuffix = ">k__BackingField";
 
         const BindingFlags flags = BindingFlags.Public
@@ -128,17 +128,8 @@ namespace StatePrinter.FieldHarvesters
 
         SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo)
         {
-            if (memberInfo is FieldInfo || memberInfo is PropertyInfo)
-            {
-                var p = Expression.Parameter(typeof(object), "p");
-                var castparam = Expression.Convert(p, memberInfo.DeclaringType);
-                var field = Expression.PropertyOrField(castparam, memberInfo.Name);
-                var castRes = Expression.Convert(field, typeof(object));
-                var exp = Expression.Lambda<Func<object, object>>(castRes, p).Compile();
-                return new SanitizedFieldInfo(memberInfo, SanitizeFieldName(memberInfo.Name), exp);
-            }
-
-            throw new ArgumentException("Parameter memberInfo must be of type FieldInfo or PropertyInfo.");
+            var valueGetter = runTimeCodeGenerator.GetExpressionForFieldOrPropertyGetter(memberInfo);
+            return new SanitizedFieldInfo(memberInfo, SanitizeFieldName(memberInfo.Name), valueGetter);
         }
     }
 }
