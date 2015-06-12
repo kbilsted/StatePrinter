@@ -42,14 +42,14 @@ namespace StatePrinter.FieldHarvesters
         /// <summary>
         /// Harvest only public fields and properties.
         /// </summary>
-        public List<SanitiedFieldInfo> GetFields(Type type)
+        public List<SanitizedFieldInfo> GetFields(Type type)
         {
             var fields = new HarvestHelper().GetFieldsAndProperties(type);
 
             return fields.Where(IsPublic).ToList();
         }
 
-        bool IsPublic(SanitiedFieldInfo field)
+        bool IsPublic(SanitizedFieldInfo field)
         {
             switch (field.FieldInfo.MemberType)
             {
