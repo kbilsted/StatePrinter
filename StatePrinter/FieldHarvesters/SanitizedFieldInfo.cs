@@ -25,7 +25,7 @@ namespace StatePrinter.FieldHarvesters
     /// <summary>
     /// For each type we print, we hold the reflected and the readable version of the fields
     /// </summary>
-    public class SanitiedFieldInfo
+    public class SanitizedFieldInfo
     {
         public readonly MemberInfo FieldInfo;
 
@@ -40,7 +40,7 @@ namespace StatePrinter.FieldHarvesters
         /// </summary>
         public readonly Func<object, object> ValueProvider;
 
-        public SanitiedFieldInfo(
+        public SanitizedFieldInfo(
             MemberInfo fieldInfo,
             string sanitizedName,
             Func<object, object> valueProvider)

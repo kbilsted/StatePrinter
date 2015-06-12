@@ -29,6 +29,6 @@ namespace StatePrinter.FieldHarvesters
     {
         bool CanHandleType(Type type);
 
-        List<SanitiedFieldInfo> GetFields(Type type);
+        List<SanitizedFieldInfo> GetFields(Type type);
     }
 }
