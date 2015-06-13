@@ -28,35 +28,38 @@ namespace StatePrinter.Tests.PerformanceTests
 {
     [TestFixture]
     [Explicit]
-    internal class ManySmallObjects
+    class ManySmallObjects
     {
+
+        [SetUp]
+        public void Setup()
+        {
+            #if DEBUG
+            throw new Exception("Only do performance in release mode");
+            #endif
+        }
+
         const int N = 1000000;
 
 
         /// <summary>
         /// printing many times reveals the overhead of starting a print
-        /// 
-        /// Version 1.04 - HPPavilion 7
-        /// 11941
-        /// 
-        /// Version 2.00 - HPPavilion 7
-        /// 9506
-        /// 
         /// Version 2.20 - HPPavilion 7
-        /// 5206
+        /// 3687
         /// </summary>
         [Test]
-        public void TestManyPrintings()
+        public void TestTheOverheadOfStartingUp()
         {
             var toPrint = new Base();
-            var printer = new Stateprinter();
 
-            printer.PrintObject(toPrint);
             var mills = Time(
               () =>
               {
-                  for (int i = 0; i < N; i++)
+                  for (int i = 0; i < N/400; i++)
+                  {
+                      var printer = new Stateprinter();
                       printer.PrintObject(toPrint);
+                  }
               });
             Console.WriteLine("  " + mills);
         }
@@ -115,11 +118,27 @@ namespace StatePrinter.Tests.PerformanceTests
             }
         }
 
+
+        [Test]
+        public void TiminAllOutputFormattersAtNElements()
+        {
+            var x = CreateObjectsToDump(N);
+            var curly = new Stateprinter();
+            curly.Configuration.SetOutputFormatter(new CurlyBraceStyle(curly.Configuration));
+            var json = new Stateprinter();
+            curly.Configuration.SetOutputFormatter(new JsonStyle(json.Configuration));
+            var xml = new Stateprinter();
+            curly.Configuration.SetOutputFormatter(new XmlStyle(xml.Configuration));
+
+            Console.WriteLine("Printing {0:0,0} objects.", N);
+            Console.WriteLine("curly: {0}", Time(() => curly.PrintObject(x)));
+            Console.WriteLine("json:  {0}", Time(() => json.PrintObject(x)));
+            Console.WriteLine("xml:   {0}", Time(() => xml.PrintObject(x)));
+        }
+
         private void DumpNObjects(int max)
         {
-            var x = new List<ToDump>();
-            for (int i = 0; i < max; i++)
-                x.Add(new ToDump());
+            var x = CreateObjectsToDump(max);
 
             var cfg = ConfigurationHelper.GetStandardConfiguration();
             cfg.OutputFormatter = new JsonStyle(cfg);
@@ -131,6 +150,15 @@ namespace StatePrinter.Tests.PerformanceTests
             Console.WriteLine(max + ":  " + mills);
         }
 
+        static List<ToDump> CreateObjectsToDump(int max)
+        {
+            var x = new List<ToDump>();
+            for (int i = 0; i < max; i++)
+            {
+                x.Add(new ToDump());
+            }
+            return x;
+        }
 
         internal class Base
         {
