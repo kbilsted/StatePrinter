@@ -108,7 +108,7 @@ namespace StatePrinter.Introspection
             tokens.Add(Startscope);
 
             ReflectionInfo reflection = ReflectFields(sourceType);
-            for (int i = 0; i < reflection.Fields.Count; i++)
+            for (int i = 0; i < reflection.Fields.Length; i++)
             {
                 Introspect(reflection.ValueProviders[i](source), reflection.Fields[i]);
             }
