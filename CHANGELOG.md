@@ -4,6 +4,14 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
+
+## v2.2.x
+
+Added
+
+* #28 - **2-3 times speed up** of execution speed due to run-time code generation of reflection
+* #31 - `RollingGuidValueConverter` - Unit testing data containing Guid's just became much easier
+
 ## v2.1.220
 
 Added
