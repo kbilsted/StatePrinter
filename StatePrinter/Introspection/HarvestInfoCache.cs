@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using StatePrinter.FieldHarvesters;
 
 namespace StatePrinter.Introspection
 {
@@ -31,15 +32,15 @@ namespace StatePrinter.Introspection
         /// <summary>
         /// Due to supporting C# 3.5 we cannot use ConcurrentDictionary
         /// </summary>
-        readonly Dictionary<Type, ReflectionInfo> harvestCache = new Dictionary<Type, ReflectionInfo>();
+        readonly Dictionary<Type, List<SanitizedFieldInfo>> harvestCache = new Dictionary<Type, List<SanitizedFieldInfo>>();
         readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
 
-        public ReflectionInfo TryGet(Type type)
+        public List<SanitizedFieldInfo> TryGet(Type type)
         {
             cacheLock.EnterReadLock();
             try
             {
-                ReflectionInfo res;
+                List<SanitizedFieldInfo> res;
                 harvestCache.TryGetValue(type, out res);
                 return res;
             }
@@ -49,7 +50,7 @@ namespace StatePrinter.Introspection
             }
         }
 
-        public void TryAdd(Type type, ReflectionInfo fields)
+        public void TryAdd(Type type, List<SanitizedFieldInfo> fields)
         {
             cacheLock.EnterWriteLock();
             try

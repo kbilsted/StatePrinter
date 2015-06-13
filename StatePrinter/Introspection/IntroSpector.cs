@@ -60,6 +60,10 @@ namespace StatePrinter.Introspection
             return tokens;
         }
 
+        void Introspect(SanitizedFieldInfo info, object source)
+        {
+            Introspect(info.ValueProvider(source), new Field(info.SanitizedName));
+        }
 
         void Introspect(object source, Field field)
         {
@@ -107,19 +111,16 @@ namespace StatePrinter.Introspection
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, sourceType));
             tokens.Add(Startscope);
 
-            ReflectionInfo reflection = ReflectFields(sourceType);
-            for (int i = 0; i < reflection.Fields.Count; i++)
-            {
-                Introspect(reflection.ValueProviders[i](source), reflection.Fields[i]);
-            }
-
+            List<SanitizedFieldInfo> fields = ReflectFields(sourceType);
+            fields.ForEach(i => Introspect(i, source));
+            
             tokens.Add(Endscope);
         }
 
-        ReflectionInfo ReflectFields(Type sourceType)
+        List<SanitizedFieldInfo> ReflectFields(Type sourceType)
         {
-            ReflectionInfo reflection;
-            if ((reflection = harvestCache.TryGet(sourceType)) == null)
+            List<SanitizedFieldInfo> fields;
+            if ((fields= harvestCache.TryGet(sourceType)) == null)
             {
                 IFieldHarvester harvester;
                 if (!configuration.TryGetFieldHarvester(sourceType, out harvester))
@@ -128,12 +129,11 @@ namespace StatePrinter.Introspection
                                     "No fieldharvester is configured for handling type '{0}'. Try using 'ConfigurationHelper.GetStandardConfiguration()' to get started.",
                                     sourceType));
 
-                List<SanitizedFieldInfo> fields = harvester.GetFields(sourceType);
-                reflection = new ReflectionInfo(fields);
-                harvestCache.TryAdd(sourceType, reflection);
+                fields = harvester.GetFields(sourceType);
+                harvestCache.TryAdd(sourceType, fields);
             }
 
-            return reflection;
+            return fields;
         }
 
         bool IntrospectSimpleValue(object source, Field field, Type sourceType)
