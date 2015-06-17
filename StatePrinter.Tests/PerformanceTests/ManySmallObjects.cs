@@ -52,6 +52,11 @@ namespace StatePrinter.Tests.PerformanceTests
         {
             var toPrint = new Base();
 
+            //var warmup = 
+            new Stateprinter().PrintObject(toPrint);
+            new Stateprinter().PrintObject(toPrint);
+            new Stateprinter().PrintObject(toPrint);
+
             var mills = Time(
               () =>
               {
@@ -118,41 +123,58 @@ namespace StatePrinter.Tests.PerformanceTests
             }
         }
 
-
+        /// <summary>
+        /// Printing 1.000.000 objects.
+        /// curly: 8951 length:   62888908
+        /// json:  7038 length:   59000006
+        /// xml:   10041 length:   89000074
+        /// </summary>
         [Test]
         public void TiminAllOutputFormattersAtNElements()
         {
+            //var warmup 
+            new Stateprinter().PrintObject(new ToDump());
+            new Stateprinter().PrintObject(new ToDump());
+            new Stateprinter().PrintObject(new ToDump());
+
             var x = CreateObjectsToDump(N);
+            int length = 0;
+            Console.WriteLine("Printing {0:0,0} objects.", N);
+            
             var curly = new Stateprinter();
             curly.Configuration.SetOutputFormatter(new CurlyBraceStyle(curly.Configuration));
-            var json = new Stateprinter();
-            curly.Configuration.SetOutputFormatter(new JsonStyle(json.Configuration));
-            var xml = new Stateprinter();
-            curly.Configuration.SetOutputFormatter(new XmlStyle(xml.Configuration));
+            long time = Time(() => length = curly.PrintObject(x).Length);
+            Console.WriteLine("curly: {0} length: {1,10}", time, length);
 
-            Console.WriteLine("Printing {0:0,0} objects.", N);
-            Console.WriteLine("curly: {0}", Time(() => curly.PrintObject(x)));
-            Console.WriteLine("json:  {0}", Time(() => json.PrintObject(x)));
-            Console.WriteLine("xml:   {0}", Time(() => xml.PrintObject(x)));
+            var json = new Stateprinter();
+            json.Configuration.SetOutputFormatter(new JsonStyle(json.Configuration));
+            time = Time(() => length = json.PrintObject(x).Length);
+            Console.WriteLine("json:  {0} length: {1,10}", time, length);
+
+            var xml = new Stateprinter();
+            xml.Configuration.SetOutputFormatter(new XmlStyle(xml.Configuration));
+            time = Time(() => length = xml.PrintObject(x).Length);
+            Console.WriteLine("xml:   {0} length: {1,10}", time, length);
         }
 
         private void DumpNObjects(int max)
         {
-            var x = CreateObjectsToDump(max);
+            List<ToDump> x = CreateObjectsToDump(max);
 
             var cfg = ConfigurationHelper.GetStandardConfiguration();
             cfg.OutputFormatter = new JsonStyle(cfg);
+            int length = 0;
             var mills = Time(() =>
                              {
                                  var printer = new Stateprinter(cfg);
-                                 printer.PrintObject(x);
+                                 length = printer.PrintObject(x).Length;
                              });
-            Console.WriteLine(max + ":  " + mills);
+            Console.WriteLine("{0,8}:  Time: {1,6} length {2,10}", max, mills, length);
         }
 
         static List<ToDump> CreateObjectsToDump(int max)
         {
-            var x = new List<ToDump>();
+            var x = new List<ToDump>(max);
             for (int i = 0; i < max; i++)
             {
                 x.Add(new ToDump());
