@@ -16,6 +16,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StatePrinter.Introspection;
@@ -34,13 +36,29 @@ public class UnusedReferencesTokenFilter
         var remappedReferences = RemappedReferences(backreferences);
 
         var result = tokens
-          .Select(x => new Token(
-            x.Tokenkind,
-            x.Field,
-            x.Value,
-            CreateNewReference(remappedReferences, x.ReferenceNo),
-            x.FieldType))
-          .ToList();
+          .Select(
+              x =>
+                  {
+                      switch (x.Tokenkind)
+                      {
+                          case TokenType.StartScope:
+                          case TokenType.EndScope:
+                          case TokenType.StartEnumeration:
+                          case TokenType.EndEnumeration:
+                          case TokenType.SimpleFieldValue:
+                              return x;
+                          case TokenType.SeenBeforeWithReference:
+                          case TokenType.FieldnameWithTypeAndReference:
+                              return new Token(
+                                  x.Tokenkind,
+                                  x.Field,
+                                  x.Value,
+                                  CreateNewReference(remappedReferences, x.ReferenceNo),
+                                  x.FieldType);
+                          default: throw new Exception("Unknown token type "+ x.Tokenkind);
+                      }
+                  })
+              .ToList();
 
         return result;
     }
@@ -69,7 +87,7 @@ public class UnusedReferencesTokenFilter
         if (currentReference == null)
             return null;
 
-        Reference newReference = null;
+        Reference newReference;
         remappedReferences.TryGetValue(currentReference, out newReference);
         return newReference;
     }
