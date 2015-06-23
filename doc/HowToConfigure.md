@@ -152,7 +152,7 @@ public class AllFieldsHarvester : IFieldHarvester
     return true;
   }
 
-  public IEnumerable<FieldInfo> GetFields(Type type)
+  public IEnumerable<SanitizedFieldInfo> GetFields(Type type)
   {
     var fields = new HarvestHelper().GetFields(type);
     return fields.Where(x => x.IsPublic || x.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
