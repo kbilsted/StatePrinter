@@ -83,6 +83,17 @@ namespace StatePrinter.Tests.FieldHarvesters
         }
 
         [Test]
+        public void TestFluintInterface_map()
+        {
+            var cfg = TestHelper.CreateTestConfiguration();
+            cfg.Project.Map<A>(x => new {dims="hejsa", ups=x.Name});
+            var printer = new Stateprinter(cfg);
+
+            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
+            Assert.AreEqual(@"new A() { dims = ""hejsa"" ups = ""Charly"" }", state);
+        }
+
+        [Test]
         public void TestFluintInterface_Include()
         {
             var cfg = TestHelper.CreateTestConfiguration();
@@ -155,6 +166,15 @@ namespace StatePrinter.Tests.FieldHarvesters
                 var harvester = new ProjectionHarvester();
                 harvester.Include<A>(x => x.X);
                 harvester.AddFilter<A>(x => null);
+            }
+
+            [Test]
+            [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Type A has already been configured as a map.")]
+            public void AddFilter_OnAlreadyMap_Fail()
+            {
+                var cfg = TestHelper.CreateTestConfiguration();
+                cfg.Project.Map<A>(x => new { dims = "hejsa", ups = x.Name });
+                cfg.Project.AddFilter<A>(x => null);
             }
         }
 

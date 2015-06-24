@@ -31,7 +31,7 @@ namespace StatePrinter.FieldHarvesters
         /// <summary>
         /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
         /// </summary>
-        public Func<object, object> CreateGetter(MemberInfo memberInfo)
+        public Func<object, object> CreateGetter(MemberInfo memberInfo, Expression mapexpression, Type basetype)
         {
             if (!(memberInfo is FieldInfo) && !(memberInfo is PropertyInfo))
             {
@@ -43,10 +43,17 @@ namespace StatePrinter.FieldHarvesters
                 throw new ArgumentException("MemberInfo cannot be a global member.");
             }
 
-            var p = Expression.Parameter(typeof (object), "p");
-            var castparam = Expression.Convert(p, memberInfo.DeclaringType);
-            var field = Expression.PropertyOrField(castparam, memberInfo.Name);
-            var castRes = Expression.Convert(field, typeof (object));
+            var p = Expression.Parameter(typeof(object), "p");
+            var objExpr = Expression.Convert(p, basetype ?? memberInfo.DeclaringType);
+            if (mapexpression != null)
+            {
+                var invokeMap = Expression.Invoke(mapexpression, objExpr);
+                objExpr = Expression.Convert(invokeMap, memberInfo.DeclaringType);
+            }
+
+            var field = Expression.PropertyOrField(objExpr, memberInfo.Name);
+            
+            var castRes = Expression.Convert(field, typeof(object));
             return Expression.Lambda<Func<object, object>>(castRes, p).Compile();
         }
     }

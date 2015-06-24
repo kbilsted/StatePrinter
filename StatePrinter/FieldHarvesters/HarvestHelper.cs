@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
@@ -63,12 +64,24 @@ namespace StatePrinter.FieldHarvesters
             return GetFields(type.BaseType, flags).Concat(type.GetFields(flags));
         }
 
+        public List<SanitizedFieldInfo> GetFieldsAndProperties(Type basetype, Expression mapexpression)
+        {
+            Type anonymousType = GetReturnTypeFromMapExpression(mapexpression);
+            var props = GetFieldsAndProperties(anonymousType, flags).Where(x => x.MemberType == MemberTypes.Property);
+            return props.Select(p => GetSanitizedFieldInfoForFieldOrProperty(p, mapexpression, basetype)).ToList();
+        }
+
         public List<SanitizedFieldInfo> GetFieldsAndProperties(Type type)
         {
             IEnumerable<MemberInfo> fieldsAndProps =
                 GetFieldsAndProperties(type, flags)
                     .Where(x => x.MemberType == MemberTypes.Field || x.MemberType == MemberTypes.Property);
             return fieldsAndProps.Select(GetSanitizedFieldInfoForFieldOrProperty).ToList();
+        }
+        
+        Type GetReturnTypeFromMapExpression(Expression mapexpression)
+        {
+            return ((LambdaExpression) mapexpression).Body.Type;
         }
 
         /// <summary>
@@ -128,7 +141,12 @@ namespace StatePrinter.FieldHarvesters
 
         SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo)
         {
-            var valueGetter = runTimeCodeGenerator.CreateGetter(memberInfo);
+            return GetSanitizedFieldInfoForFieldOrProperty(memberInfo, null, null);
+        }
+
+        SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo, Expression mapexpression, Type basetype)
+        {
+            var valueGetter = runTimeCodeGenerator.CreateGetter(memberInfo, mapexpression, basetype);
             return new SanitizedFieldInfo(memberInfo, SanitizeFieldName(memberInfo.Name), valueGetter);
         }
     }
