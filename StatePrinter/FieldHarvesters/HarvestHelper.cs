@@ -141,7 +141,8 @@ namespace StatePrinter.FieldHarvesters
 
         SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo)
         {
-            return GetSanitizedFieldInfoForFieldOrProperty(memberInfo, null, null);
+            var valueGetter = runTimeCodeGenerator.CreateGetter(memberInfo);
+            return new SanitizedFieldInfo(memberInfo, SanitizeFieldName(memberInfo.Name), valueGetter);
         }
 
         SanitizedFieldInfo GetSanitizedFieldInfoForFieldOrProperty(MemberInfo memberInfo, Expression mapexpression, Type basetype)

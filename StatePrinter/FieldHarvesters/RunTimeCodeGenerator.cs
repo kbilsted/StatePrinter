@@ -24,10 +24,32 @@ using System.Reflection;
 namespace StatePrinter.FieldHarvesters
 {
     /// <summary>
-    /// Run-time code generation is much faster than using ordinary reflection such 
+    /// Run-time code generation is much faster than using ordinary reflection
     /// </summary>
     public class RunTimeCodeGenerator
     {
+        /// <summary>
+        /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
+        /// </summary>
+        public Func<object, object> CreateGetter(MemberInfo memberInfo)
+        {
+            if (!(memberInfo is FieldInfo) && !(memberInfo is PropertyInfo))
+            {
+                throw new ArgumentException("Parameter memberInfo must be of type FieldInfo or PropertyInfo.");
+            }
+
+            if (memberInfo.DeclaringType == null)
+            {
+                throw new ArgumentException("MemberInfo cannot be a global member.");
+            }
+
+            var p = Expression.Parameter(typeof(object), "p");
+            var objExpr = Expression.Convert(p, memberInfo.DeclaringType);
+            var field = Expression.PropertyOrField(objExpr, memberInfo.Name);
+            var castRes = Expression.Convert(field, typeof(object));
+            return Expression.Lambda<Func<object, object>>(castRes, p).Compile();
+        }
+
         /// <summary>
         /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
         /// </summary>
@@ -43,16 +65,21 @@ namespace StatePrinter.FieldHarvesters
                 throw new ArgumentException("MemberInfo cannot be a global member.");
             }
 
-            var p = Expression.Parameter(typeof(object), "p");
-            var objExpr = Expression.Convert(p, basetype ?? memberInfo.DeclaringType);
-            if (mapexpression != null)
+            if (mapexpression == null)
             {
-                var invokeMap = Expression.Invoke(mapexpression, objExpr);
-                objExpr = Expression.Convert(invokeMap, memberInfo.DeclaringType);
+                throw new ArgumentException("Mapexpression cannot be a null.");
             }
 
-            var field = Expression.PropertyOrField(objExpr, memberInfo.Name);
-            
+            if (basetype == null)
+            {
+                throw new ArgumentException("Basetype cannot be a null.");
+            }
+
+            var p = Expression.Parameter(typeof(object), "p");
+            var objExpr = Expression.Convert(p, basetype);
+            var invokeMap = Expression.Invoke(mapexpression, objExpr);
+            var typedMapExpr = Expression.Convert(invokeMap, memberInfo.DeclaringType);
+            var field = Expression.PropertyOrField(typedMapExpr, memberInfo.Name);
             var castRes = Expression.Convert(field, typeof(object));
             return Expression.Lambda<Func<object, object>>(castRes, p).Compile();
         }
