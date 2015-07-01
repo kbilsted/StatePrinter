@@ -17,10 +17,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using StatePrinter.Configurations;
+
 using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
@@ -30,18 +29,25 @@ namespace StatePrinter.Tests.IntegrationTests
     {
         Stateprinter printer;
 
+        Car car;
+        Course course;
+
         [SetUp]
         public void Setup()
         {
             printer = TestHelper.CreateTestPrinter();
+
+            car = new Car(new SteeringWheel(new FoamGrip("Plastic"))) { Brand = "Toyota" };
+
+            course = new Course();
+            course.Members.Add(new Student("Stan", course));
+            course.Members.Add(new Student("Richy", course));
+
         }
 
         [Test]
         public void ThreeLinkedGraph()
         {
-            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-            car.Brand = "Toyota";
-
             var expected =
       @"new Car()
 {
@@ -65,9 +71,6 @@ namespace StatePrinter.Tests.IntegrationTests
         public void ThreeLinkedGraph_json()
         {
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
-
-            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-            car.Brand = "Toyota";
 
             var expected =
       @"
@@ -93,9 +96,6 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             printer.Configuration.OutputFormatter = new XmlStyle(printer.Configuration);
 
-            var car = new Car(new SteeringWheel(new FoamGrip("Plastic")));
-            car.Brand = "Toyota";
-
             var expected =
       @"<ROOT type='Car'>
     <StereoAmplifiers>null</StereoAmplifiers>
@@ -115,9 +115,6 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void CyclicGraph_curly()
         {
-            var course = new Course();
-            course.Members.Add(new Student("Stan", course));
-            course.Members.Add(new Student("Richy", course));
 
             var expected =
       @"new Course(), ref: 0
@@ -142,10 +139,6 @@ namespace StatePrinter.Tests.IntegrationTests
         public void CyclicGraph_Json()
         {
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
-
-            var course = new Course();
-            course.Members.Add(new Student("Stan", course));
-            course.Members.Add(new Student("Richy", course));
 
             var expected =
       @"

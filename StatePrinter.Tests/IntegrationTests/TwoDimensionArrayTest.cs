@@ -25,7 +25,7 @@ using StatePrinter.OutputFormatters;
 namespace StatePrinter.Tests.IntegrationTests
 {
     [TestFixture]
-    class ArrayTest
+    class TwoDimensionArrayTest
     {
         static readonly int[,] twoDimArray = { { 1, 2 }, { 3, 4 } };
 
@@ -65,12 +65,12 @@ namespace StatePrinter.Tests.IntegrationTests
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetOutputFormatter(new JsonStyle(printer.Configuration));
 
-                string expected = @"
+                var expected = @"
 [
-    1,
-    2,
-    3,
-    4
+    { 0 : 1 },
+    { 1 : 2 },
+    { 2 : 3 },
+    { 3 : 4 }
 ]";
                 printer.Assert.PrintEquals(expected, twoDimArray);
             }
@@ -86,12 +86,13 @@ namespace StatePrinter.Tests.IntegrationTests
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetOutputFormatter(new XmlStyle(printer.Configuration));
 
-                string expected = @"<ROOT type='Int32[,]'>
+                var expected = @"<ROOT type='Int32[,]'>
+<ROOT>
     <Enumeration>
-    <ROOT>1</ROOT>
-    <ROOT>2</ROOT>
-    <ROOT>3</ROOT>
-    <ROOT>4</ROOT>
+    <key>0</key><value>1</value>
+    <key>1</key><value>2</value>
+    <key>2</key><value>3</value>
+    <key>3</key><value>4</value>
     </Enumeration>
 </ROOT>";
                 printer.Assert.PrintEquals(expected, twoDimArray);

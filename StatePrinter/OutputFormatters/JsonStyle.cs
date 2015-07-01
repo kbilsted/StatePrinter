@@ -33,7 +33,7 @@ namespace StatePrinter.OutputFormatters
     /// </summary>
     public class JsonStyle : IOutputFormatter
     {
-        Configuration configuration;
+        readonly Configuration configuration;
 
         public JsonStyle(Configuration configuration)
         {
@@ -49,6 +49,7 @@ namespace StatePrinter.OutputFormatters
             return MakeString(tokens, referencePaths);
         }
 
+        // TODO backreference-arg anvendes ikke..
         Dictionary<Reference, string> CreatePathsFromReferences(List<Token> tokens, Reference[] backreferences)
         {
             var paths = new Dictionary<Reference, string>();
@@ -74,8 +75,8 @@ namespace StatePrinter.OutputFormatters
                         if (token.Field.Name != null)
                         {
                             var keyname = token.Field.SimpleKeyInArrayOrDictionary == null
-                              ? ""
-                              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
+                                              ? ""
+                                              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
                             last = token.Field.Name + keyname;
                         }
 
@@ -110,6 +111,7 @@ namespace StatePrinter.OutputFormatters
             }
 
             sb.TrimLast();
+
             return sb.ToString();
         }
 
@@ -133,8 +135,29 @@ namespace StatePrinter.OutputFormatters
                     break;
 
                 case TokenType.StartEnumeration:
-                    sb.AppendFormatLine("[");
-                    sb.Indent();
+                    {
+                        fieldnameColon = "";
+                        if (pos + 1 < tokens.Count)
+                        {
+                            var nextToken = tokens[pos + 1];
+
+                            if (nextToken.Tokenkind == TokenType.EndEnumeration)
+                            {
+                                sb.AppendFormatLine("[]");
+                                skip++;
+                                break;
+                            }
+
+                            if (nextToken.Tokenkind == TokenType.SimpleFieldValue
+                                && nextToken.Field.SimpleKeyInArrayOrDictionary != null
+                                && nextToken.Field.Name != null)
+                            {
+                                fieldnameColon = string.Format("\"{0}\" : ", nextToken.Field.Name);
+                            }
+                        }
+                        sb.AppendFormatLine("{0}[", fieldnameColon);
+                        sb.Indent();
+                    }
                     break;
 
                 case TokenType.EndEnumeration:
@@ -144,11 +167,22 @@ namespace StatePrinter.OutputFormatters
 
                 case TokenType.SimpleFieldValue:
                     {
-                        // fieldname is empty if the ROOT-element-name has not been supplied
-                        fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
 
-                        var optinalComma = OptionalComma(tokens, pos);
-                        sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, token.Value, optinalComma);
+                        if (token.Field.SimpleKeyInArrayOrDictionary == null)
+                        {
+                            // fieldname is empty if the ROOT-element-name has not been supplied
+                            fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
+                            var optinalComma = OptionalComma(tokens, pos);
+                            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, token.Value, optinalComma);
+                        }
+                        else
+                        {
+                            fieldnameColon = "";
+                            var keyval = string.Format("{{ {0} : {1} }}", token.Field.SimpleKeyInArrayOrDictionary, token.Value);
+
+                            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, keyval, OptionalComma(tokens, pos + skip));
+                        }
+
                         break;
                     }
 
@@ -189,6 +223,24 @@ namespace StatePrinter.OutputFormatters
             }
 
             return skip;
+        }
+
+
+        string MakeFieldnameAssign(Token token)
+        {
+            if (token.Field == null)
+                return "";
+
+            var simpleLookupKey = token.Field.SimpleKeyInArrayOrDictionary == null
+              ? ""
+              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
+            var fieldName = token.Field.Name + simpleLookupKey;
+
+            // fieldname is empty if the ROOT-element-name has not been supplied
+            string fieldnameAssign = string.IsNullOrEmpty(fieldName)
+              ? ""
+              : fieldName + " : ";
+            return fieldnameAssign;
         }
 
         string GetEmptyOrFieldname(Token token, string formatting)

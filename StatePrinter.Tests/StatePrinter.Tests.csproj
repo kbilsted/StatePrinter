@@ -64,7 +64,7 @@
     <Compile Include="TestingAssistance\ParserTest.cs" />
     <Compile Include="IntegrationTests\PublicPropertiesTest.cs" />
     <Compile Include="IntegrationTests\PropertiesTest.cs" />
-    <Compile Include="IntegrationTests\ArrayTest.cs" />
+    <Compile Include="IntegrationTests\TwoDimensionArrayTest.cs" />
     <Compile Include="IntegrationTests\CultureTests.cs" />
     <Compile Include="IntegrationTests\DictionaryTest.cs" />
     <Compile Include="IntegrationTests\IEnumeratbleTest.cs" />

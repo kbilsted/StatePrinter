@@ -53,7 +53,7 @@ public class UnusedReferencesTokenFilter
                                   x.Tokenkind,
                                   x.Field,
                                   x.Value,
-                                  CreateNewReference(remappedReferences, x.ReferenceNo),
+                                  CreateNewReferenceOrClear(remappedReferences, x.ReferenceNo),
                                   x.FieldType);
                           default: throw new Exception("Unknown token type "+ x.Tokenkind);
                       }
@@ -82,13 +82,14 @@ public class UnusedReferencesTokenFilter
         return remappedReferences;
     }
 
-    Reference CreateNewReference(Dictionary<Reference, Reference> remappedReferences, Reference currentReference)
+    Reference CreateNewReferenceOrClear(Dictionary<Reference, Reference> remappedReferences, Reference currentReference)
     {
-        if (currentReference == null)
+        Reference newReference;
+
+        // if not remapped, clear the reference
+        if(!remappedReferences.TryGetValue(currentReference, out newReference))
             return null;
 
-        Reference newReference;
-        remappedReferences.TryGetValue(currentReference, out newReference);
         return newReference;
     }
 }

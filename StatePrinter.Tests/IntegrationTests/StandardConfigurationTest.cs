@@ -19,7 +19,7 @@
 
 using System;
 using NUnit.Framework;
-using StatePrinter.Configurations;
+
 using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
@@ -41,126 +41,137 @@ namespace StatePrinter.Tests.IntegrationTests
     [TestFixture]
     class StandardConfigurationTests
     {
-        Stateprinter printer;
+        Stateprinter curly;
+        Stateprinter json;
+        Stateprinter xml;
 
         [SetUp]
         public void Setup()
         {
-            printer = TestHelper.CreateTestPrinter();
+            curly = TestHelper.CreateTestPrinter();
+            json = TestHelper.CreateTestPrinter();
+            json.Configuration.SetOutputFormatter(new JsonStyle(json.Configuration));
+            xml = TestHelper.CreateTestPrinter();
+            xml.Configuration.SetOutputFormatter(new XmlStyle(xml.Configuration));
         }
 
         [Test]
         public void NullContent()
         {
-            Assert.AreEqual("null", printer.PrintObject(null));
+            curly.Assert.PrintEquals("null", null);
+            json.Assert.PrintEquals("null", null);
+            xml.Assert.PrintEquals("<ROOT>null</ROOT>", null);
+
+            Assert.AreEqual("a = null", curly.PrintObject(null, "a"));
+            Assert.AreEqual("\"a\" : null", json.PrintObject(null, "a"));
+            Assert.AreEqual("<a>null</a>", xml.PrintObject(null, "a"));
         }
+
 
         [Test]
         public void String_empty()
         {
-            Assert.AreEqual("\"\"", printer.PrintObject(""));
-            Assert.AreEqual("\"Some string\"", printer.PrintObject("Some string"));
+            curly.Assert.PrintEquals("\"\"", "");
+            json.Assert.PrintEquals("\"\"", "");
+            xml.Assert.PrintEquals("<ROOT>\"\"</ROOT>", "");
+        }
+
+        [Test]
+        public void String()
+        {
+            curly.Assert.PrintEquals("\"Some string\"", "Some string");
+            json.Assert.PrintEquals("\"Some string\"", "Some string");
+            xml.Assert.PrintEquals("<ROOT>\"Some string\"</ROOT>", "Some string");
         }
 
 
         [Test]
         public void Bool_with_root()
         {
-            Assert.AreEqual("Root = True", printer.PrintObject(true, "Root"));
-            Assert.AreEqual("Ref = False", printer.PrintObject(false, "Ref"));
+            Assert.AreEqual("Root = True", curly.PrintObject(true, "Root"));
+            Assert.AreEqual("Ref = False", curly.PrintObject(false, "Ref"));
         }
 
         [Test]
         public void Bool()
         {
-            Assert.AreEqual("True", printer.PrintObject(true));
-            Assert.AreEqual("False", printer.PrintObject(false));
+            Assert.AreEqual("True", curly.PrintObject(true));
+            Assert.AreEqual("False", curly.PrintObject(false));
         }
 
         [Test]
         public void Decimal()
         {
-            Assert.AreEqual("-1", printer.PrintObject(-1M));
-            Assert.AreEqual("3,141592", printer.PrintObject(3.141592M));
-            Assert.AreEqual("1,27E+23", printer.PrintObject(1.27E23));
+            Assert.AreEqual("-1", curly.PrintObject(-1M));
+            Assert.AreEqual("3,141592", curly.PrintObject(3.141592M));
+            Assert.AreEqual("1,27E+23", curly.PrintObject(1.27E23));
         }
 
         [Test]
         public void Float()
         {
-            Assert.AreEqual("-1", printer.PrintObject(-1f));
-            Assert.AreEqual("3,141592", printer.PrintObject(3.141592f));
-            Assert.AreEqual("1,27E+23", printer.PrintObject(1.27E23f));
+            Assert.AreEqual("-1", curly.PrintObject(-1f));
+            Assert.AreEqual("3,141592", curly.PrintObject(3.141592f));
+            Assert.AreEqual("1,27E+23", curly.PrintObject(1.27E23f));
         }
 
         [Test]
         public void Int()
         {
-            Assert.AreEqual("-1", printer.PrintObject(-1f));
-            Assert.AreEqual("3", printer.PrintObject(3));
-            Assert.AreEqual("1E+23", printer.PrintObject(1E23));
+            Assert.AreEqual("-1", curly.PrintObject(-1));
+            Assert.AreEqual("-1", json.PrintObject(-1));
+
+            Assert.AreEqual("3", curly.PrintObject(3));
+            Assert.AreEqual("3", json.PrintObject(3));
+
+            Assert.AreEqual("1E+23", curly.PrintObject(1E23));
+            Assert.AreEqual("1E+23", json.PrintObject(1E23));
         }
 
 
         [Test]
         public void Int_xml()
         {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new XmlStyle(cfg);
-            printer = new Stateprinter(cfg);
-
-            Assert.AreEqual("<ROOT>-1</ROOT>", printer.PrintObject(-1f));
-            Assert.AreEqual("<ROOT>3</ROOT>", printer.PrintObject(3));
-            Assert.AreEqual("<ROOT>1E+23</ROOT>", printer.PrintObject(1E23));
-        }
-
-
-        [Test]
-        public void Int_json()
-        {
-            var cfg = ConfigurationHelper.GetStandardConfiguration();
-            cfg.OutputFormatter = new JsonStyle(cfg);
-            printer = new Stateprinter(cfg);
-
-            Assert.AreEqual("-1", printer.PrintObject(-1f));
-            Assert.AreEqual("3", printer.PrintObject(3));
-            Assert.AreEqual("1E+23", printer.PrintObject(1E23));
+            Assert.AreEqual("<ROOT>-1</ROOT>", xml.PrintObject(-1f));
+            Assert.AreEqual("<ROOT>3</ROOT>", xml.PrintObject(3));
+            Assert.AreEqual("<ROOT>1E+23</ROOT>", xml.PrintObject(1E23));
         }
 
 
         [Test]
         public void Long()
         {
-            Assert.AreEqual("-1", printer.PrintObject(-1L));
-            Assert.AreEqual("789328793", printer.PrintObject(789328793L));
-            Assert.AreEqual("789389398328793", printer.PrintObject(789389398328793)); // outside int -range
+            Assert.AreEqual("-1", curly.PrintObject(-1L));
+            Assert.AreEqual("789328793", curly.PrintObject(789328793L));
+            Assert.AreEqual("789389398328793", curly.PrintObject(789389398328793)); // outside int -range
         }
 
         [Test]
         public void GuidTest()
         {
-            Assert.AreEqual("00000000-0000-0000-0000-000000000000", printer.PrintObject(Guid.Empty));
+            Assert.AreEqual("00000000-0000-0000-0000-000000000000", curly.PrintObject(Guid.Empty));
+            Assert.AreEqual("00000000-0000-0000-0000-000000000000", json.PrintObject(Guid.Empty));
         }
 
         [Test]
         public void DateTime()
         {
             var dt = new DateTime(2010, 2, 3, 14, 15, 59);
-            Assert.AreEqual("03-02-2010 14:15:59", printer.PrintObject(dt));
+            Assert.AreEqual("03-02-2010 14:15:59", curly.PrintObject(dt));
         }
 
         [Test]
         public void DateTimeOffset()
         {
             var dt = new DateTimeOffset(2010, 2, 3, 14, 15, 59, TimeSpan.FromMinutes(1));
-            Assert.AreEqual("03-02-2010 14:15:59 +00:01", printer.PrintObject(dt));
+            Assert.AreEqual("03-02-2010 14:15:59 +00:01", curly.PrintObject(dt));
         }
 
         [Test]
         public void Enum()
         {
-            Assert.AreEqual("Hearts", printer.PrintObject(Suit.Hearts));
-            Assert.AreEqual("Spades", printer.PrintObject(Suit.Spades));
+            Assert.AreEqual("Hearts", curly.PrintObject(Suit.Hearts));
+            Assert.AreEqual("Spades", curly.PrintObject(Suit.Spades));
         }
 
         enum Suit
