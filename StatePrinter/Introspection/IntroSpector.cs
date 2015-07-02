@@ -108,7 +108,7 @@ namespace StatePrinter.Introspection
             tokens.Add(Startscope);
 
             ReflectionInfo reflection = ReflectFields(sourceType);
-            for (int i = 0; i < reflection.Fields.Count; i++)
+            for (int i = 0; i < reflection.Fields.Length; i++)
             {
                 Introspect(reflection.ValueProviders[i](source), reflection.Fields[i]);
             }
@@ -123,9 +123,12 @@ namespace StatePrinter.Introspection
             {
                 IFieldHarvester harvester;
                 if (!configuration.TryGetFieldHarvester(sourceType, out harvester))
-                    throw new Exception(string.Format("No fieldharvester is configured for handling type '{0}'. Try using 'ConfigurationHelper.GetStandardConfiguration()' to get started.", sourceType));
+                    throw new Exception(
+                            string.Format(
+                                    "No fieldharvester is configured for handling type '{0}'. Try using 'ConfigurationHelper.GetStandardConfiguration()' to get started.",
+                                    sourceType));
 
-                List<SanitiedFieldInfo> fields = harvester.GetFields(sourceType);
+                List<SanitizedFieldInfo> fields = harvester.GetFields(sourceType);
                 reflection = new ReflectionInfo(fields);
                 harvestCache.TryAdd(sourceType, reflection);
             }

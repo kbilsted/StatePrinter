@@ -71,8 +71,17 @@ namespace StatePrinter
         /// Print an object graph to a string.
         /// </summary>
         /// <param name="objectToPrint">What to print.</param>
+        public string PrintObject(object objectToPrint)
+        {
+            return PrintObject(objectToPrint, null);
+        }
+
+        /// <summary>
+        /// Print an object graph to a string.
+        /// </summary>
+        /// <param name="objectToPrint">What to print.</param>
         /// <param name="rootname">The name of the root as it is printed.</param>
-        public string PrintObject(object objectToPrint, string rootname = null)
+        public string PrintObject(object objectToPrint, string rootname)
         {
             var introSpector = new IntroSpector(Configuration, harvestCache);
             var tokens = introSpector.PrintObject(objectToPrint, rootname);
@@ -110,6 +119,9 @@ namespace StatePrinter
             }
         }
 
+        /// <summary>
+        /// We need to dispose the lock for the caches
+        /// </summary>
         ~Stateprinter()
         {
             harvestCache.Dispose();

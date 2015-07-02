@@ -27,7 +27,7 @@ using StatePrinter.Introspection;
 namespace StatePrinter.OutputFormatters
 {
     /// <summary>
-    /// Formatting the tokens to a curly-brace style representation.
+    /// Formatting the tokens to an XML style representation.
     /// 
     /// In order to reduce clutter in the output, only reference that are referred to by later
     /// outputted objects will have a referencenumber attached to them.
@@ -49,16 +49,19 @@ namespace StatePrinter.OutputFormatters
             return MakeString(processed);
         }
 
-        string MakeString(IEnumerable<Token> tokens)
+        string MakeString(List<Token> tokens)
         {
             var sb = new IndentingStringBuilder(configuration);
 
             Token previous = null;
             var endTags = new Stack<string>();
-            foreach (var token in tokens)
+            int pos = 0;
+            for (int i = 0; i < tokens.Count; i++)
             {
-                MakeTokenString(token, sb, endTags, previous);
+                var token = tokens[i];
+                int skip = MakeTokenString(tokens, pos++, sb, endTags, previous);
                 previous = token;
+                i += skip;
             }
 
             if (endTags.Any())
@@ -68,8 +71,10 @@ namespace StatePrinter.OutputFormatters
             return sb.ToString();
         }
 
-        void MakeTokenString(Token token, IndentingStringBuilder sb, Stack<string> endTags, Token previous)
+        int  MakeTokenString(List<Token> tokens, int pos, IndentingStringBuilder sb, Stack<string> endTags, Token previous)
         {
+            int skip = 0;
+            Token token = tokens[pos];
             string tagName = GetTagName(token);
 
             switch (token.Tokenkind)
@@ -85,19 +90,54 @@ namespace StatePrinter.OutputFormatters
                     break;
 
                 case TokenType.StartEnumeration:
+                    if (pos + 1 < tokens.Count)
+                    {
+                        var nextToken = tokens[pos + 1];
+
+                        if (nextToken.Tokenkind == TokenType.EndEnumeration)
+                        {
+                            sb.AppendFormatLine("<Enumeration></Enumeration>");
+                            skip++;
+                            break;
+                        }
+
+                        if (nextToken.Tokenkind == TokenType.SimpleFieldValue
+                            && nextToken.Field.SimpleKeyInArrayOrDictionary != null)
+                        {
+                            tagName = GetTagName(nextToken);
+                            endTags.Push(tagName);
+                            sb.AppendFormatLine("<{0}>", tagName);
+                            sb.Indent();
+                            sb.AppendFormatLine("<Enumeration>");
+                            break;
+                        }
+                    }
+                    
+                    endTags.Push(previous == null ? null : GetTagName(previous));
                     sb.Indent();
                     sb.AppendFormatLine("<Enumeration>");
-                    endTags.Push(GetTagName(previous));
                     break;
 
                 case TokenType.EndEnumeration:
                     sb.AppendFormatLine("</Enumeration>");
                     sb.DeIndent();
-                    sb.AppendFormatLine("</{0}>", endTags.Pop());
+                    var endtag = endTags.Pop();
+                    if(endtag != null)
+                       sb.AppendFormatLine("</{0}>", endtag);
                     break;
 
                 case TokenType.SimpleFieldValue:
-                    sb.AppendFormatLine("<{0}>{1}</{0}>", tagName, token.Value);
+                    if (token.Field.SimpleKeyInArrayOrDictionary != null)
+                    {
+                        sb.AppendFormatLine(
+                            "<key>{0}</key><value>{1}</value>",
+                            token.Field.SimpleKeyInArrayOrDictionary,
+                            token.Value);
+                    }
+                    else
+                    {
+                        sb.AppendFormatLine("<{0}>{1}</{0}>", tagName, token.Value);
+                    }
                     break;
 
                 case TokenType.SeenBeforeWithReference:
@@ -118,6 +158,8 @@ namespace StatePrinter.OutputFormatters
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            return skip;
         }
 
         private string GetTagName(Token token)

@@ -61,7 +61,8 @@
     <Compile Include="Configurations\TestingBehaviour.cs" />
     <Compile Include="FieldHarvesters\AllFieldsAndPropertiesHarvester.cs" />
     <Compile Include="FieldHarvesters\PublicFieldsHarvester.cs" />
-    <Compile Include="FieldHarvesters\SanitiedFieldInfo.cs" />
+    <Compile Include="FieldHarvesters\RunTimeCodeGenerator.cs" />
+    <Compile Include="FieldHarvesters\SanitizedFieldInfo.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvester.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvester.cs" />
     <Compile Include="FieldHarvesters\AllFieldsHarvester.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="ValueConverters\DateTimeConverter.cs" />
     <Compile Include="ValueConverters\EnumConverter.cs" />
     <Compile Include="ValueConverters\IValueConverter.cs" />
+    <Compile Include="ValueConverters\RollingGuidValueConverter.cs" />
     <Compile Include="ValueConverters\StandardTypesConverter.cs" />
     <Compile Include="ValueConverters\StringConverter.cs" />
   </ItemGroup>

@@ -41,7 +41,7 @@ namespace StatePrinter.Tests
             var cfg = ConfigurationHelper.GetStandardConfiguration()
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
+                .Test.SetAutomaticTestRewrite(filename => new EnvironmentReader().UseTestAutoRewrite());
 
             return new Stateprinter(cfg);
         }
@@ -53,7 +53,7 @@ namespace StatePrinter.Tests
                 .SetNewlineDefinition(" ")
                 .SetCulture(CultureInfo.CreateSpecificCulture("da-DK"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                .Test.SetAutomaticTestRewrite(x => new EnvironmentReader().UseTestAutoRewrite());
+                .Test.SetAutomaticTestRewrite(filename => new EnvironmentReader().UseTestAutoRewrite());
 
             return cfg;
         }

@@ -17,9 +17,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System.Collections.Generic;
+using System.Linq;
+
 using NUnit.Framework;
 
 using StatePrinter.Introspection;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.Introspection
 {
@@ -50,4 +54,19 @@ namespace StatePrinter.Tests.Introspection
             Assert.AreNotEqual(a, b);
         }
     }
+
+    /// <summary>
+    /// Outputformatter that can show what has been introspected. For unit testing only
+    /// </summary>
+    public class TokenOutputter : IOutputFormatter
+    {
+        public List<Token> IntrospectedTokens; 
+
+        public string Print(List<Token> tokens)
+        {
+            IntrospectedTokens = tokens.ToList();
+            return "The result of this outputter is found in the field 'IntrospectedTokens'";
+        }
+    }
+
 }

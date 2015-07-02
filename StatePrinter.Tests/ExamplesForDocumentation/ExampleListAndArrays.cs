@@ -40,12 +40,6 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
             vendorManager.AddVendor(JobType.JobType2, added2);
             vendorManager.AddVendor(JobType.JobType3, added3);
 
-            int consumption1 = 333;
-            int consumption2 = 23;
-            int consumption3 = 333;
-            int fee = 10;
-            int fee2 = 11;
-
             var expected = @"new VendorAllocation[]()
 [0] = new VendorAllocation()
 {

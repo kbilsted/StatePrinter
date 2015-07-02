@@ -30,13 +30,13 @@ namespace StatePrinter.Introspection
     /// </summary>
     class ReflectionInfo
     {
-        public readonly List<Field> Fields;
-        public readonly List<Func<object, object>> ValueProviders;
+        public readonly Field[] Fields;
+        public readonly Func<object, object>[] ValueProviders;
 
-        public ReflectionInfo(List<SanitiedFieldInfo> rawReflectedFields)
+        public ReflectionInfo(List<SanitizedFieldInfo> rawReflectedFields)
         {
-            Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToList();
-            ValueProviders = rawReflectedFields.Select(x => x.ValueProvider).ToList();
+            Fields = rawReflectedFields.Select(x => new Field(x.SanitizedName)).ToArray();
+            ValueProviders = rawReflectedFields.Select(x => x.ValueProvider).ToArray();
         }
     }
 }

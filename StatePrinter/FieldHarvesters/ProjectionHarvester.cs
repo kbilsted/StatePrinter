@@ -111,7 +111,7 @@ namespace StatePrinter.FieldHarvesters
         /// We ignore all properties as they, in the end, will only point to some computed state or other fields.
         /// Hence they do not provide information about the actual state of the object.
         /// </summary>
-        List<SanitiedFieldInfo> IFieldHarvester.GetFields(Type type)
+        List<SanitizedFieldInfo> IFieldHarvester.GetFields(Type type)
         {
             if (selectedStrategy == Strategy.Excluder
                 || selectedStrategy == Strategy.Filter) return ExcludeOrFilterfields(type, harvestingStrategy.GetFields(type));
@@ -119,18 +119,18 @@ namespace StatePrinter.FieldHarvesters
                 return IncludeFields(type, harvestingStrategy.GetFields(type));
         }
 
-        List<SanitiedFieldInfo> IncludeFields(Type type, List<SanitiedFieldInfo> fields)
+        List<SanitizedFieldInfo> IncludeFields(Type type, List<SanitizedFieldInfo> fields)
         {
-            var result = new List<SanitiedFieldInfo>();
+            var result = new List<SanitizedFieldInfo>();
             foreach (var implementation in selected) 
                 result.AddRange(implementation.Filter(fields));
 
             return result;
         }
 
-        List<SanitiedFieldInfo> ExcludeOrFilterfields(
+        List<SanitizedFieldInfo> ExcludeOrFilterfields(
             Type type,
-            List<SanitiedFieldInfo> fields)
+            List<SanitizedFieldInfo> fields)
         {
             foreach (var implementation in selected) 
                 fields = implementation.Filter(fields).ToList();
@@ -146,7 +146,7 @@ namespace StatePrinter.FieldHarvesters
         /// <typeparam name="TTarget">Target of filter</typeparam>
         /// <returns>Returns itself so you can chain the filter calls.</returns>
         public ProjectionHarvester AddFilter<TTarget>(
-            Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
+            Func<List<SanitizedFieldInfo>, IEnumerable<SanitizedFieldInfo>> filter)
         {
             PreConditionToAdd<TTarget>(Strategy.Filter);
 
@@ -244,7 +244,7 @@ namespace StatePrinter.FieldHarvesters
             var helper = new HarvestHelper();
             
             // we evaluate outside of the usage in the lambda to prevent multiple calls to GetFieldsAndProperties()
-            var cachedList = new List<SanitiedFieldInfo>();
+            var cachedList = new List<SanitizedFieldInfo>();
             foreach (var type in types)
                 cachedList.AddRange(helper.GetFieldsAndProperties(type));
             includers.Add(new Implementation(typeof(TTarget), x => cachedList));
@@ -415,11 +415,11 @@ namespace StatePrinter.FieldHarvesters
         {
             public readonly Type Selector;
 
-            public readonly Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> Filter;
+            public readonly Func<List<SanitizedFieldInfo>, IEnumerable<SanitizedFieldInfo>> Filter;
 
             public Implementation(
                 Type selector,
-                Func<List<SanitiedFieldInfo>, IEnumerable<SanitiedFieldInfo>> filter)
+                Func<List<SanitizedFieldInfo>, IEnumerable<SanitizedFieldInfo>> filter)
             {
                 Selector = selector;
                 Filter = filter;

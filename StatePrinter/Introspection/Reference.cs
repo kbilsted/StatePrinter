@@ -16,18 +16,18 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
+using System;
+
 namespace StatePrinter.Introspection
 {
     /// <summary>
     /// A numeric value denoting an already outputted object that is referred to by current object
     /// </summary>
-    public class Reference
+    public class Reference : IEquatable<Reference>
     {
         public readonly int Number;
 
-        /// <summary>
-        /// ctor
-        /// </summary>
         public Reference(int number)
         {
             Number = number;
@@ -35,7 +35,11 @@ namespace StatePrinter.Introspection
 
         public override bool Equals(object obj)
         {
-            var other = obj as Reference;
+            return Equals(obj as Reference);
+        }
+
+        public bool Equals(Reference other)
+        {
             if (other == null) return false;
             return Number == other.Number;
         }

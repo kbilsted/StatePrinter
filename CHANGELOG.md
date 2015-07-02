@@ -4,6 +4,16 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
+
+## v2.2.x
+
+Added
+* Improved performance by 10% for curly and json outputformatters
+* #28 - General **50%-70% times speed up** of execution speed due to run-time code generation of reflection
+* #31 - `RollingGuidValueConverter` - Unit testing data containing Guid's just became much easier
+* Bugfixed the Json and Xml outputformatters when outputting dictionary/enumerables as the root element.
+
+
 ## v2.1.220
 
 Added

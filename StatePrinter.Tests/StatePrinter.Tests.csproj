@@ -25,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>612 618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -51,17 +52,19 @@
     <Compile Include="Configurations\ConfigurationTest.cs" />
     <Compile Include="ExamplesForDocumentation\ExampleListAndArrays.cs" />
     <Compile Include="ExamplesForDocumentation\ExampleEndlessAsserts.cs" />
+    <Compile Include="ExamplesForDocumentation\ExampleOnSimpleAsserts.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvesterByTypeTest.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />
     <Compile Include="Introspection\ReferenceTest.cs" />
     <Compile Include="Mocks\Mocks.cs" />
+    <Compile Include="OutputFormatters\RollingGuidValueConverterTest.cs" />
     <Compile Include="TestingAssistance\EnvironmentReaderTest.cs" />
     <Compile Include="TestingAssistance\ParserTest.cs" />
     <Compile Include="IntegrationTests\PublicPropertiesTest.cs" />
     <Compile Include="IntegrationTests\PropertiesTest.cs" />
-    <Compile Include="IntegrationTests\ArrayTest.cs" />
+    <Compile Include="IntegrationTests\TwoDimensionArrayTest.cs" />
     <Compile Include="IntegrationTests\CultureTests.cs" />
     <Compile Include="IntegrationTests\DictionaryTest.cs" />
     <Compile Include="IntegrationTests\IEnumeratbleTest.cs" />

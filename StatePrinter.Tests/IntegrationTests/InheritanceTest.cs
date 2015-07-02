@@ -21,25 +21,11 @@ using NUnit.Framework;
 
 namespace StatePrinter.Tests.IntegrationTests
 {
-    class A
-    {
-        public int SomeFieldOnlyInA;
-        public string SameFieldInAB;
-    }
-
-
-    class B : A
-    {
-        public int SomeFieldOnlyInB;
-        public new string SameFieldInAB;
-    }
-
-
     [TestFixture]
     class InheritanceTest
     {
         [Test]
-        public void StringArray()
+        public void HarvestSameFieldsInTypAndSubtype()
         {
             B b = new B();
             ((A)b).SomeFieldOnlyInA = 1;
@@ -53,8 +39,23 @@ namespace StatePrinter.Tests.IntegrationTests
     SameFieldInAB = ""A part""
     SomeFieldOnlyInB = 2
     SameFieldInAB = ""B part""
-}"; 
-            TestHelper.Assert().PrintAreAlike(expected, b);
+}";
+            TestHelper.Assert().PrintAreAlike(expected, (B) b);
+            TestHelper.Assert().PrintAreAlike(expected, (A) b);
+        }
+
+
+        class A
+        {
+            public int SomeFieldOnlyInA;
+            public string SameFieldInAB;
+        }
+
+
+        class B : A
+        {
+            public int SomeFieldOnlyInB;
+            public new string SameFieldInAB;
         }
     }
 }

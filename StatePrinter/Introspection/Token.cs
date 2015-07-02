@@ -73,7 +73,6 @@ namespace StatePrinter.Introspection
             return true;
         }
 
-
         public override int GetHashCode()
         {
             unchecked
@@ -86,6 +85,13 @@ namespace StatePrinter.Introspection
 
                 return hashCode;
             }
+        }
+
+        public override string ToString()
+        {
+            var name =  Field == null ? "" : Field.Name;
+            var simpleKeyInArrayOrDictionary = Field == null ? "" : Field.SimpleKeyInArrayOrDictionary;
+            return string.Format("{0}: {1} {2} = {3}({4})", Tokenkind, FieldType, name, Value, simpleKeyInArrayOrDictionary);
         }
     }
 }

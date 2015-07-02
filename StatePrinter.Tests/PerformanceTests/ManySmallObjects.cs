@@ -28,32 +28,43 @@ namespace StatePrinter.Tests.PerformanceTests
 {
     [TestFixture]
     [Explicit]
-    internal class ManySmallObjects
+    class ManySmallObjects
     {
+
+        [SetUp]
+        public void Setup()
+        {
+            #if DEBUG
+            throw new Exception("Only do performance in release mode");
+            #endif
+        }
+
         const int N = 1000000;
 
 
         /// <summary>
         /// printing many times reveals the overhead of starting a print
-        /// 
-        /// Version 1.04 - HPPavilion 7
-        /// 11941
-        /// 
-        /// Version 2.00 - HPPavilion 7
-        /// 9506
+        /// Version 2.20 - HPPavilion 7
+        /// 3687
         /// </summary>
         [Test]
-        public void TestManyPrintings()
+        public void TestTheOverheadOfStartingUp()
         {
             var toPrint = new Base();
-            var printer = new Stateprinter();
 
-            printer.PrintObject(toPrint);
+            //var warmup = 
+            new Stateprinter().PrintObject(toPrint);
+            new Stateprinter().PrintObject(toPrint);
+            new Stateprinter().PrintObject(toPrint);
+
             var mills = Time(
               () =>
               {
-                  for (int i = 0; i < N; i++)
+                  for (int i = 0; i < N/400; i++)
+                  {
+                      var printer = new Stateprinter();
                       printer.PrintObject(toPrint);
+                  }
               });
             Console.WriteLine("  " + mills);
         }
@@ -88,6 +99,20 @@ namespace StatePrinter.Tests.PerformanceTests
         /// 256000:  4220
         /// 512000:  8426
         /// 1024000:  16904
+        /// 
+        /// 
+        /// Version 2.2 - HPPavilion 7
+        /// 1000:  158
+        /// 2000:  8
+        /// 4000:  19
+        /// 8000:  50
+        /// 16000:  86
+        /// 32000:  175
+        /// 64000:  371
+        /// 128000:  781
+        /// 256000:  1590
+        /// 512000:  3217
+        /// 1024000:  6265
         /// </summary>
         [Test]
         public void DumpManySmallObjects()
@@ -98,22 +123,64 @@ namespace StatePrinter.Tests.PerformanceTests
             }
         }
 
+        /// <summary>
+        /// Printing 1.000.000 objects.
+        /// curly: 6959 length:   62888908
+        /// json:  6578 length:   59000006
+        /// xml:   8036 length:   89000074
+        /// </summary>
+        [Test]
+        public void TiminAllOutputFormattersAtNElements()
+        {
+            //var warmup 
+            new Stateprinter().PrintObject(new ToDump());
+            new Stateprinter().PrintObject(new ToDump());
+            new Stateprinter().PrintObject(new ToDump());
+
+            var x = CreateObjectsToDump(N);
+            int length = 0;
+            Console.WriteLine("Printing {0:0,0} objects.", N);
+            
+            var curly = new Stateprinter();
+            curly.Configuration.SetOutputFormatter(new CurlyBraceStyle(curly.Configuration));
+            long time = Time(() => length = curly.PrintObject(x).Length);
+            Console.WriteLine("curly: {0} length: {1,10}", time, length);
+
+            var json = new Stateprinter();
+            json.Configuration.SetOutputFormatter(new JsonStyle(json.Configuration));
+            time = Time(() => length = json.PrintObject(x).Length);
+            Console.WriteLine("json:  {0} length: {1,10}", time, length);
+
+            var xml = new Stateprinter();
+            xml.Configuration.SetOutputFormatter(new XmlStyle(xml.Configuration));
+            time = Time(() => length = xml.PrintObject(x).Length);
+            Console.WriteLine("xml:   {0} length: {1,10}", time, length);
+        }
+
         private void DumpNObjects(int max)
         {
-            var x = new List<ToDump>();
-            for (int i = 0; i < max; i++)
-                x.Add(new ToDump());
+            List<ToDump> x = CreateObjectsToDump(max);
 
             var cfg = ConfigurationHelper.GetStandardConfiguration();
             cfg.OutputFormatter = new JsonStyle(cfg);
+            int length = 0;
             var mills = Time(() =>
                              {
                                  var printer = new Stateprinter(cfg);
-                                 printer.PrintObject(x);
+                                 length = printer.PrintObject(x).Length;
                              });
-            Console.WriteLine(max + ":  " + mills);
+            Console.WriteLine("{0,8}:  Time: {1,6} length {2,10}", max, mills, length);
         }
 
+        static List<ToDump> CreateObjectsToDump(int max)
+        {
+            var x = new List<ToDump>(max);
+            for (int i = 0; i < max; i++)
+            {
+                x.Add(new ToDump());
+            }
+            return x;
+        }
 
         internal class Base
         {
