@@ -24,6 +24,7 @@ using System.Linq.Expressions;
 using System.Net;
 
 using StatePrinter.Configurations;
+using StatePrinter.Introspection;
 
 namespace StatePrinter.FieldHarvesters
 {
@@ -38,6 +39,8 @@ namespace StatePrinter.FieldHarvesters
         readonly List<Implementation> excluders = new List<Implementation>();
         readonly List<Implementation> includers = new List<Implementation>();
         readonly List<Implementation> filters = new List<Implementation>();
+        readonly Dictionary<Type, Expression> maps = new Dictionary<Type, Expression>();
+        
         IEnumerable<Implementation> selected;
         Strategy selectedStrategy = Strategy.Includer;
 
@@ -98,12 +101,27 @@ namespace StatePrinter.FieldHarvesters
             return false;
         }
 
+        bool SelectStrategy(
+            Type type,
+            Dictionary<Type, Expression> maps,
+            Strategy implementationKind)
+        {
+            if (maps.ContainsKey(type))
+            {
+                selectedStrategy = Strategy.Map;
+                return true;
+            }
+
+            return false;
+        }
+
         bool IFieldHarvester.CanHandleType(Type type)
         {
             if (SelectStrategy(type, excluders, Strategy.Excluder)) return true;
             if (SelectStrategy(type, includers, Strategy.Includer)) return true;
             if (SelectStrategy(type, filters, Strategy.Filter)) return true;
-
+            if (SelectStrategy(type, maps, Strategy.Map)) return true;
+            
             return false;
         }
 
@@ -113,10 +131,20 @@ namespace StatePrinter.FieldHarvesters
         /// </summary>
         List<SanitizedFieldInfo> IFieldHarvester.GetFields(Type type)
         {
-            if (selectedStrategy == Strategy.Excluder
-                || selectedStrategy == Strategy.Filter) return ExcludeOrFilterfields(type, harvestingStrategy.GetFields(type));
-            else 
-                return IncludeFields(type, harvestingStrategy.GetFields(type));
+            if (selectedStrategy == Strategy.Map)
+                return GetMap(type);
+
+            var sanitizedFieldInfos = harvestingStrategy.GetFields(type);
+            if (selectedStrategy == Strategy.Excluder || selectedStrategy == Strategy.Filter) 
+                return ExcludeOrFilterfields(type, sanitizedFieldInfos);
+            
+            return IncludeFields(type, sanitizedFieldInfos);
+        }
+
+        private List<SanitizedFieldInfo> GetMap(Type type)
+        {
+            var harvestHelper = new HarvestHelper();
+            return harvestHelper.GetFieldsAndProperties(type, maps[type]);
         }
 
         List<SanitizedFieldInfo> IncludeFields(Type type, List<SanitizedFieldInfo> fields)
@@ -339,6 +367,13 @@ namespace StatePrinter.FieldHarvesters
             excluders.Add(new Implementation(typeof(TTarget), x => x.Where(y => !cachedList.Contains(y.SanitizedName))));
         }
 
+        public ProjectionHarvester Map<TTarget>(Expression<Func<TTarget, object>> fieldSpecifications)
+        {
+            PreConditionToAdd<TTarget>(Strategy.Map);
+            MapFields(fieldSpecifications);
+            return this;
+        }
+
         void PreConditionToAdd<TTarget>(Strategy addingStrategy)
         {
             if (addingStrategy != Strategy.Excluder)
@@ -349,6 +384,9 @@ namespace StatePrinter.FieldHarvesters
 
             if (addingStrategy != Strategy.Filter)
                 Forbid<TTarget>(filters, "a filter");
+
+            if (addingStrategy != Strategy.Map)
+                Forbid<TTarget>(maps.Select(m=>new Implementation(m.Key)).ToList(), "a map");
         }
 
         void Forbid<TTarget>(List<Implementation> filter, string filterKind)
@@ -366,6 +404,11 @@ namespace StatePrinter.FieldHarvesters
                 new Implementation(
                     typeof(TTarget),
                     x => x.Where(y => y.SanitizedName != name)));
+        }
+
+        void MapFields<TTarget>(Expression<Func<TTarget, object>> fieldSpecification)
+        {
+            maps.Add(typeof(TTarget), fieldSpecification);
         }
 
         string GetFieldNameFromExpression<TTarget, TAny>(
@@ -417,6 +460,11 @@ namespace StatePrinter.FieldHarvesters
 
             public readonly Func<List<SanitizedFieldInfo>, IEnumerable<SanitizedFieldInfo>> Filter;
 
+            public Implementation(Type selector)
+            {
+                Selector = selector;
+            }
+
             public Implementation(
                 Type selector,
                 Func<List<SanitizedFieldInfo>, IEnumerable<SanitizedFieldInfo>> filter)
@@ -431,6 +479,7 @@ namespace StatePrinter.FieldHarvesters
             Includer,
             Excluder,
             Filter,
+            Map
         }
     }
 }
