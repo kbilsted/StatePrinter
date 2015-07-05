@@ -29,7 +29,7 @@ Why you should take StatePrinter for a spin
 
 The documentation is split into
 
-* [Automating ToStrings](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
+* [Automating ToString methods](https://github.com/kbilsted/StatePrinter/blob/master/doc/AutomatingToStrings.md)
 
 and
 
