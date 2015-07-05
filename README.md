@@ -12,11 +12,11 @@
 [![Join the chat at https://gitter.im/kbilsted/StatePrinter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kbilsted/StatePrinter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # What is Stateprinter
-A simple framework for **automating** aspects of unit testing and implementing ToString methods. 
+A simple framework for **automating** aspects of implementing `ToString()`-methods, unit testing, and debugging. Speed is achieved through **run-time code generation** and caching.
 
 Why you should take StatePrinter for a spin
 
-* *No more manual .ToString()* - it is much easier to write robust and self-sufficient `ToString()` methods. 
+* *No more manual `ToString()` - it is much easier to write robust and self-sufficient `ToString()` methods. Seamless integration into a code-base with manually implemented ToString-methods.
 * *No more manual writing/updating Asserts* - both for new tests and when the code changes, all tests can automatically be corrected.
 * *No more screens full of asserts*. Especially testing against object-graphs is a bliss. 
 * Very configurable and extensible.
