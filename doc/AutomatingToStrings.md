@@ -1,4 +1,4 @@
-#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter automating you ToString() methods
+#  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter automating your ToString() methods
 
 
 **Table of content**
@@ -8,10 +8,14 @@
 * [1.4 Best practices](#14-best-practices)
 
 
-If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With the Stateprinter this situation has changed, since I can use the same standard implementation for all my classes. I can even add it as part of my code-template in my editor.
+If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With  Stateprinter the situation changes as only a standard implementation is needed, and which does not require changing when fields are added or removed. For an extra productivity boost, I can even add it as part of my code-template in my editor (see  [vs code templates](https://msdn.microsoft.com/en-us/library/ms247121.aspx) [ReSharper code templates](https://www.jetbrains.com/resharper/features/code_templates.html)).
+
+Stateprinter can seamlesly integrate with projects already having a number of ToString-implementations. When printing an object, or field of an object, that implements the ToString method, that method is used in preference of the standard stateprinter printing.
 
 
 ## 1.1 Simple example usage
+
+To understand just how easy it is to use consider this implementation of a class with two fields. The class has a `ToString` method simply invocing the stateprinter which then using run-time code generation generates code that recursively visits all objects of the graph and prints them.
 
 ```C#
 class AClassWithToString
@@ -35,7 +39,9 @@ And with the code
 Console.WriteLine( new AClassWithToString() );
 ```
 
-We get various output. The output styles are easily configured using the `printer.Configuration.SetOutputStyle()`
+We print the object. Stateprinter support a number of pre-defined styles of output, and you can easily create your own style if you want (since the output styles have been created by *dog fooding* we know this to be true :-). 
+
+The output styles are easily configured using the `printer.Configuration.SetOutputStyle()`
 
 we get (**curlybrace-style**)
 
@@ -105,21 +111,21 @@ Console.WriteLine(printer.PrintObject(car));
 
 and you get the following output
 	
-```
-	new Car()
-	{
-	    StereoAmplifiers = null
-	    steeringWheel = new SteeringWheel()
-	    {
-	        Size = 3
-	        Grip = new FoamGrip()
-	        {
-	            Material = ""Plastic""
-	        }
-	        Weight = 525
-	    }
-	    Brand = ""Toyota""
-	}
+```C#
+new Car()
+{
+    StereoAmplifiers = null
+    steeringWheel = new SteeringWheel()
+    {
+        Size = 3
+        Grip = new FoamGrip()
+        {
+            Material = ""Plastic""
+        }
+        Weight = 525
+    }
+    Brand = ""Toyota""
+}
 ``` 
 
 Naturally, circular references are supported
@@ -133,21 +139,23 @@ Console.WriteLine(printer.PrintObject(course));
 ```
 
 yields	 
-	     
-	new Course(), ref: 0
-	{
-	    Members = new List<Student>()
-	    Members[0] = new Student()
-	    {
-	        name = ""Stan""
-	        course =  -> 0
-	    }
-	    Members[1] = new Student()
-	    {
-	        name = ""Richy""
-	        course =  -> 0
-	    }
-	}
+
+```	     
+new Course(), ref: 0
+{
+    Members = new List<Student>()
+    Members[0] = new Student()
+    {
+        name = ""Stan""
+        course =  -> 0
+    }
+    Members[1] = new Student()
+    {
+        name = ""Richy""
+        course =  -> 0
+    }
+}
+```
 
 notice the `-> 0` this is a pointer back to an already printed object. Notice that references are only added to the output if needed. This amongst alot of other details are configurable.
 
