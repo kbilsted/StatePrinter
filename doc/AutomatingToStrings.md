@@ -8,7 +8,9 @@
 * [1.4 Best practices](#14-best-practices)
 
 
-If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. With  Stateprinter the situation changes as only a standard implementation is needed, and which does not require changing when fields are added or removed. For an extra productivity boost, I can even add it as part of my code-template in my editor (see  [vs code templates](https://msdn.microsoft.com/en-us/library/ms247121.aspx) [ReSharper code templates](https://www.jetbrains.com/resharper/features/code_templates.html)).
+If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. 
+
+With  Stateprinter the situation changes as only a standard implementation is needed, and which does not require changing when fields are added or removed. For an extra productivity boost, I can even add it as part of my code-template in my editor (see  [vs code templates](https://msdn.microsoft.com/en-us/library/ms247121.aspx) and [ReSharper code templates](https://www.jetbrains.com/resharper/features/code_templates.html)).
 
 Stateprinter can seamlesly integrate with projects already having a number of ToString-implementations. When printing an object, or field of an object, that implements the ToString method, that method is used in preference of the standard stateprinter printing.
 
@@ -33,7 +35,10 @@ class AClassWithToString
 }
 ```
 
-And with the code
+The static `printer` reference is not a requirement, but ensures optimal performance since aspects of the introspection of types is cached in each printer instance.
+
+
+We can in an object as always by:
 
 ```C#
 Console.WriteLine( new AClassWithToString() );
