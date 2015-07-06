@@ -177,6 +177,56 @@ When using StatePrinter as the ToString() implementation speed may be a consider
 A better approach is to instantiate and hold a static reference in each type, or inject an instance using IoC into your types.
 
 
+## 1.5 Performance
+
+```C#
+int N = 10000;
+var objects = new List<AClass>(N);
+for(int i = 0; i < N; i++)
+  objects.Add(new AClassWithToString());
+  
+string lastStrign;
+var t1 = Time(() => {foreach(var x in objects) lastString = x.Print1()});
+Console.WriteLine(lastString + " = " + t1.ElapsedMillis);
+
+var t2 = Time(() => {foreach(var x in objects) lastString = x.Print2()});
+Console.WriteLine(lastString + " = " + t2.ElapsedMillis);
+
+var t3 = Time(() => {foreach(var x in objects) lastString = x.Print3()});
+Console.WriteLine(lastString + " = " + t3.ElapsedMillis);
+```
+
+and the three implementations
+
+```C#
+class AClass
+{
+    string B = "hello";
+    int[] C = {5,4,3,2,1};
+
+    static readonly Stateprinter printer = new Stateprinter();
+    public string ToString1()
+    {
+        return new Stateprinter().PrintObject(this);
+    }
+  
+    public string ToString2()
+    {
+        return printer.PrintObject(this);
+    }
+  
+    public string ToString3()
+    {
+      string result = "B = " + B;
+      result += " C = "
+      foreach(var i in C)
+          result += i.ToString();
+      return result;
+    }
+```
+
+
+
 Have fun!
 
 Kasper B. Graversen
