@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+
 using NUnit.Framework;
 using StatePrinter.Configurations;
 using StatePrinter.OutputFormatters;
@@ -28,19 +28,9 @@ namespace StatePrinter.Tests.PerformanceTests
 {
     [TestFixture]
     [Explicit]
-    class ManySmallObjects
+    class ManySmallObjects : PerformanceTestsBase
     {
-
-        [SetUp]
-        public void Setup()
-        {
-            #if DEBUG
-            throw new Exception("Only do performance in release mode");
-            #endif
-        }
-
         const int N = 1000000;
-
 
         /// <summary>
         /// printing many times reveals the overhead of starting a print
@@ -191,16 +181,6 @@ namespace StatePrinter.Tests.PerformanceTests
         private class ToDump : Base
         {
             internal string Poo = "dd";
-        }
-
-
-        private long Time(Action a)
-        {
-            var watch = new Stopwatch();
-            watch.Start();
-            a();
-            watch.Stop();
-            return watch.ElapsedMilliseconds;
         }
     }
 }
