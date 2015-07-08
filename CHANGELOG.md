@@ -13,21 +13,7 @@ Added
 * #31 - `RollingGuidValueConverter` - Unit testing data containing Guid's just became much easier
 * Bugfixed the Json and Xml outputformatters when outputting dictionary/enumerables as the root element.
 
-Notice that is has become increasingly important to reuse your Stateprinter instances when not doing unit testing! Below are the run-time characteristics showing the speed up when reusing printer instances, and extreme slowdown when not using reusing the instance. Don't reuse printer instances when unit testing since for each test case you may have different harvesting/projection strategies.
 
-    Test scores
-    
-      v2.1.220       milliseconds
-        newStateprinter:      855
-        cachedPrinter:        311
-        warmCachedPrinter     326
-      v2.2.x         milliseconds
-        newStateprinter:    27471
-        cachedPrinter:        220
-        warmCachedPrinter     177
-    
-    
-        
 
 ## v2.1.220
 

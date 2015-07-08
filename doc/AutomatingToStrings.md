@@ -170,15 +170,124 @@ notice the `-> 0` this is a pointer back to an already printed object. Notice th
 The Stateprinter is *very* configurable and extendible. See [configuration](HowToConfigure.md) for the vast possibilities.
 
 
-## 1.4 Best practices
+## 1.4 Performance
 
-When using StatePrinter as the ToString() implementation speed may be a consideration. StatePrinter is fairly quick, partly because the introspection of types is cached within the StatePrinter instance. Therefore, it is a bad idea from a performance perspective to instantiate a stateprinter for every use situation.
+Let us first look at the readability issues of creating `ToString()` methods. Then in the next section look at performance numbers. 
+ Given a class `AClass` we can implement the `ToString()` either manually or using the Stateprinter. And when using the stateprinter, we can choose to either reuse the same instance or create a new each time.
 
-A better approach is to instantiate and hold a static reference in each type, or inject an instance using IoC into your types.
+```C#
+class AClass
+{
+    string B = "hello";
+    int[] C = {5,4,3,2,1};
+}
+```
+
+The two implementation approaches
+
+```C#
+readonly Stateprinter printer = new Stateprinter();
+
+public string UseNewStateprinter()
+{
+    return new Stateprinter().PrintObject(this);
+}
+```
+
+and
+
+```C#
+public string ReuseStateprinter()
+{
+    return printer.PrintObject(this);
+}
+```
+
+Notice that for both implementations **we do not** reference the fields `B` or `C` explicitly. This means zero maintenance when the class changes its fields!
+In stark contrast is a manual implementation where we have to deal with each field separately, and when a field may be null, or, it possibly holds more than a single value, it needs be iterated somehow.
+
+```C#
+public string NativeWithLoop()
+{
+    string result = "B = " + B;
+    
+    result += " C = ";
+    if (C != null)
+    {
+        if (C.Length > 0)
+        {
+            int i = 0;
+            for (; i < C.Length - 1; i++) 
+                result += C[i] + ", ";
+            result += C[i];
+        }
+    }
+    else
+        result += "null";
+    return result;
+}
+```
+
+We can make it a bit clearer using `string.Join()` and LINQ
+
+```C#
+public string NativeWithLinq()
+{
+    return string.Format("B = {0} C = {1}", 
+        B, 
+        C == null 
+            ? "null" 
+            : string.Join(", ", C.Select(x => x.ToString()).ToArray()));
+}
+```
+
+From a readability perspective, Stateprinter beats the manual implementations!
 
 
 ## 1.5 Performance
 
+Now, look at some of the performance characteristics of Stateprinter. 
+
+
+Test scores for printing 100.000 instances of `AClass` to a string.
+    
+      v2.1.220       milliseconds
+            newStateprinter:     8550
+            cachedPrinter:       3110
+            nativeWithLoop:        97
+            nativeWithLinq:       161
+      v2.2.x         milliseconds
+            newStateprinter:     5275
+            cachedPrinter:       1353
+            nativeWithLoop:        95
+            nativeWithLinq:       167
+
+As can be seen we are roughly 10x slower than the manual implementation. Still, we manage to print 100000 objects in less than 1.5 seconds. Moreover the output is in many cases nicer than what you will bother do manually.
+
+Now there is some overhead in dealing with collections. So we can tune the printing, to place the array values on one line (like in the hand coded example).
+          
+```C#
+var genericConverter = new GenericValueConverter<int[]>(y => string.Join(", ", y.Select(x => x.ToString()).ToArray()));
+tunedPrinter.Configuration.Add(genericConverter);
+```
+
+With this modification to the `printer` we can achieve a run time of
+
+            tunedPrinter:         747
+
+As can be seen, the throughput of Stateprinter is increasing as the product mature. Hopefully, we can continue this nice trend in future releases.
+
+
+## 1.6 Best practices
+
+When using StatePrinter as the ToString() implementation speed may be a consideration. StatePrinter is fairly quick, partly because the introspection of types is cached within the StatePrinter instance and due to the use of run-time code generation. Therefore, it is a bad idea from a performance perspective to instantiate a Stateprinter for every use situation. A better approach is to instantiate and hold a static reference in each class, or inject an instance using IoC into your instance.
+
+For unit testing these are not irrelevant concerns.
+
+
+
+        
+        
 ```C#
 int N = 10000;
 var objects = new List<AClass>(N);

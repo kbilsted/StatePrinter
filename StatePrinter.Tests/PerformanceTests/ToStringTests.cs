@@ -32,30 +32,29 @@ namespace StatePrinter.Tests.PerformanceTests
     [Explicit]
     class ToStringTests : PerformanceTestsBase
     {
-        readonly int N = 10000;
+        readonly int N = 100000;
 
         /* test scores
          * v2.1.220
-            newStateprinter:      855
-            cachedPrinter:        311
-            warmCachedPrinter     326
-            tunedPrinter:         224
-            nativeWithLoop:        15
-            nativeWithLinq:        21
+            newStateprinter:     8550
+            cachedPrinter:       3110
+            warmCachedPrinter    3260
+            tunedPrinter:        2240
+            nativeWithLoop:        97
+            nativeWithLinq:       161
          * v2.2.274 (extrene slowdown is due to the run-time code generation)
-            newStateprinter:    27471
-            cachedPrinter:        220
-            warmCachedPrinter     177
-            cachedPrinterArr:      97
-            nativeWithLoop:        15
-            nativeWithLinq:        22
+            newStateprinter:   274710
+            cachedPrinter:       2200
+            warmCachedPrinter    1770
+            cachedPrinterArr:     970
+            nativeWithLoop:       150
+            nativeWithLinq:       220
          * v2.2.x (caching of generated getters)
-            newStateprinter:      671
-            cachedPrinter:        206
-            warmCachedPrinter     193
-            tunedPrinter:         102
-            nativeWithLoop:        15
-            nativeWithLinq:        24
+            newStateprinter:     5275
+            cachedPrinter:       1353
+            tunedPrinter:         747
+            nativeWithLoop:        95
+            nativeWithLinq:       167
          
         */
         [Test]
@@ -73,9 +72,6 @@ namespace StatePrinter.Tests.PerformanceTests
             var cachedPrinter = Time(() => { foreach (var x in objects) lastString = x.ReuseStateprinter(); });
             Console.WriteLine(lastString + " = " + cachedPrinter);
 
-            var warmCachedPrinter = Time(() => { foreach (var x in objects) lastString = x.ReuseStateprinter(); });
-            Console.WriteLine(lastString + " = " + warmCachedPrinter);
-
             var tunedPrinter = Time(() => { foreach (var x in objects) lastString = x.ReuseTunedPrinter(); });
             Console.WriteLine(lastString + " = " + tunedPrinter);
 
@@ -89,7 +85,6 @@ namespace StatePrinter.Tests.PerformanceTests
             Console.WriteLine("****************");
             Console.WriteLine("newStateprinter:  {0,7}", newStateprinter);
             Console.WriteLine("cachedPrinter:    {0,7}", cachedPrinter);
-            Console.WriteLine("warmCachedPrinter {0,7}", warmCachedPrinter);
             Console.WriteLine("tunedPrinter:     {0,7}", tunedPrinter);
             Console.WriteLine("nativeWithLoop:   {0,7}", nativeWithLoop);
             Console.WriteLine("nativeWithLinq:   {0,7}", nativeWithLinq);
