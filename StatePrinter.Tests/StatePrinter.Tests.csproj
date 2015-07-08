@@ -85,6 +85,7 @@
     <Compile Include="TestingAssistance\ReWriterMockedTests.cs" />
     <Compile Include="TestingAssistance\UserStory.cs" />
     <Compile Include="TestingAssistance\TestingAssistanceTest.cs" />
+    <Compile Include="ValueConverters\GenericValueConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
