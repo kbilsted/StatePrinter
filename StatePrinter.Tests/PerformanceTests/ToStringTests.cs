@@ -35,7 +35,14 @@ namespace StatePrinter.Tests.PerformanceTests
         readonly int N = 10000;
 
         /* test scores
-         * v2.3.x
+         * v2.1.220
+            newStateprinter:      855
+            cachedPrinter:        311
+            warmCachedPrinter     326
+            tunedPrinter:         224
+            nativeWithLoop:        15
+            nativeWithLinq:        21
+         * v2.2.x (extrene slowdown is due to the run-time code generation)
             newStateprinter:    27471
             cachedPrinter:        220
             warmCachedPrinter     177
