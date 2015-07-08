@@ -1,11 +1,13 @@
 #  ![](https://raw.github.com/kbilsted/StatePrinter/master/StatePrinter/gfx/stateprinter.png) StatePrinter automating your ToString() methods
 
 
-**Table of content**
-* [1.1 Simple example usage](#11-simple-example-usage)
-* [1.2 Object graphs and cycles](#12-object-graphs-and-cycles)
-* [1.3 Configuration](#13-configuration)
-* [1.4 Best practices](#14-best-practices)
+# Table of Content
+   * [1.1 Simple example usage](#11-simple-example-usage)
+   * [1.2 Object graphs and cycles](#12-object-graphs-and-cycles)
+   * [1.3 Configuration](#13-configuration)
+   * [1.4 Code readability and maintainability](#14-code-readability-and-maintainability)
+   * [1.5 Performance](#15-performance)
+   * [1.6 Best practices](#16-best-practices)
 
 
 If you are anything like me, there is nothing worse than having to edit all sorts of bizarre methods on a class whenever you add a field to a class. For that reason I always find myself reluctant to maintaining the `ToString()` method. 
@@ -170,7 +172,7 @@ notice the `-> 0` this is a pointer back to an already printed object. Notice th
 The Stateprinter is *very* configurable and extendible. See [configuration](HowToConfigure.md) for the vast possibilities.
 
 
-## 1.4 Performance
+## 1.4 Code readability and maintainability
 
 Let us first look at the readability issues of creating `ToString()` methods. Then in the next section look at performance numbers. 
  Given a class `AClass` we can implement the `ToString()` either manually or using the Stateprinter. And when using the stateprinter, we can choose to either reuse the same instance or create a new each time.
@@ -251,12 +253,12 @@ Now, look at some of the performance characteristics of Stateprinter.
 
 Test scores for printing 100.000 instances of `AClass` to a string.
     
-      v2.1.220       milliseconds
+      v2.1.220          milliseconds
             newStateprinter:     8550
             cachedPrinter:       3110
             nativeWithLoop:        97
             nativeWithLinq:       161
-      v2.2.x         milliseconds
+      v2.2.x             milliseconds
             newStateprinter:     5275
             cachedPrinter:       1353
             nativeWithLoop:        95
@@ -277,6 +279,8 @@ With this modification to the `printer` we can achieve a run time of
 
 As can be seen, the throughput of Stateprinter is increasing as the product mature. Hopefully, we can continue this nice trend in future releases.
 
+For more info look at https://github.com/kbilsted/StatePrinter/blob/master/StatePrinter.Tests/PerformanceTests/ToStringTests.cs
+
 
 ## 1.6 Best practices
 
@@ -285,54 +289,6 @@ When using StatePrinter as the ToString() implementation speed may be a consider
 For unit testing these are not irrelevant concerns.
 
 
-
-        
-        
-```C#
-int N = 10000;
-var objects = new List<AClass>(N);
-for(int i = 0; i < N; i++)
-  objects.Add(new AClassWithToString());
-  
-string lastStrign;
-var t1 = Time(() => {foreach(var x in objects) lastString = x.Print1()});
-Console.WriteLine(lastString + " = " + t1.ElapsedMillis);
-
-var t2 = Time(() => {foreach(var x in objects) lastString = x.Print2()});
-Console.WriteLine(lastString + " = " + t2.ElapsedMillis);
-
-var t3 = Time(() => {foreach(var x in objects) lastString = x.Print3()});
-Console.WriteLine(lastString + " = " + t3.ElapsedMillis);
-```
-
-and the three implementations
-
-```C#
-class AClass
-{
-    string B = "hello";
-    int[] C = {5,4,3,2,1};
-
-    static readonly Stateprinter printer = new Stateprinter();
-    public string ToString1()
-    {
-        return new Stateprinter().PrintObject(this);
-    }
-  
-    public string ToString2()
-    {
-        return printer.PrintObject(this);
-    }
-  
-    public string ToString3()
-    {
-      string result = "B = " + B;
-      result += " C = "
-      foreach(var i in C)
-          result += i.ToString();
-      return result;
-    }
-```
 
 
 
