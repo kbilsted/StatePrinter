@@ -2,23 +2,15 @@
 <package>
   <metadata>
     <id>StatePrinter</id>
-    <version>2.1.220</version>
+    <version>2.2.274-rc</version>
     <description>
       An open source utility to turn object graphs into strings. Automate your ToString and unit tests asserts.
     </description>
     <releaseNotes>
-Fixed
-
-  #22 Make error message configurable upon assertion failure (https://github.com/kbilsted/StatePrinter/issues/22)
-
-Added
-
-  * Functionality for controlling automatic test rewrite using an environment variable.
-  * Functionality for including or excluding fields and properties based on one or more type descriptions. See `IncludeByType()` and `ExcludeByType()`.
-  * Added `AreAlike()`, replacing `IsSame()` (which is deprecated). Similar story for `PrintAreAlike` replacing `PrintIsSame()`. 
-  * Made error message tell about `AreAlike()` when two strings are alike but not equals, when using `AreEquals()`.
-  * Prepared for future expansion of functionality, by placing unit testing configuration in a sub-configuration class.
-  * Obsoleted a lot of methods, describing the alternative API introduced in v2.1
+* Improved performance by 10% for curly and json outputformatters
+* #28 - General 50%-70% times speed up of execution speed due to run-time code generation of reflection
+* #31 - `RollingGuidValueConverter` - Unit testing data containing Guid's just became much easier
+* Bugfixed the Json and Xml outputformatters when outputting dictionary/enumerables as the root element.
     </releaseNotes>
     <tags>UnitTest ToString Serialization Approvals Test Testing ApprovalsTest</tags>
     <copyright>Copyright 2014-2015</copyright>

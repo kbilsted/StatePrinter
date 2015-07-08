@@ -2,6 +2,7 @@ Steps for creating a new release
 --------------------------------
 
 * Edit Stateprinter/Properties/Assemblyinfo.cs
+* Edit appveyor.yml
 * Update CHANGELOG.md
 * Update StatePrinter.nuspec
 * Run DeployToNuget.cmd
