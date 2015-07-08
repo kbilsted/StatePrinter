@@ -188,8 +188,6 @@ class AClass
 The two implementation approaches
 
 ```C#
-readonly Stateprinter printer = new Stateprinter();
-
 public string UseNewStateprinter()
 {
     return new Stateprinter().PrintObject(this);
@@ -199,6 +197,7 @@ public string UseNewStateprinter()
 and
 
 ```C#
+readonly Stateprinter printer = new Stateprinter();
 public string ReuseStateprinter()
 {
     return printer.PrintObject(this);
