@@ -5,7 +5,11 @@
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
 
-## v2.2.x
+
+## v2.2.281-pr
+* Caching run-time generated getter methods.
+
+## v2.2.274-pr
 
 Added
 * Improved performance by 10% for curly and json outputformatters
