@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -28,6 +29,8 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public class RunTimeCodeGenerator
     {
+        static readonly Dictionary<MemberInfo, Func<object, object>> cache = new Dictionary<MemberInfo, Func<object, object>>();
+
         /// <summary>
         /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
         /// </summary>
@@ -43,11 +46,35 @@ namespace StatePrinter.FieldHarvesters
                 throw new ArgumentException("MemberInfo cannot be a global member.");
             }
 
-            var p = Expression.Parameter(typeof (object), "p");
+            Func<object, object> getter;
+            lock (cache)
+            {
+                if(cache.TryGetValue(memberInfo, out getter))
+                    return getter;
+            }
+
+            var generatedGetter = GenerateGetter(memberInfo);
+
+            lock (cache)
+            {
+                if (cache.TryGetValue(memberInfo, out getter))
+                    return getter;
+
+                cache.Add(memberInfo, generatedGetter);
+            }
+
+            return generatedGetter;
+        }
+
+        Func<object, object> GenerateGetter(MemberInfo memberInfo)
+        {
+            var p = Expression.Parameter(typeof(object), "p");
             var castparam = Expression.Convert(p, memberInfo.DeclaringType);
             var field = Expression.PropertyOrField(castparam, memberInfo.Name);
-            var castRes = Expression.Convert(field, typeof (object));
-            return Expression.Lambda<Func<object, object>>(castRes, p).Compile();
+            var castRes = Expression.Convert(field, typeof(object));
+            var getter = Expression.Lambda<Func<object, object>>(castRes, p).Compile();
+
+            return getter;
         }
     }
 }

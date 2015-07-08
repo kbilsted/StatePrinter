@@ -42,13 +42,21 @@ namespace StatePrinter.Tests.PerformanceTests
             tunedPrinter:         224
             nativeWithLoop:        15
             nativeWithLinq:        21
-         * v2.2.x (extrene slowdown is due to the run-time code generation)
+         * v2.2.274 (extrene slowdown is due to the run-time code generation)
             newStateprinter:    27471
             cachedPrinter:        220
             warmCachedPrinter     177
             cachedPrinterArr:      97
             nativeWithLoop:        15
             nativeWithLinq:        22
+         * v2.2.x (caching of generated getters)
+            newStateprinter:      671
+            cachedPrinter:        206
+            warmCachedPrinter     193
+            tunedPrinter:         102
+            nativeWithLoop:        15
+            nativeWithLinq:        24
+         
         */
         [Test]
         public void Testtiming()
