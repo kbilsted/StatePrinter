@@ -18,9 +18,6 @@
 // under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -79,6 +76,24 @@ namespace StatePrinter.Tests.TestingAssistance
         }
 
         [Test]
+        public void Expected_variable_ContainsBackslashes_WillBeEscaped()
+        {
+            string program =
+@"  abc def
+  var expected = @""FilePath =Articles\Design\MalleableCodeUsingDecorators.md"";
+";
+            var r = sut.ReplaceExpected(program, 3, @"FilePath =Articles\Design\MalleableCodeUsingDecorators.md", "boo");
+
+            var expected = @"""  abc def
+  var expected = boo;
+""";
+            TestHelper.Assert().PrintAreAlike(expected, r);
+        }
+
+
+
+
+        [Test]
         public void Expected_variable()
         {
             string program =
@@ -88,6 +103,27 @@ namespace StatePrinter.Tests.TestingAssistance
   printer.Assert.Here(...)
   iu of";
             var r = sut.ReplaceExpected(program, 4, "hello", "boo");
+
+            var expected = @"""  abc def
+  var expected = boo;
+  qwe ert
+  printer.Assert.Here(...)
+  iu of""";
+
+            TestHelper.Assert().PrintAreAlike(expected, r);
+        }
+
+        [Test]
+        public void Expected_variable_containsNewlines()
+        {
+            string program =
+@"  abc def
+  var expected = @""hello
+"";
+  qwe ert
+  printer.Assert.Here(...)
+  iu of";
+            var r = sut.ReplaceExpected(program, 4, "hello\r\n", "boo");
 
             var expected = @"""  abc def
   var expected = boo;
@@ -143,6 +179,8 @@ iu of""";
 
             TestHelper.Assert().PrintAreAlike(expected, r);
         }
+
+
 
 
         /// <summary>

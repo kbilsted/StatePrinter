@@ -29,8 +29,9 @@ namespace StatePrinter.TestAssistance
 
         public string ReplaceExpected(string content, int lineNo, string originalExpected, string newExpected)
         {
-            int index = FindLastIndexOfLine(content, lineNo);
+            int index = FindLastIndexOfLineNo(content, lineNo);
 
+            // The expected value to replace may either be represened as a string or a verbatim string. Thus we must look for both representations
             var reString = EscapeForString(originalExpected);
             var reVerbString = EscapeForVerbatimString(originalExpected);
             Regex re= new Regex( "("
@@ -72,16 +73,19 @@ namespace StatePrinter.TestAssistance
 
         string EscapeForRegEx(string s)
         {
-            return s.Replace("(", "\\(")
+            return s
+                // escape "\" as otherwise we interpret eg a windows file path as illegal RegEx
+                .Replace("\\", "\\\\")
+                .Replace("(", "\\(")
                 .Replace(")", "\\)")
                 .Replace("|", "\\|")
                 .Replace("+", "\\+");
         }
 
         /// <summary>
-        /// This method does not support files using only \r as newlines
+        /// Does not support files using only \r as newlines
         /// </summary>
-        int FindLastIndexOfLine(string content, int lineNo)
+        int FindLastIndexOfLineNo(string content, int lineNo)
         {
             int line = 1;
             bool found = false;
@@ -97,6 +101,8 @@ namespace StatePrinter.TestAssistance
                     line++;
                 }
             }
+            if (line == lineNo)
+                found = true;
 
             if(found)
                 return i;

@@ -32,7 +32,7 @@ namespace StatePrinter.Tests.PerformanceTests
     [Explicit]
     class ToStringTests : PerformanceTestsBase
     {
-        readonly int N = 100000;
+        readonly int N = 200000;
 
         /* test scores
          * v2.1.220
