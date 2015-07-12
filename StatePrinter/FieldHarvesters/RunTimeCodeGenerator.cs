@@ -24,36 +24,26 @@ using System.Reflection;
 
 namespace StatePrinter.FieldHarvesters
 {
-    /// <summary>
-    /// Run-time code generation is much faster than using ordinary reflection such 
-    /// </summary>
-    public class RunTimeCodeGenerator
+    public class RunTimeCodeGeneratorCache : IRunTimeCodeGenerator
     {
         static readonly Dictionary<MemberInfo, Func<object, object>> cache = new Dictionary<MemberInfo, Func<object, object>>();
+        readonly IRunTimeCodeGenerator generator;
 
-        /// <summary>
-        /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
-        /// </summary>
+        public RunTimeCodeGeneratorCache(IRunTimeCodeGenerator generator)
+        {
+            this.generator = generator;
+        }
+
         public Func<object, object> CreateGetter(MemberInfo memberInfo)
         {
-            if (!(memberInfo is FieldInfo) && !(memberInfo is PropertyInfo))
-            {
-                throw new ArgumentException("Parameter memberInfo must be of type FieldInfo or PropertyInfo.");
-            }
-
-            if (memberInfo.DeclaringType == null)
-            {
-                throw new ArgumentException("MemberInfo cannot be a global member.");
-            }
-
             Func<object, object> getter;
             lock (cache)
             {
-                if(cache.TryGetValue(memberInfo, out getter))
+                if (cache.TryGetValue(memberInfo, out getter))
                     return getter;
             }
 
-            var generatedGetter = GenerateGetter(memberInfo);
+            var generatedGetter = generator.CreateGetter(memberInfo);
 
             lock (cache)
             {
@@ -65,9 +55,24 @@ namespace StatePrinter.FieldHarvesters
 
             return generatedGetter;
         }
+    }
 
-        Func<object, object> GenerateGetter(MemberInfo memberInfo)
+    /// <summary>
+    /// Run-time code generation is much faster than using ordinary reflection such 
+    /// </summary>
+    public class RunTimeCodeGenerator : IRunTimeCodeGenerator
+    {
+        /// <summary>
+        /// A fast alternative to the reflection methods <see cref="FieldInfo.GetValue"/> and <see cref="PropertyInfo.GetValue(object,object[])"/>
+        /// </summary>
+        public Func<object, object> CreateGetter(MemberInfo memberInfo)
         {
+            if (!(memberInfo is FieldInfo) && !(memberInfo is PropertyInfo))
+                throw new ArgumentException("Parameter memberInfo must be of type FieldInfo or PropertyInfo.");
+
+            if (memberInfo.DeclaringType == null)
+                throw new ArgumentException("MemberInfo cannot be a global member.");
+
             var p = Expression.Parameter(typeof(object), "p");
             var castparam = Expression.Convert(p, memberInfo.DeclaringType);
             var field = Expression.PropertyOrField(castparam, memberInfo.Name);

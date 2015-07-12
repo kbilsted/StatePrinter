@@ -29,7 +29,8 @@ namespace StatePrinter.FieldHarvesters
     /// </summary>
     public class HarvestHelper
     {
-        readonly RunTimeCodeGenerator runTimeCodeGenerator = new RunTimeCodeGenerator();
+        readonly IRunTimeCodeGenerator runTimeCodeGenerator = new RunTimeCodeGeneratorCache(new RunTimeCodeGenerator());
+
         internal const string BackingFieldSuffix = ">k__BackingField";
 
         const BindingFlags flags = BindingFlags.Public

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
 
 using StatePrinter.Configurations;
 
@@ -41,8 +40,7 @@ namespace StatePrinter.FieldHarvesters
         IEnumerable<Implementation> selected;
         Strategy selectedStrategy = Strategy.Includer;
 
-
-        IFieldHarvester harvestingStrategy;
+        readonly IFieldHarvester harvestingStrategy;
 
         /// <summary>
         /// Create an instance and using the <see cref="AllFieldsAndPropertiesHarvester"/> to harvest the fields.
