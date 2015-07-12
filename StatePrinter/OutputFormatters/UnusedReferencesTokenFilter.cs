@@ -20,76 +20,79 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using StatePrinter.Introspection;
 
-
-public class UnusedReferencesTokenFilter
+namespace StatePrinter.OutputFormatters
 {
-    /// <summary>
-    /// In order to reduce clutter in the output, only show reference in the output if the object 
-    /// is referred to from other objects using a back-reference.
-    /// </summary>
-    public List<Token> FilterUnusedReferences(List<Token> tokens)
+    public class UnusedReferencesTokenFilter
     {
-        var backreferences = GetBackreferences(tokens);
+        /// <summary>
+        /// In order to reduce clutter in the output, only show reference in the output if the object 
+        /// is referred to from other objects using a back-reference.
+        /// </summary>
+        public List<Token> FilterUnusedReferences(List<Token> tokens)
+        {
+            var backreferences = GetBackreferences(tokens);
 
-        var remappedReferences = RemappedReferences(backreferences);
+            var remappedReferences = RemappedReferences(backreferences);
 
-        var result = tokens
-          .Select(
-              x =>
-                  {
-                      switch (x.Tokenkind)
-                      {
-                          case TokenType.StartScope:
-                          case TokenType.EndScope:
-                          case TokenType.StartEnumeration:
-                          case TokenType.EndEnumeration:
-                          case TokenType.SimpleFieldValue:
-                              return x;
-                          case TokenType.SeenBeforeWithReference:
-                          case TokenType.FieldnameWithTypeAndReference:
-                              return new Token(
-                                  x.Tokenkind,
-                                  x.Field,
-                                  x.Value,
-                                  CreateNewReferenceOrClear(remappedReferences, x.ReferenceNo),
-                                  x.FieldType);
-                          default: throw new Exception("Unknown token type "+ x.Tokenkind);
-                      }
-                  })
-              .ToList();
+            var result = tokens
+                .Select(
+                    x =>
+                        {
+                            switch (x.Tokenkind)
+                            {
+                                case TokenType.StartScope:
+                                case TokenType.EndScope:
+                                case TokenType.StartEnumeration:
+                                case TokenType.EndEnumeration:
+                                case TokenType.SimpleFieldValue:
+                                    return x;
+                                case TokenType.SeenBeforeWithReference:
+                                case TokenType.FieldnameWithTypeAndReference:
+                                    return new Token(
+                                        x.Tokenkind,
+                                        x.Field,
+                                        x.Value,
+                                        CreateNewReferenceOrClear(remappedReferences, x.ReferenceNo),
+                                        x.FieldType);
+                                default: throw new Exception("Unknown token type "+ x.Tokenkind);
+                            }
+                        })
+                .ToList();
 
-        return result;
-    }
+            return result;
+        }
 
-    public Reference[] GetBackreferences(List<Token> tokens)
-    {
-        return tokens
-          .Where(x => x.Tokenkind == TokenType.SeenBeforeWithReference)
-          .Select(x => x.ReferenceNo)
-          .Distinct()
-          .ToArray();
-    }
+        public Reference[] GetBackreferences(List<Token> tokens)
+        {
+            return tokens
+                .Where(x => x.Tokenkind == TokenType.SeenBeforeWithReference)
+                .Select(x => x.ReferenceNo)
+                .Distinct()
+                .ToArray();
+        }
 
-    Dictionary<Reference, Reference> RemappedReferences(Reference[] backreferences)
-    {
-        var remappedReferences = new Dictionary<Reference, Reference>();
-        int newReference = 0;
-        foreach (var backreference in backreferences)
-            remappedReferences[backreference] = new Reference(newReference++);
+        Dictionary<Reference, Reference> RemappedReferences(Reference[] backreferences)
+        {
+            var remappedReferences = new Dictionary<Reference, Reference>();
+            int newReference = 0;
+            foreach (var backreference in backreferences)
+                remappedReferences[backreference] = new Reference(newReference++);
 
-        return remappedReferences;
-    }
+            return remappedReferences;
+        }
 
-    Reference CreateNewReferenceOrClear(Dictionary<Reference, Reference> remappedReferences, Reference currentReference)
-    {
-        Reference newReference;
+        Reference CreateNewReferenceOrClear(Dictionary<Reference, Reference> remappedReferences, Reference currentReference)
+        {
+            Reference newReference;
 
-        // if not remapped, clear the reference
-        if(!remappedReferences.TryGetValue(currentReference, out newReference))
-            return null;
+            // if not remapped, clear the reference
+            if(!remappedReferences.TryGetValue(currentReference, out newReference))
+                return null;
 
-        return newReference;
+            return newReference;
+        }
     }
 }

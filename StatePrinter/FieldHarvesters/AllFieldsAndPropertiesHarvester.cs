@@ -28,7 +28,7 @@ namespace StatePrinter.FieldHarvesters
     /// We ignore the types from the following namespaces
     /// <see cref="System.Reflection"/> 
     /// <see cref="System.Runtime"/>
-    /// <see cref="System.Func"/>
+    /// <see cref="Func{TResult}"/>
     /// </summary>
     public class AllFieldsAndPropertiesHarvester : IFieldHarvester
     {

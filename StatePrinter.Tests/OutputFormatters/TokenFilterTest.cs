@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinter.Introspection;
+using StatePrinter.OutputFormatters;
 
 namespace StatePrinter.Tests.OutputFormatters
 {
