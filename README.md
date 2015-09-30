@@ -16,7 +16,7 @@ A simple framework for **automating** aspects of implementing `ToString()`-metho
 
 Why you should take StatePrinter for a spin
 
-* *No more manual `ToString()` - it is much easier to write robust and self-sufficient `ToString()` methods. Seamless integration into a code-base with manually implemented ToString-methods.
+* *No more manual `ToString()`* - it is much easier to write robust and self-sufficient `ToString()` methods. Seamless integration into a code-base with manually implemented ToString-methods.
 * *No more manual writing/updating Asserts* - both for new tests and when the code changes, all tests can automatically be corrected.
 * *No more screens full of asserts*. Especially testing against object-graphs is a bliss. 
 * Very configurable and extensible.
