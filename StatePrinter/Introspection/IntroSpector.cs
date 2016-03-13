@@ -172,6 +172,10 @@ namespace StatePrinter.Introspection
             if (!isKeyTypeSimple)
                 return false; // print as enumerable which is more verbose
 
+            Reference optionReferenceInfo;
+            seenBefore.TryGetValue(source, out optionReferenceInfo);
+
+            tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
             tokens.Add(StartEnumeration);
 
             var keys = source.Keys;
