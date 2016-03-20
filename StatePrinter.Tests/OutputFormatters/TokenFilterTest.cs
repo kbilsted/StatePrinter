@@ -32,7 +32,7 @@ namespace StatePrinter.Tests.OutputFormatters
         public void GetHashcode()
         {
             var sut = new Token(TokenType.FieldnameWithTypeAndReference, null, null, null, null);
-            Assert.AreEqual(-1280274074, sut.GetHashCode());
+            Assert.AreEqual(1156279432, sut.GetHashCode());
         }
 
         [Test]

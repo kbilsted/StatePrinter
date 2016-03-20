@@ -335,15 +335,17 @@ namespace StatePrinter.Tests.FieldHarvesters
 
                 // in array
                 expected = @"new B[]()
-[0] = new B()
 {
-    Name = ""m""
-    Age = 1
-}
-[1] = new B()
-{
-    Name = ""a""
-    Age = 2
+    new B()
+    {
+        Name = ""m""
+        Age = 1
+    }
+    new B()
+    {
+        Name = ""a""
+        Age = 2
+    }
 }";
                 B b2 = new B() { Age = 2, Name = "a", X = DateTime.Now, Y = DateTime.Now };
                 actual = stateprinter.PrintObject(new[] { b1, b2 });

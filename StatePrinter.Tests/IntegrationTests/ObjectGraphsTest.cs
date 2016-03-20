@@ -63,7 +63,7 @@ namespace StatePrinter.Tests.IntegrationTests
     }
     Brand = ""Toyota""
 }";
-            Assert.AreEqual(expected, printer.PrintObject(car));
+            printer.Assert.PrintEquals(expected, car);
         }
 
 
@@ -72,23 +72,19 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
 
-            var expected =
-      @"
-{
-    ""StereoAmplifiers"" : null,
-    ""steeringWheel"" :
-    {
-        ""Size"" : 3,
-        ""Grip"" :
-        {
-            ""Material"" : ""Plastic""
-        }
-        ""Weight"" : 525
-    }
-    ""Brand"" : ""Toyota""
+            var expected = @"{
+    ""StereoAmplifiers"": null, 
+    ""steeringWheel"": {
+        ""Size"": 3, 
+        ""Grip"": {
+            ""Material"": ""Plastic""
+        }, 
+        ""Weight"": 525
+    }, 
+    ""Brand"": ""Toyota""
 }";
 
-            Assert.AreEqual(expected, printer.PrintObject(car));
+            printer.Assert.PrintEquals(expected, car);
         }
 
         [Test]
@@ -96,8 +92,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             printer.Configuration.OutputFormatter = new XmlStyle(printer.Configuration);
 
-            var expected =
-      @"<ROOT type='Car'>
+            var expected = @"<Root type='Car'>
     <StereoAmplifiers>null</StereoAmplifiers>
     <steeringWheel type='SteeringWheel'>
         <Size>3</Size>
@@ -107,31 +102,31 @@ namespace StatePrinter.Tests.IntegrationTests
         <Weight>525</Weight>
     </steeringWheel>
     <Brand>""Toyota""</Brand>
-</ROOT>";
-            Assert.AreEqual(expected, printer.PrintObject(car));
+</Root>";
+            printer.Assert.PrintEquals(expected, car);
         }
 
 
         [Test]
         public void CyclicGraph_curly()
         {
-
-            var expected =
-      @"new Course(), ref: 0
+            var expected = @"new Course(), ref: 0
 {
     Members = new List<Student>()
-    Members[0] = new Student()
     {
-        name = ""Stan""
-        course =  -> 0
-    }
-    Members[1] = new Student()
-    {
-        name = ""Richy""
-        course =  -> 0
+        new Student()
+        {
+            name = ""Stan""
+            course = -> 0
+        }
+        new Student()
+        {
+            name = ""Richy""
+            course = -> 0
+        }
     }
 }";
-            Assert.AreEqual(expected, printer.PrintObject(course));
+            printer.Assert.PrintEquals(expected, course);
         }
 
 
@@ -140,22 +135,19 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
 
-            var expected =
-      @"
-{
-    ""Members"" :
-    [
+            var expected = @"{
+    ""Members"": [
         {
-            ""name"" : ""Stan"",
-            ""course"" :  root
-        }
+            ""name"": ""Stan"", 
+            ""course"": root
+        }, 
         {
-            ""name"" : ""Richy"",
-            ""course"" :  root
+            ""name"": ""Richy"", 
+            ""course"": root
         }
     ]
 }";
-            Assert.AreEqual(expected, printer.PrintObject(course));
+            printer.Assert.PrintEquals(expected, course);
         }
 
 
@@ -164,8 +156,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             var mother = MakeFamily();
 
-            var expected =
-              @"new Human(), ref: 0
+            var expected = @"new Human(), ref: 0
 {
     Name = ""Mom""
     Mother = new Human()
@@ -173,37 +164,47 @@ namespace StatePrinter.Tests.IntegrationTests
         Name = ""grandMom""
         Mother = null
         Children = new List<Human>()
-        Children[0] =  -> 0
+        {
+            -> 0
+        }
         Father = null
     }
     Children = new List<Human>()
-    Children[0] = new Human(), ref: 1
     {
-        Name = ""son""
-        Mother =  -> 0
-        Children = new List<Human>()
-        Father = new Human(), ref: 2
+        new Human(), ref: 1
         {
-            Name = ""grandDad""
-            Mother = null
+            Name = ""son""
+            Mother = -> 0
             Children = new List<Human>()
-            Children[0] =  -> 0
-            Children[1] =  -> 1
-            Children[2] = new Human(), ref: 3
             {
-                Name = ""daughter""
-                Mother =  -> 0
-                Children = new List<Human>()
-                Father =  -> 2
             }
-            Father = null
+            Father = new Human(), ref: 2
+            {
+                Name = ""grandDad""
+                Mother = null
+                Children = new List<Human>()
+                {
+                    -> 0
+                    -> 1
+                    new Human(), ref: 3
+                    {
+                        Name = ""daughter""
+                        Mother = -> 0
+                        Children = new List<Human>()
+                        {
+                        }
+                        Father = -> 2
+                    }
+                }
+                Father = null
+            }
         }
+        -> 3
     }
-    Children[1] =  -> 3
-    Father =  -> 2
+    Father = -> 2
 }";
             //Console.WriteLine(printer.PrintObject(mother));
-            Assert.AreEqual(expected, printer.PrintObject(mother));
+            printer.Assert.PrintEquals(expected, mother);
         }
 
 
@@ -213,50 +214,42 @@ namespace StatePrinter.Tests.IntegrationTests
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
 
             var mother = MakeFamily();
-            var expected =
-      @"
-{
-    ""Name"" : ""Mom"",
-    ""Mother"" :
-    {
-        ""Name"" : ""grandMom"",
-        ""Mother"" : null,
-        ""Children"" :
-        [
-            ""Children"" :  root
-        ],
-        ""Father"" : null
-    }
-    ""Children"" :
-    [
+            var expected = @"{
+    ""Name"": ""Mom"", 
+    ""Mother"": {
+        ""Name"": ""grandMom"", 
+        ""Mother"": null, 
+        ""Children"": [
+            root
+        ], 
+        ""Father"": null
+    }, 
+    ""Children"": [
         {
-            ""Name"" : ""son"",
-            ""Mother"" :  root,
-            ""Children"" : [],
-            ""Father"" :
-            {
-                ""Name"" : ""grandDad"",
-                ""Mother"" : null,
-                ""Children"" :
-                [
-                    ""Children"" :  root,
-                    ""Children"" :  root.Children[0],
+            ""Name"": ""son"", 
+            ""Mother"": root, 
+            ""Children"": [], 
+            ""Father"": {
+                ""Name"": ""grandDad"", 
+                ""Mother"": null, 
+                ""Children"": [
+                    root, 
+                    root.Children[0], 
                     {
-                        ""Name"" : ""daughter"",
-                        ""Mother"" :  root,
-                        ""Children"" : [],
-                        ""Father"" :  root.Children[0].Father
+                        ""Name"": ""daughter"", 
+                        ""Mother"": root, 
+                        ""Children"": [], 
+                        ""Father"": root.Children[0].Father
                     }
-                ],
-                ""Father"" : null
+                ], 
+                ""Father"": null
             }
-        }
-        ""Children"" :  root.Children[0].Father.Children[2]
-    ],
-    ""Father"" :  root.Children[0].Father
+        }, 
+        root.Children[0].Father.Children[2]
+    ], 
+    ""Father"": root.Children[0].Father
 }";
-            var actual = printer.PrintObject(mother);
-            Assert.AreEqual(expected, actual);
+            printer.Assert.PrintEquals(expected, mother);
         }
 
 
@@ -298,22 +291,19 @@ namespace StatePrinter.Tests.IntegrationTests
             course.Members.Add(new Student("Stan", course));
             course.Members.Add(new Student("Richy", course));
 
-            var expected =
-      @"<ROOT type='Course' ref='0'>
+            var expected = @"<Root type='Course' ref='0'>
     <Members type='List(Student)'>
-        <Enumeration>
-        <Members type='Student'>
+        <Element type='Student'>
             <name>""Stan""</name>
-            <course ref='0' />
-        </Members>
-        <Members type='Student'>
+            <course ref='0'/>
+        </Element>
+        <Element type='Student'>
             <name>""Richy""</name>
-            <course ref='0' />
-        </Members>
-        </Enumeration>
+            <course ref='0'/>
+        </Element>
     </Members>
-</ROOT>";
-            Assert.AreEqual(expected, printer.PrintObject(course));
+</Root>";
+            printer.Assert.PrintEquals(expected, course);
         }
     }
 

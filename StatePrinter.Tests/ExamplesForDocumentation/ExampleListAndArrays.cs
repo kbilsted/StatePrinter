@@ -41,23 +41,25 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
             vendorManager.AddVendor(JobType.JobType3, added3);
 
             var expected = @"new VendorAllocation[]()
-[0] = new VendorAllocation()
 {
-    Allocation = 100
-    Price = 20
-    Share = 20
-}
-[1] = new VendorAllocation()
-{
-    Allocation = 120
-    Price = 550
-    Share = 30
-}
-[2] = new VendorAllocation()
-{
-    Allocation = 880
-    Price = 11
-    Share = 50
+    new VendorAllocation()
+    {
+        Allocation = 100
+        Price = 20
+        Share = 20
+    }
+    new VendorAllocation()
+    {
+        Allocation = 120
+        Price = 550
+        Share = 30
+    }
+    new VendorAllocation()
+    {
+        Allocation = 880
+        Price = 11
+        Share = 50
+    }
 }";
 
             TestHelper.Assert().PrintAreAlike(expected, vendorManager.VendorJobSplit);

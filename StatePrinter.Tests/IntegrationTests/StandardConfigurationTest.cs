@@ -60,10 +60,10 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             curly.Assert.PrintEquals("null", null);
             json.Assert.PrintEquals("null", null);
-            xml.Assert.PrintEquals("<ROOT>null</ROOT>", null);
+            xml.Assert.PrintEquals("<Root>null</Root>", null);
 
             Assert.AreEqual("a = null", curly.PrintObject(null, "a"));
-            Assert.AreEqual("\"a\" : null", json.PrintObject(null, "a"));
+            Assert.AreEqual("\"a\": null", json.PrintObject(null, "a"));
             Assert.AreEqual("<a>null</a>", xml.PrintObject(null, "a"));
         }
 
@@ -73,7 +73,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             curly.Assert.PrintEquals("\"\"", "");
             json.Assert.PrintEquals("\"\"", "");
-            xml.Assert.PrintEquals("<ROOT>\"\"</ROOT>", "");
+            xml.Assert.PrintEquals("<Root>\"\"</Root>", "");
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             curly.Assert.PrintEquals("\"Some string\"", "Some string");
             json.Assert.PrintEquals("\"Some string\"", "Some string");
-            xml.Assert.PrintEquals("<ROOT>\"Some string\"</ROOT>", "Some string");
+            xml.Assert.PrintEquals("<Root>\"Some string\"</Root>", "Some string");
         }
 
 
@@ -132,9 +132,9 @@ namespace StatePrinter.Tests.IntegrationTests
         [Test]
         public void Int_xml()
         {
-            Assert.AreEqual("<ROOT>-1</ROOT>", xml.PrintObject(-1f));
-            Assert.AreEqual("<ROOT>3</ROOT>", xml.PrintObject(3));
-            Assert.AreEqual("<ROOT>1E+23</ROOT>", xml.PrintObject(1E23));
+            Assert.AreEqual("<Root>-1</Root>", xml.PrintObject(-1f));
+            Assert.AreEqual("<Root>3</Root>", xml.PrintObject(3));
+            Assert.AreEqual("<Root>1E+23</Root>", xml.PrintObject(1E23));
         }
 
 
