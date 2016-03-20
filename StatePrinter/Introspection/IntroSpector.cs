@@ -217,7 +217,7 @@ namespace StatePrinter.Introspection
     }
 
 
-    public class Field
+    public class Field : IEquatable<Field>
     {
         public readonly string Name;
         public readonly string Key;
@@ -228,6 +228,31 @@ namespace StatePrinter.Introspection
             Name = name;
             Key = key;
             Index = index;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Field);
+        }
+
+        public bool Equals(Field other)
+        {
+            return other != null
+                && Name == other.Name
+                && Key == other.Key
+                && Index == other.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = 131;
+                hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Key != null ? Key.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Index != null ? Index.Value.GetHashCode() : 0);
+                return hashCode;
+            }
         }
     }
 }
