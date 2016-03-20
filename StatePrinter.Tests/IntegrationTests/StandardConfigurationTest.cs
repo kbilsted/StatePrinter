@@ -73,7 +73,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             curly.Assert.PrintEquals("\"\"", "");
             json.Assert.PrintEquals("\"\"", "");
-            xml.Assert.PrintEquals("<Root>\"\"</Root>", "");
+            xml.Assert.PrintEquals("<Root></Root>", "");
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             curly.Assert.PrintEquals("\"Some string\"", "Some string");
             json.Assert.PrintEquals("\"Some string\"", "Some string");
-            xml.Assert.PrintEquals("<Root>\"Some string\"</Root>", "Some string");
+            xml.Assert.PrintEquals("<Root>Some string</Root>", "Some string");
         }
 
 

@@ -195,12 +195,18 @@ namespace StatePrinter.OutputFormatters
             if (token.Field.Index.HasValue)
                 return value;
 
-            string name = token.Field.Key ?? token.Field.Name;
+            if (token.Field.Key != null)
+            {
+                return IsQuoted(token.Field.Key)
+                    ? string.Format("{0}: {1}", token.Field.Key, value)
+                    : string.Format("\"{0}\": {1}", token.Field.Key, value);
+            }
+
             // Field.Name is empty if the ROOT-element-name has not been supplied.
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(token.Field.Name))
                 return value;
 
-            return string.Format("\"{0}\": {1}", name, value);
+            return string.Format("\"{0}\": {1}", token.Field.Name, value);
         }
 
         /// <summary>
@@ -224,6 +230,11 @@ namespace StatePrinter.OutputFormatters
                 return "";
 
             return ", ";
+        }
+
+        bool IsQuoted(string s)
+        {
+            return s.Length >= 2 && s.StartsWith("\"") && s.EndsWith("\"");
         }
     }
 }

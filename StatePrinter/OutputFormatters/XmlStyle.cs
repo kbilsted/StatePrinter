@@ -89,7 +89,7 @@ namespace StatePrinter.OutputFormatters
 
                 case TokenType.SimpleFieldValue:
                     tagName = TagName(token, out keyAttr);
-                    sb.AppendFormatLine("<{0}{1}>{2}</{0}>", tagName, keyAttr, token.Value);
+                    sb.AppendFormatLine("<{0}{1}>{2}</{0}>", tagName, keyAttr, Unquote(token.Value));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
@@ -137,8 +137,14 @@ namespace StatePrinter.OutputFormatters
                 tag = "Root";
             }
 
-            keyAttr = key == null ? "" : string.Format(" key='{0}'", SecurityElement.Escape(key));
+            keyAttr = key == null ? "" : string.Format(" key='{0}'", SecurityElement.Escape(Unquote(key)));
             return tag;
+        }
+
+        private string Unquote(string s)
+        {
+            return s.Length >= 2 && s.StartsWith("\"") && s.EndsWith("\"")
+                ? s.Substring(1, s.Length - 2) : s;
         }
     }
 }

@@ -32,6 +32,8 @@ namespace StatePrinter.Tests.IntegrationTests
     {
         static readonly Dictionary<int, int> empty_int_int = new Dictionary<int, int>();
         static readonly Dictionary<int, int> int_int = new Dictionary<int, int> { { 1, 2 }, { 2, 4 }, { 3, 6 } };
+        static readonly Dictionary<string, string> string_string = new Dictionary<string, string> {
+            { "abc", "ABC" }, { "xyz", "XYZ" } };
 
         static readonly IDictionary untyped_int_int = new Hashtable { { 1, 2 }, { 2, 4 }, { 3, 6 } };
 
@@ -500,6 +502,17 @@ namespace StatePrinter.Tests.IntegrationTests
                 printer.Assert.PrintEquals(expected, int_int);
             }
 
+            [Test]
+            public void Dictionary_string_string()
+            {
+                var expected = @"new Dictionary<String, String>()
+{
+    {""abc"", ""ABC""}
+    {""xyz"", ""XYZ""}
+}";
+                printer.Assert.PrintEquals(expected, string_string);
+            }
+
 
             [Test]
             public void Dictionary_int_int_withRootName()
@@ -640,7 +653,17 @@ namespace StatePrinter.Tests.IntegrationTests
 }";
                 printer.Assert.PrintEquals(expected, int_int);
             }
-   
+
+            [Test]
+            public void Dictionary_string_string()
+            {
+                var expected = @"{
+    ""abc"": ""ABC"", 
+    ""xyz"": ""XYZ""
+}";
+                printer.Assert.PrintEquals(expected, string_string);
+            }
+
             [Test]
             public void Dictionary_int_int_withRootName()
             {
@@ -768,6 +791,16 @@ namespace StatePrinter.Tests.IntegrationTests
             }
 
             [Test]
+            public void Dictionary_string_string()
+            {
+                var expected = @"<Root type='Dictionary(String, String)'>
+    <Element key='abc'>ABC</Element>
+    <Element key='xyz'>XYZ</Element>
+</Root>";
+                printer.Assert.PrintEquals(expected, string_string);
+            }
+
+            [Test]
             public void Dictionary_int_int_withRootName()
             {
                 var expected = @"<IntDict type='Dictionary(Int32, Int32)'>
@@ -803,13 +836,13 @@ namespace StatePrinter.Tests.IntegrationTests
                 var expected = @"<Root type='Dictionary(Person, Int32)'>
     <Element type='KeyValuePair(Person, Int32)'>
         <key type='Person'>
-            <Name>""Douglas""</Name>
+            <Name>Douglas</Name>
         </key>
         <value>42</value>
     </Element>
     <Element type='KeyValuePair(Person, Int32)'>
         <key type='Person'>
-            <Name>""Santa""</Name>
+            <Name>Santa</Name>
         </key>
         <value>100</value>
     </Element>

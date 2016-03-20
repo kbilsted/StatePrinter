@@ -97,12 +97,13 @@ namespace StatePrinter.Tests.IntegrationTests
     <steeringWheel type='SteeringWheel'>
         <Size>3</Size>
         <Grip type='FoamGrip'>
-            <Material>""Plastic""</Material>
+            <Material>Plastic</Material>
         </Grip>
         <Weight>525</Weight>
     </steeringWheel>
-    <Brand>""Toyota""</Brand>
+    <Brand>Toyota</Brand>
 </Root>";
+
             printer.Assert.PrintEquals(expected, car);
         }
 
@@ -294,11 +295,11 @@ namespace StatePrinter.Tests.IntegrationTests
             var expected = @"<Root type='Course' ref='0'>
     <Members type='List(Student)'>
         <Element type='Student'>
-            <name>""Stan""</name>
+            <name>Stan</name>
             <course ref='0'/>
         </Element>
         <Element type='Student'>
-            <name>""Richy""</name>
+            <name>Richy</name>
             <course ref='0'/>
         </Element>
     </Members>

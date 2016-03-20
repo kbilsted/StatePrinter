@@ -248,9 +248,9 @@ namespace StatePrinter.Tests.IntegrationTests
             public void StringArrayWithNulls()
             {
                 var expected = @"<Root type='String[]'>
-    <Element>""""</Element>
+    <Element></Element>
     <Element>null</Element>
-    <Element>""42""</Element>
+    <Element>42</Element>
 </Root>";
 
                 printer.Assert.PrintEquals(expected, new[] { "", null, "42" });
@@ -267,13 +267,13 @@ namespace StatePrinter.Tests.IntegrationTests
     <Element type='KeyValuePair(Person, Address)'>
         <key type='Person'>
             <Age>37</Age>
-            <FirstName>""Klaus""</FirstName>
-            <LastName>""Meyer""</LastName>
+            <FirstName>Klaus</FirstName>
+            <LastName>Meyer</LastName>
         </key>
         <value type='Address'>
-            <Street>""Fairway Dr.""</Street>
+            <Street>Fairway Dr.</Street>
             <StreetNumber>50267</StreetNumber>
-            <Zip>""CA 91601""</Zip>
+            <Zip>CA 91601</Zip>
             <Country>USA</Country>
         </value>
     </Element>
