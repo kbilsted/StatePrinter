@@ -34,8 +34,10 @@ namespace StatePrinter.Introspection
     {
         static readonly Token Startscope = new Token(TokenType.StartScope);
         static readonly Token Endscope = new Token(TokenType.EndScope);
-        static readonly Token StartEnumeration = new Token(TokenType.StartEnumeration);
-        static readonly Token EndEnumeration = new Token(TokenType.EndEnumeration);
+        static readonly Token StartList = new Token(TokenType.StartList);
+        static readonly Token EndList = new Token(TokenType.EndList);
+        static readonly Token StartDict = new Token(TokenType.StartDict);
+        static readonly Token EndDict = new Token(TokenType.EndDict);
 
         readonly Configuration configuration;
         readonly HarvestInfoCache harvestCache;
@@ -176,7 +178,7 @@ namespace StatePrinter.Introspection
             seenBefore.TryGetValue(source, out optionReferenceInfo);
 
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
-            tokens.Add(StartEnumeration);
+            tokens.Add(StartDict);
 
             var keys = source.Keys;
             foreach (var key in keys)
@@ -186,7 +188,7 @@ namespace StatePrinter.Introspection
                 var outputfieldName = new Field(field.Name, keyValue);
                 Introspect(valueValue, outputfieldName);
             }
-            tokens.Add(EndEnumeration);
+            tokens.Add(EndDict);
 
             return true;
         }
@@ -201,15 +203,14 @@ namespace StatePrinter.Introspection
             seenBefore.TryGetValue(source, out optionReferenceInfo);
 
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
-            tokens.Add(StartEnumeration);
+            tokens.Add(StartList);
 
-            int i = 0;
+            long i = 0;
             foreach (var x in enumerable)
             {
-                var outputFieldName = new Field(field.Name, "" + i++);
-                Introspect(x, outputFieldName);
+                Introspect(x, new Field(field.Name, null, i++));
             }
-            tokens.Add(EndEnumeration);
+            tokens.Add(EndList);
 
             return true;
         }
@@ -219,12 +220,14 @@ namespace StatePrinter.Introspection
     public class Field
     {
         public readonly string Name;
-        public readonly string SimpleKeyInArrayOrDictionary;
+        public readonly string Key;
+        public readonly long? Index;
 
-        public Field(string name, string simpleKeyInArrayOrDictionary = null)
+        public Field(string name, string key = null, long? index = null)
         {
             Name = name;
-            SimpleKeyInArrayOrDictionary = simpleKeyInArrayOrDictionary;
+            Key = key;
+            Index = index;
         }
     }
 }

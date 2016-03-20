@@ -45,8 +45,10 @@ namespace StatePrinter.OutputFormatters
                             {
                                 case TokenType.StartScope:
                                 case TokenType.EndScope:
-                                case TokenType.StartEnumeration:
-                                case TokenType.EndEnumeration:
+                                case TokenType.StartList:
+                                case TokenType.EndList:
+                                case TokenType.StartDict:
+                                case TokenType.EndDict:
                                 case TokenType.SimpleFieldValue:
                                     return x;
                                 case TokenType.SeenBeforeWithReference:

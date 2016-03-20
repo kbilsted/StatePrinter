@@ -55,6 +55,7 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
+                printer.Configuration.SetIndentIncrement("");
                 printer.Assert.AreEqual("new Int32[]() [0] = 1 [1] = 2 [2] = 3", printer.PrintObject(new[] { 1, 2, 3 }));
             }
 
@@ -130,6 +131,7 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
+                printer.Configuration.SetIndentIncrement("");
                 var expected = " [     { 0 : 1 },     { 1 : 2 },     { 2 : 3 } ]";
                 printer.Assert.AreEqual(expected, printer.PrintObject(new[] { 1, 2, 3 }));
             }
@@ -218,6 +220,7 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
+                printer.Configuration.SetIndentIncrement("");
                 var expected = "<ROOT type='Int32[]'> <ROOT>     <Enumeration>     <key>0</key><value>1</value>     <key>1</key><value>2</value>     <key>2</key><value>3</value>     </Enumeration> </ROOT>";
                 printer.Assert.AreEqual(expected, printer.PrintObject(new[] { 1, 2, 3 }));
             }

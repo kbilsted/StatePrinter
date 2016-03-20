@@ -67,26 +67,26 @@ namespace StatePrinter.OutputFormatters
             switch (token.Tokenkind)
             {
                 case TokenType.StartScope:
+                case TokenType.StartList:
+                case TokenType.StartDict:
                     sb.AppendFormatLine("{{");
                     sb.Indent();
                     break;
 
                 case TokenType.EndScope:
+                case TokenType.EndList:
+                case TokenType.EndDict:
                     sb.DeIndent();
                     sb.AppendFormatLine("}}");
                     break;
 
-                case TokenType.StartEnumeration:
-                case TokenType.EndEnumeration:
-                    break;
-
                 case TokenType.SimpleFieldValue:
-                    sb.AppendFormatLine("{0}{1}", MakeFieldnameAssign(token), token.Value);
+                    sb.AppendFormatLine("{0}", MakeFieldValue(token, token.Value));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
                     var seenBeforeReference = " -> " + token.ReferenceNo.Number;
-                    sb.AppendFormatLine("{0}{1}", MakeFieldnameAssign(token), seenBeforeReference);
+                    sb.AppendFormatLine("{0}", MakeFieldValue(token, seenBeforeReference));
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
@@ -96,7 +96,8 @@ namespace StatePrinter.OutputFormatters
 
                     var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType);
 
-                    sb.AppendFormatLine("{0}new {1}(){2}", MakeFieldnameAssign(token), fieldType, optionReferenceInfo);
+                    string value = string.Format("new {0}(){1}", fieldType, optionReferenceInfo);
+                    sb.AppendFormatLine("{0}", MakeFieldValue(token, value));
                     break;
 
                 default:
@@ -104,21 +105,22 @@ namespace StatePrinter.OutputFormatters
             }
         }
 
-        string MakeFieldnameAssign(Token token)
+        string MakeFieldValue(Token token, string value)
         {
             if (token.Field == null)
-                return "";
+                return value;
 
-            var simpleLookupKey = token.Field.SimpleKeyInArrayOrDictionary == null
-              ? ""
-              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
-            var fieldName = token.Field.Name + simpleLookupKey;
+            if (token.Field.Index.HasValue)
+                return value;
 
-            // fieldname is empty if the ROOT-element-name has not been supplied
-            string fieldnameAssign = string.IsNullOrEmpty(fieldName)
-              ? ""
-              : fieldName + " = ";
-            return fieldnameAssign;
+            if (token.Field.Key != null)
+                return string.Format("{{{0}, {1}}}", token.Field.Key, value);
+
+            // Field.Name is empty if the ROOT-element-name has not been supplied.
+            if (string.IsNullOrEmpty(token.Field.Name))
+                return value;
+
+            return string.Format("{0} = {1}", token.Field.Name, value);
         }
     }
 }

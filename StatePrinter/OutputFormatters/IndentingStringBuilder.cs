@@ -31,6 +31,7 @@ namespace StatePrinter.OutputFormatters
         readonly Configuration configuration;
 
         string indent = "";
+        bool mustIndent = true;
 
         public IndentingStringBuilder(Configuration configuration)
         {
@@ -49,11 +50,21 @@ namespace StatePrinter.OutputFormatters
             indent = indent.Substring(IndentIncrement.Length);
         }
 
+        public void AppendFormat(string format, params object[] args)
+        {
+            if (mustIndent)
+            {
+                sb.Append(indent);
+                mustIndent = false;
+            }
+            sb.AppendFormat(format, args);
+        }
+
         public void AppendFormatLine(string format, params object[] args)
         {
-            sb.Append(indent);
-            sb.AppendFormat(format, args);
+            AppendFormat(format, args);
             sb.Append(NewLineDefinition);
+            mustIndent = true;
         }
 
         public override string ToString()

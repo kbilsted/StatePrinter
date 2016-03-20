@@ -74,10 +74,11 @@ namespace StatePrinter.OutputFormatters
                     case TokenType.FieldnameWithTypeAndReference:
                         if (token.Field.Name != null)
                         {
-                            var keyname = token.Field.SimpleKeyInArrayOrDictionary == null
-                                              ? ""
-                                              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
-                            last = token.Field.Name + keyname;
+                            object key = token.Field.Key != null ? token.Field.Key :
+                                         token.Field.Index.HasValue ? token.Field.Index.Value.ToString() :
+                                         null;
+                            string subscript = key == null ? "" : "[" + key + "]";
+                            last = token.Field.Name + subscript;
                         }
 
                         if (token.ReferenceNo != null && !paths.ContainsKey(token.ReferenceNo))
@@ -87,8 +88,10 @@ namespace StatePrinter.OutputFormatters
                         }
                         break;
 
-                    case TokenType.StartEnumeration:
-                    case TokenType.EndEnumeration:
+                    case TokenType.StartList:
+                    case TokenType.EndList:
+                    case TokenType.StartDict:
+                    case TokenType.EndDict:
                     case TokenType.SeenBeforeWithReference:
                     case TokenType.SimpleFieldValue:
                         break;
@@ -118,104 +121,62 @@ namespace StatePrinter.OutputFormatters
         int MakeStringFromToken(List<Token> tokens, int pos, Dictionary<Reference, string> referencePaths, IndentingStringBuilder sb)
         {
             var token = tokens[pos];
-
+            TokenType? next = pos + 1 < tokens.Count ? tokens[pos + 1].Tokenkind : new TokenType?();
             int skip = 0;
 
-            string fieldnameColon = null;
             switch (token.Tokenkind)
             {
                 case TokenType.StartScope:
-                    sb.AppendFormatLine("{{");
-                    sb.Indent();
-                    break;
-
-                case TokenType.EndScope:
-                    sb.DeIndent();
-                    sb.AppendFormatLine("}}");
-                    break;
-
-                case TokenType.StartEnumeration:
+                case TokenType.StartDict:
+                    if (next == TokenType.EndScope || next == TokenType.EndDict)
                     {
-                        fieldnameColon = "";
-                        if (pos + 1 < tokens.Count)
-                        {
-                            var nextToken = tokens[pos + 1];
-
-                            if (nextToken.Tokenkind == TokenType.EndEnumeration)
-                            {
-                                sb.AppendFormatLine("[]");
-                                skip++;
-                                break;
-                            }
-
-                            if (nextToken.Tokenkind == TokenType.SimpleFieldValue
-                                && nextToken.Field.SimpleKeyInArrayOrDictionary != null
-                                && nextToken.Field.Name != null)
-                            {
-                                fieldnameColon = string.Format("\"{0}\" : ", nextToken.Field.Name);
-                            }
-                        }
-                        sb.AppendFormatLine("{0}[", fieldnameColon);
+                        sb.AppendFormatLine("{{}}{0}", OptionalComma(tokens, pos + 1));
+                        ++skip;
+                    }
+                    else
+                    {
+                        sb.AppendFormatLine("{{");
                         sb.Indent();
                     }
                     break;
 
-                case TokenType.EndEnumeration:
+                case TokenType.EndScope:
+                case TokenType.EndDict:
+                    sb.DeIndent();
+                    sb.AppendFormatLine("}}{0}", OptionalComma(tokens, pos));
+                    break;
+
+                case TokenType.StartList:
+                    if (next == TokenType.EndList)
+                    {
+                        sb.AppendFormatLine("[]{0}", OptionalComma(tokens, pos + 1));
+                        ++skip;
+                    }
+                    else
+                    {
+                        sb.AppendFormatLine("[");
+                        sb.Indent();
+                    }
+                    break;
+
+                case TokenType.EndList:
                     sb.DeIndent();
                     sb.AppendFormatLine("]{0}", OptionalComma(tokens, pos));
                     break;
 
                 case TokenType.SimpleFieldValue:
-                    {
-
-                        if (token.Field.SimpleKeyInArrayOrDictionary == null)
-                        {
-                            // fieldname is empty if the ROOT-element-name has not been supplied
-                            fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
-                            var optinalComma = OptionalComma(tokens, pos);
-                            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, token.Value, optinalComma);
-                        }
-                        else
-                        {
-                            fieldnameColon = "";
-                            var keyval = string.Format("{{ {0} : {1} }}", token.Field.SimpleKeyInArrayOrDictionary, token.Value);
-
-                            sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, keyval, OptionalComma(tokens, pos + skip));
-                        }
-
-                        break;
-                    }
+                    sb.AppendFormatLine("{0}{1}", MakeFieldValue(token, token.Value),
+                                        OptionalComma(tokens, pos));
+                    break;
 
                 case TokenType.SeenBeforeWithReference:
-                    {
-                        // fieldname is empty if the ROOT-element-name has not been supplied
-                        fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" : ");
-
-                        var seenBeforeReference = " " + referencePaths[token.ReferenceNo];
-                        sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, seenBeforeReference, OptionalComma(tokens, pos));
-                        break;
-                    }
+                    sb.AppendFormatLine("{0}{1}", MakeFieldValue(token, referencePaths[token.ReferenceNo]),
+                                        OptionalComma(tokens, pos));
+                    break;
 
                 case TokenType.FieldnameWithTypeAndReference:
-                    // if we are part of an idex, do not print the field name as it has alreadty been printed
-                    if (token.Field.SimpleKeyInArrayOrDictionary == null)
-                    {
-                        // fieldname is empty if the ROOT-element-name has not been supplied
-                        fieldnameColon = GetEmptyOrFieldname(token, "\"{0}\" :");
-
-                        // inline-print empty collections
-                        string optionalValue = "";
-                        bool isNextEmptyEnumeration = pos + 2 < tokens.Count // TODO optimize by introducing a variable holding "count-2"
-                                && tokens[pos + 1].Tokenkind == TokenType.StartEnumeration
-                                && tokens[pos + 2].Tokenkind == TokenType.EndEnumeration;
-                        if (isNextEmptyEnumeration)
-                        {
-                            skip += 2;
-                            optionalValue = (fieldnameColon == "" ? "" : " ") + "[]";
-                        }
-
-                        sb.AppendFormatLine("{0}{1}{2}", fieldnameColon, optionalValue, OptionalComma(tokens, pos + skip));
-                    }
+                    string value = MakeFieldValue(token, "");
+                    sb.AppendFormat("{0}", value);
                     break;
 
                 default:
@@ -226,28 +187,20 @@ namespace StatePrinter.OutputFormatters
         }
 
 
-        string MakeFieldnameAssign(Token token)
+        string MakeFieldValue(Token token, string value)
         {
             if (token.Field == null)
-                return "";
+                return value;
 
-            var simpleLookupKey = token.Field.SimpleKeyInArrayOrDictionary == null
-              ? ""
-              : "[" + token.Field.SimpleKeyInArrayOrDictionary + "]";
-            var fieldName = token.Field.Name + simpleLookupKey;
+            if (token.Field.Index.HasValue)
+                return value;
 
-            // fieldname is empty if the ROOT-element-name has not been supplied
-            string fieldnameAssign = string.IsNullOrEmpty(fieldName)
-              ? ""
-              : fieldName + " : ";
-            return fieldnameAssign;
-        }
+            string name = token.Field.Key ?? token.Field.Name;
+            // Field.Name is empty if the ROOT-element-name has not been supplied.
+            if (string.IsNullOrEmpty(name))
+                return value;
 
-        string GetEmptyOrFieldname(Token token, string formatting)
-        {
-            return token.Field == null || string.IsNullOrEmpty(token.Field.Name)
-              ? ""
-              : string.Format(formatting, token.Field.Name);
+            return string.Format("\"{0}\": {1}", name, value);
         }
 
         /// <summary>
@@ -262,13 +215,15 @@ namespace StatePrinter.OutputFormatters
 
             var nextToken = tokens[nextPos].Tokenkind;
             bool isNextScope = nextToken == TokenType.EndScope
-                               || nextToken == TokenType.StartEnumeration
+                               || nextToken == TokenType.StartList
+                               || nextToken == TokenType.StartDict
                                || nextToken == TokenType.StartScope
-                               || nextToken == TokenType.EndEnumeration;
+                               || nextToken == TokenType.EndList
+                               || nextToken == TokenType.EndDict;
             if (isNextScope)
                 return "";
 
-            return ",";
+            return ", ";
         }
     }
 }

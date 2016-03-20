@@ -22,8 +22,10 @@ namespace StatePrinter.Introspection
     {
         StartScope,
         EndScope,
-        StartEnumeration,
-        EndEnumeration,
+        StartList,
+        EndList,
+        StartDict,
+        EndDict,
         SeenBeforeWithReference,
         SimpleFieldValue,
         FieldnameWithTypeAndReference,
