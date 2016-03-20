@@ -85,8 +85,7 @@ namespace StatePrinter.OutputFormatters
                     break;
 
                 case TokenType.SeenBeforeWithReference:
-                    var seenBeforeReference = " -> " + token.ReferenceNo.Number;
-                    sb.AppendFormatLine("{0}", MakeFieldValue(token, seenBeforeReference));
+                    sb.AppendFormatLine("{0}", MakeFieldValue(token, "-> " + token.ReferenceNo.Number));
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
