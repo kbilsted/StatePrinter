@@ -336,12 +336,12 @@ namespace StatePrinter.Tests.FieldHarvesters
                 // in array
                 expected = @"new B[]()
 {
-    new B()
+    [0] = new B()
     {
         Name = ""m""
         Age = 1
     }
-    new B()
+    [1] = new B()
     {
         Name = ""a""
         Age = 2

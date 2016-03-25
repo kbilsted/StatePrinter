@@ -34,10 +34,10 @@ namespace StatePrinter.Tests.IntegrationTests
         {
             string expected = @"new Int32[,]()
 {
-    1
-    2
-    3
-    4
+    [0] = 1
+    [1] = 2
+    [2] = 3
+    [3] = 4
 }";
 
             [Test]
@@ -68,9 +68,9 @@ namespace StatePrinter.Tests.IntegrationTests
                 printer.Configuration.SetOutputFormatter(new JsonStyle(printer.Configuration));
 
                 var expected = @"[
-    1, 
-    2, 
-    3, 
+    1,
+    2,
+    3,
     4
 ]";
                 printer.Assert.PrintEquals(expected, twoDimArray);

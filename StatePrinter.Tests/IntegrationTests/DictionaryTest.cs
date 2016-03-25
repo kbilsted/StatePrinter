@@ -79,7 +79,7 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new List<Token>()
 {
-    new Token()
+    [0] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType()
@@ -97,7 +97,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 0
         }
     }
-    new Token()
+    [1] = new Token()
     {
         Tokenkind = StartDict
         FieldType = null
@@ -105,7 +105,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [2] = new Token()
     {
         Tokenkind = EndDict
         FieldType = null
@@ -114,6 +114,7 @@ namespace StatePrinter.Tests.IntegrationTests
         ReferenceNo = null
     }
 }";
+
 
                 printer.PrintObject(empty_int_int);
                 var tokens = tokenOutputter.IntrospectedTokens;
@@ -129,7 +130,7 @@ namespace StatePrinter.Tests.IntegrationTests
 
                 var expected = @"new List<Token>()
 {
-    new Token()
+    [0] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType()
@@ -147,7 +148,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 0
         }
     }
-    new Token()
+    [1] = new Token()
     {
         Tokenkind = StartDict
         FieldType = null
@@ -155,7 +156,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [2] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -168,7 +169,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""2""
         ReferenceNo = null
     }
-    new Token()
+    [3] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -181,7 +182,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""4""
         ReferenceNo = null
     }
-    new Token()
+    [4] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -194,7 +195,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""6""
         ReferenceNo = null
     }
-    new Token()
+    [5] = new Token()
     {
         Tokenkind = EndDict
         FieldType = null
@@ -214,7 +215,7 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new List<Token>()
 {
-    new Token()
+    [0] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType()
@@ -232,7 +233,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 0
         }
     }
-    new Token(), ref: 0
+    [1] = new Token(), ref: 0
     {
         Tokenkind = StartScope
         FieldType = null
@@ -240,7 +241,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [2] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType()
@@ -258,7 +259,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 1
         }
     }
-    new Token()
+    [3] = new Token()
     {
         Tokenkind = StartDict
         FieldType = null
@@ -266,7 +267,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [4] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -279,7 +280,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""2""
         ReferenceNo = null
     }
-    new Token()
+    [5] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -292,7 +293,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""4""
         ReferenceNo = null
     }
-    new Token()
+    [6] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -305,7 +306,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""6""
         ReferenceNo = null
     }
-    new Token()
+    [7] = new Token()
     {
         Tokenkind = EndDict
         FieldType = null
@@ -313,7 +314,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [8] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType()
@@ -331,7 +332,7 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 2
         }
     }
-    new Token()
+    [9] = new Token()
     {
         Tokenkind = StartList
         FieldType = null
@@ -339,7 +340,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [10] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = new RuntimeType(), ref: 1
@@ -357,8 +358,8 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 3
         }
     }
-    -> 0
-    new Token()
+    [11] = -> 0
+    [12] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -371,7 +372,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""3""
         ReferenceNo = null
     }
-    new Token()
+    [13] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -384,7 +385,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""6""
         ReferenceNo = null
     }
-    new Token(), ref: 4
+    [14] = new Token(), ref: 4
     {
         Tokenkind = EndScope
         FieldType = null
@@ -392,7 +393,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    new Token()
+    [15] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = -> 1
@@ -408,8 +409,8 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 4
         }
     }
-    -> 0
-    new Token()
+    [16] = -> 0
+    [17] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -417,7 +418,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""2""
         ReferenceNo = null
     }
-    new Token()
+    [18] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -425,8 +426,8 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""4""
         ReferenceNo = null
     }
-    -> 4
-    new Token()
+    [19] = -> 4
+    [20] = new Token()
     {
         Tokenkind = FieldnameWithTypeAndReference
         FieldType = -> 1
@@ -442,8 +443,8 @@ namespace StatePrinter.Tests.IntegrationTests
             Number = 5
         }
     }
-    -> 0
-    new Token()
+    [21] = -> 0
+    [22] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -451,7 +452,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""1""
         ReferenceNo = null
     }
-    new Token()
+    [23] = new Token()
     {
         Tokenkind = SimpleFieldValue
         FieldType = null
@@ -459,8 +460,8 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = ""2""
         ReferenceNo = null
     }
-    -> 4
-    new Token()
+    [24] = -> 4
+    [25] = new Token()
     {
         Tokenkind = EndList
         FieldType = null
@@ -468,7 +469,7 @@ namespace StatePrinter.Tests.IntegrationTests
         Value = null
         ReferenceNo = null
     }
-    -> 4
+    [26] = -> 4
 }";
                 printer.PrintObject(new Holder());
                 var tokens = tokenOutputter.IntrospectedTokens;
@@ -495,9 +496,9 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new Dictionary<Int32, Int32>()
 {
-    {1, 2}
-    {2, 4}
-    {3, 6}
+    [1] = 2
+    [2] = 4
+    [3] = 6
 }";
                 printer.Assert.PrintEquals(expected, int_int);
             }
@@ -507,8 +508,8 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new Dictionary<String, String>()
 {
-    {""abc"", ""ABC""}
-    {""xyz"", ""XYZ""}
+    [""abc""] = ""ABC""
+    [""xyz""] = ""XYZ""
 }";
                 printer.Assert.PrintEquals(expected, string_string);
             }
@@ -519,9 +520,9 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"IntDict = new Dictionary<Int32, Int32>()
 {
-    {1, 2}
-    {2, 4}
-    {3, 6}
+    [1] = 2
+    [2] = 4
+    [3] = 6
 }";
 
                 printer.Assert.AreEqual(expected, printer.PrintObject(int_int, "IntDict"));
@@ -551,7 +552,7 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new Dictionary<Person, Int32>()
 {
-    new KeyValuePair<Person, Int32>()
+    [0] = new KeyValuePair<Person, Int32>()
     {
         key = new Person()
         {
@@ -559,7 +560,7 @@ namespace StatePrinter.Tests.IntegrationTests
         }
         value = 42
     }
-    new KeyValuePair<Person, Int32>()
+    [1] = new KeyValuePair<Person, Int32>()
     {
         key = new Person()
         {
@@ -577,17 +578,17 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new Hashtable()
 {
-    new DictionaryEntry()
+    [0] = new DictionaryEntry()
     {
         _key = 3
         _value = 6
     }
-    new DictionaryEntry()
+    [1] = new DictionaryEntry()
     {
         _key = 2
         _value = 4
     }
-    new DictionaryEntry()
+    [2] = new DictionaryEntry()
     {
         _key = 1
         _value = 2
@@ -603,23 +604,23 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     int_int = new Dictionary<Int32, Int32>()
     {
-        {1, 2}
-        {2, 4}
-        {3, 6}
+        [1] = 2
+        [2] = 4
+        [3] = 6
     }
     untyped_int_int = new Hashtable()
     {
-        new DictionaryEntry()
+        [0] = new DictionaryEntry()
         {
             _key = 3
             _value = 6
         }
-        new DictionaryEntry()
+        [1] = new DictionaryEntry()
         {
             _key = 2
             _value = 4
         }
-        new DictionaryEntry()
+        [2] = new DictionaryEntry()
         {
             _key = 1
             _value = 2
@@ -647,8 +648,8 @@ namespace StatePrinter.Tests.IntegrationTests
             public void Dictionary_int_int()
             {
                 var expected = @"{
-    ""1"": 2, 
-    ""2"": 4, 
+    ""1"": 2,
+    ""2"": 4,
     ""3"": 6
 }";
                 printer.Assert.PrintEquals(expected, int_int);
@@ -658,7 +659,7 @@ namespace StatePrinter.Tests.IntegrationTests
             public void Dictionary_string_string()
             {
                 var expected = @"{
-    ""abc"": ""ABC"", 
+    ""abc"": ""ABC"",
     ""xyz"": ""XYZ""
 }";
                 printer.Assert.PrintEquals(expected, string_string);
@@ -669,8 +670,8 @@ namespace StatePrinter.Tests.IntegrationTests
             {
 
                 var expected = @"""IntDict"": {
-    ""1"": 2, 
-    ""2"": 4, 
+    ""1"": 2,
+    ""2"": 4,
     ""3"": 6
 }";
                 printer.Assert.AreEqual(expected, printer.PrintObject(int_int, "IntDict"));
@@ -699,13 +700,13 @@ namespace StatePrinter.Tests.IntegrationTests
     {
         ""key"": {
             ""Name"": ""Douglas""
-        }, 
+        },
         ""value"": 42
-    }, 
+    },
     {
         ""key"": {
             ""Name"": ""Santa""
-        }, 
+        },
         ""value"": 100
     }
 ]";
@@ -718,15 +719,15 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"[
     {
-        ""_key"": 3, 
+        ""_key"": 3,
         ""_value"": 6
-    }, 
+    },
     {
-        ""_key"": 2, 
+        ""_key"": 2,
         ""_value"": 4
-    }, 
+    },
     {
-        ""_key"": 1, 
+        ""_key"": 1,
         ""_value"": 2
     }
 ]";
@@ -739,21 +740,21 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"{
     ""int_int"": {
-        ""1"": 2, 
-        ""2"": 4, 
+        ""1"": 2,
+        ""2"": 4,
         ""3"": 6
-    }, 
+    },
     ""untyped_int_int"": [
         {
-            ""_key"": 3, 
+            ""_key"": 3,
             ""_value"": 6
-        }, 
+        },
         {
-            ""_key"": 2, 
+            ""_key"": 2,
             ""_value"": 4
-        }, 
+        },
         {
-            ""_key"": 1, 
+            ""_key"": 1,
             ""_value"": 2
         }
     ]

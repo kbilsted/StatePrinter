@@ -229,7 +229,7 @@ namespace StatePrinter.OutputFormatters
             if (isNextScope)
                 return "";
 
-            return ", ";
+            return ",";
         }
 
         bool IsQuoted(string s)

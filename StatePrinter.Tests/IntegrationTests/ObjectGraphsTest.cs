@@ -73,14 +73,14 @@ namespace StatePrinter.Tests.IntegrationTests
             printer.Configuration.OutputFormatter = new JsonStyle(printer.Configuration);
 
             var expected = @"{
-    ""StereoAmplifiers"": null, 
+    ""StereoAmplifiers"": null,
     ""steeringWheel"": {
-        ""Size"": 3, 
+        ""Size"": 3,
         ""Grip"": {
             ""Material"": ""Plastic""
-        }, 
+        },
         ""Weight"": 525
-    }, 
+    },
     ""Brand"": ""Toyota""
 }";
 
@@ -115,12 +115,12 @@ namespace StatePrinter.Tests.IntegrationTests
 {
     Members = new List<Student>()
     {
-        new Student()
+        [0] = new Student()
         {
             name = ""Stan""
             course = -> 0
         }
-        new Student()
+        [1] = new Student()
         {
             name = ""Richy""
             course = -> 0
@@ -139,11 +139,11 @@ namespace StatePrinter.Tests.IntegrationTests
             var expected = @"{
     ""Members"": [
         {
-            ""name"": ""Stan"", 
+            ""name"": ""Stan"",
             ""course"": root
-        }, 
+        },
         {
-            ""name"": ""Richy"", 
+            ""name"": ""Richy"",
             ""course"": root
         }
     ]
@@ -166,13 +166,13 @@ namespace StatePrinter.Tests.IntegrationTests
         Mother = null
         Children = new List<Human>()
         {
-            -> 0
+            [0] = -> 0
         }
         Father = null
     }
     Children = new List<Human>()
     {
-        new Human(), ref: 1
+        [0] = new Human(), ref: 1
         {
             Name = ""son""
             Mother = -> 0
@@ -185,9 +185,9 @@ namespace StatePrinter.Tests.IntegrationTests
                 Mother = null
                 Children = new List<Human>()
                 {
-                    -> 0
-                    -> 1
-                    new Human(), ref: 3
+                    [0] = -> 0
+                    [1] = -> 1
+                    [2] = new Human(), ref: 3
                     {
                         Name = ""daughter""
                         Mother = -> 0
@@ -200,7 +200,7 @@ namespace StatePrinter.Tests.IntegrationTests
                 Father = null
             }
         }
-        -> 3
+        [1] = -> 3
     }
     Father = -> 2
 }";
@@ -216,38 +216,38 @@ namespace StatePrinter.Tests.IntegrationTests
 
             var mother = MakeFamily();
             var expected = @"{
-    ""Name"": ""Mom"", 
+    ""Name"": ""Mom"",
     ""Mother"": {
-        ""Name"": ""grandMom"", 
-        ""Mother"": null, 
+        ""Name"": ""grandMom"",
+        ""Mother"": null,
         ""Children"": [
             root
-        ], 
+        ],
         ""Father"": null
-    }, 
+    },
     ""Children"": [
         {
-            ""Name"": ""son"", 
-            ""Mother"": root, 
-            ""Children"": [], 
+            ""Name"": ""son"",
+            ""Mother"": root,
+            ""Children"": [],
             ""Father"": {
-                ""Name"": ""grandDad"", 
-                ""Mother"": null, 
+                ""Name"": ""grandDad"",
+                ""Mother"": null,
                 ""Children"": [
-                    root, 
-                    root.Children[0], 
+                    root,
+                    root.Children[0],
                     {
-                        ""Name"": ""daughter"", 
-                        ""Mother"": root, 
-                        ""Children"": [], 
+                        ""Name"": ""daughter"",
+                        ""Mother"": root,
+                        ""Children"": [],
                         ""Father"": root.Children[0].Father
                     }
-                ], 
+                ],
                 ""Father"": null
             }
-        }, 
+        },
         root.Children[0].Father.Children[2]
-    ], 
+    ],
     ""Father"": root.Children[0].Father
 }";
             printer.Assert.PrintEquals(expected, mother);

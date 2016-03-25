@@ -42,19 +42,19 @@ namespace StatePrinter.Tests.ExamplesForDocumentation
 
             var expected = @"new VendorAllocation[]()
 {
-    new VendorAllocation()
+    [0] = new VendorAllocation()
     {
         Allocation = 100
         Price = 20
         Share = 20
     }
-    new VendorAllocation()
+    [1] = new VendorAllocation()
     {
         Allocation = 120
         Price = 550
         Share = 30
     }
-    new VendorAllocation()
+    [2] = new VendorAllocation()
     {
         Allocation = 880
         Price = 11

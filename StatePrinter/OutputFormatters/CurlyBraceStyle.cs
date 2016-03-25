@@ -110,10 +110,10 @@ namespace StatePrinter.OutputFormatters
                 return value;
 
             if (token.Field.Index.HasValue)
-                return value;
+                return string.Format("[{0}] = {1}", token.Field.Index, value);
 
             if (token.Field.Key != null)
-                return string.Format("{{{0}, {1}}}", token.Field.Key, value);
+                return string.Format("[{0}] = {1}", token.Field.Key, value);
 
             // Field.Name is empty if the ROOT-element-name has not been supplied.
             if (string.IsNullOrEmpty(token.Field.Name))

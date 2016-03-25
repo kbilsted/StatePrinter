@@ -205,7 +205,7 @@ namespace StatePrinter.Introspection
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
             tokens.Add(StartList);
 
-            long i = 0;
+            int i = 0;
             foreach (var x in enumerable)
             {
                 Introspect(x, new Field(field.Name, null, i++));
@@ -221,9 +221,9 @@ namespace StatePrinter.Introspection
     {
         public readonly string Name;
         public readonly string Key;
-        public readonly long? Index;
+        public readonly int? Index;
 
-        public Field(string name, string key = null, long? index = null)
+        public Field(string name, string key = null, int? index = null)
         {
             Name = name;
             Key = key;

@@ -59,7 +59,7 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 printer.Configuration.SetNewlineDefinition(" ");
                 printer.Configuration.SetIndentIncrement("");
-                var expected = "new Int32[]() { 1 2 3 }";
+                var expected = "new Int32[]() { [0] = 1 [1] = 2 [2] = 3 }";
                 printer.Assert.PrintEquals(expected, new[] { 1, 2, 3 });
             }
 
@@ -68,9 +68,9 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new Int32[]()
 {
-    1
-    2
-    3
+    [0] = 1
+    [1] = 2
+    [2] = 3
 }";
                 printer.Assert.PrintEquals(expected, new int[] { 1, 2, 3 });
             }
@@ -80,9 +80,9 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var expected = @"new String[]()
 {
-    """"
-    null
-    ""42""
+    [0] = """"
+    [1] = null
+    [2] = ""42""
 }";
 
                 printer.Assert.PrintEquals(expected, new[] { "", null, "42" });
@@ -96,7 +96,7 @@ namespace StatePrinter.Tests.IntegrationTests
 
                 var expected = @"new Dictionary<Person, Address>()
 {
-    new KeyValuePair<Person, Address>()
+    [0] = new KeyValuePair<Person, Address>()
     {
         key = new Person()
         {
@@ -145,7 +145,7 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 printer.Configuration.SetNewlineDefinition(" ");
                 printer.Configuration.SetIndentIncrement("");
-                var expected = "[ 1,  2,  3 ]";
+                var expected = "[ 1, 2, 3 ]";
                 printer.Assert.PrintEquals(expected, new[] { 1, 2, 3 });
             }
 
@@ -153,8 +153,8 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray()
             {
                 var expected = @"[
-    1, 
-    2, 
+    1,
+    2,
     3
 ]";
                 printer.Assert.PrintEquals(expected, new int[] { 1, 2, 3 });
@@ -164,8 +164,8 @@ namespace StatePrinter.Tests.IntegrationTests
             public void StringArrayWithNulls()
             {
                 var expected = @"[
-    """", 
-    null, 
+    """",
+    null,
     ""42""
 ]";
 
@@ -179,14 +179,14 @@ namespace StatePrinter.Tests.IntegrationTests
                 var expected = @"[
     {
         ""key"": {
-            ""Age"": 37, 
-            ""FirstName"": ""Klaus"", 
+            ""Age"": 37,
+            ""FirstName"": ""Klaus"",
             ""LastName"": ""Meyer""
-        }, 
+        },
         ""value"": {
-            ""Street"": ""Fairway Dr."", 
-            ""StreetNumber"": 50267, 
-            ""Zip"": ""CA 91601"", 
+            ""Street"": ""Fairway Dr."",
+            ""StreetNumber"": 50267,
+            ""Zip"": ""CA 91601"",
             ""Country"": USA
         }
     }
