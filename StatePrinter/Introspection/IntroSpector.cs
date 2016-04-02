@@ -34,8 +34,10 @@ namespace StatePrinter.Introspection
     {
         static readonly Token Startscope = new Token(TokenType.StartScope);
         static readonly Token Endscope = new Token(TokenType.EndScope);
-        static readonly Token StartEnumeration = new Token(TokenType.StartEnumeration);
-        static readonly Token EndEnumeration = new Token(TokenType.EndEnumeration);
+        static readonly Token StartList = new Token(TokenType.StartList);
+        static readonly Token EndList = new Token(TokenType.EndList);
+        static readonly Token StartDict = new Token(TokenType.StartDict);
+        static readonly Token EndDict = new Token(TokenType.EndDict);
 
         readonly Configuration configuration;
         readonly HarvestInfoCache harvestCache;
@@ -172,7 +174,11 @@ namespace StatePrinter.Introspection
             if (!isKeyTypeSimple)
                 return false; // print as enumerable which is more verbose
 
-            tokens.Add(StartEnumeration);
+            Reference optionReferenceInfo;
+            seenBefore.TryGetValue(source, out optionReferenceInfo);
+
+            tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
+            tokens.Add(StartDict);
 
             var keys = source.Keys;
             foreach (var key in keys)
@@ -182,7 +188,7 @@ namespace StatePrinter.Introspection
                 var outputfieldName = new Field(field.Name, keyValue);
                 Introspect(valueValue, outputfieldName);
             }
-            tokens.Add(EndEnumeration);
+            tokens.Add(EndDict);
 
             return true;
         }
@@ -197,30 +203,56 @@ namespace StatePrinter.Introspection
             seenBefore.TryGetValue(source, out optionReferenceInfo);
 
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
-            tokens.Add(StartEnumeration);
+            tokens.Add(StartList);
 
             int i = 0;
             foreach (var x in enumerable)
             {
-                var outputFieldName = new Field(field.Name, "" + i++);
-                Introspect(x, outputFieldName);
+                Introspect(x, new Field(field.Name, null, i++));
             }
-            tokens.Add(EndEnumeration);
+            tokens.Add(EndList);
 
             return true;
         }
     }
 
 
-    public class Field
+    public class Field : IEquatable<Field>
     {
         public readonly string Name;
-        public readonly string SimpleKeyInArrayOrDictionary;
+        public readonly string Key;
+        public readonly int? Index;
 
-        public Field(string name, string simpleKeyInArrayOrDictionary = null)
+        public Field(string name, string key = null, int? index = null)
         {
             Name = name;
-            SimpleKeyInArrayOrDictionary = simpleKeyInArrayOrDictionary;
+            Key = key;
+            Index = index;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Field);
+        }
+
+        public bool Equals(Field other)
+        {
+            return other != null
+                && Name == other.Name
+                && Key == other.Key
+                && Index == other.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = 131;
+                hashCode = (hashCode * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Key != null ? Key.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Index != null ? Index.Value.GetHashCode() : 0);
+                return hashCode;
+            }
         }
     }
 }

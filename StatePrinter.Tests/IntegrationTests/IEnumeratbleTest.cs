@@ -46,7 +46,10 @@ namespace StatePrinter.Tests.IntegrationTests
             [Test]
             public void EmptyIntArray()
             {
-                Assert.AreEqual("new Int32[]()", printer.PrintObject(new int[0]));
+                var expected = @"new Int32[]()
+{
+}";
+                printer.Assert.PrintEquals(expected, new int[0]);
             }
 
 
@@ -55,25 +58,34 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
-                printer.Assert.AreEqual("new Int32[]() [0] = 1 [1] = 2 [2] = 3", printer.PrintObject(new[] { 1, 2, 3 }));
+                printer.Configuration.SetIndentIncrement("");
+                var expected = "new Int32[]() { [0] = 1 [1] = 2 [2] = 3 }";
+                printer.Assert.PrintEquals(expected, new[] { 1, 2, 3 });
             }
 
             [Test]
             public void IntArray()
             {
-                Assert.AreEqual(@"new Int32[]()
-[0] = 1
-[1] = 2
-[2] = 3", printer.PrintObject(new int[] { 1, 2, 3 }));
+                var expected = @"new Int32[]()
+{
+    [0] = 1
+    [1] = 2
+    [2] = 3
+}";
+                printer.Assert.PrintEquals(expected, new int[] { 1, 2, 3 });
             }
 
             [Test]
             public void StringArrayWithNulls()
             {
-                Assert.AreEqual(@"new String[]()
-[0] = """"
-[1] = null
-[2] = ""42""", printer.PrintObject(new[] { "", null, "42" }));
+                var expected = @"new String[]()
+{
+    [0] = """"
+    [1] = null
+    [2] = ""42""
+}";
+
+                printer.Assert.PrintEquals(expected, new[] { "", null, "42" });
             }
 
 
@@ -83,23 +95,25 @@ namespace StatePrinter.Tests.IntegrationTests
                 var d = MakeDictionary();
 
                 var expected = @"new Dictionary<Person, Address>()
-[0] = new KeyValuePair<Person, Address>()
 {
-    key = new Person()
+    [0] = new KeyValuePair<Person, Address>()
     {
-        Age = 37
-        FirstName = ""Klaus""
-        LastName = ""Meyer""
-    }
-    value = new Address()
-    {
-        Street = ""Fairway Dr.""
-        StreetNumber = 50267
-        Zip = ""CA 91601""
-        Country = USA
+        key = new Person()
+        {
+            Age = 37
+            FirstName = ""Klaus""
+            LastName = ""Meyer""
+        }
+        value = new Address()
+        {
+            Street = ""Fairway Dr.""
+            StreetNumber = 50267
+            Zip = ""CA 91601""
+            Country = USA
+        }
     }
 }";
-                Assert.AreEqual(expected, printer.PrintObject(d));
+                printer.Assert.PrintEquals(expected, d);
             }
         }
 
@@ -130,18 +144,18 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
-                var expected = " [     { 0 : 1 },     { 1 : 2 },     { 2 : 3 } ]";
-                printer.Assert.AreEqual(expected, printer.PrintObject(new[] { 1, 2, 3 }));
+                printer.Configuration.SetIndentIncrement("");
+                var expected = "[ 1, 2, 3 ]";
+                printer.Assert.PrintEquals(expected, new[] { 1, 2, 3 });
             }
 
             [Test]
             public void IntArray()
             {
-                var expected = @"
-[
-    { 0 : 1 },
-    { 1 : 2 },
-    { 2 : 3 }
+                var expected = @"[
+    1,
+    2,
+    3
 ]";
                 printer.Assert.PrintEquals(expected, new int[] { 1, 2, 3 });
             }
@@ -149,11 +163,10 @@ namespace StatePrinter.Tests.IntegrationTests
             [Test]
             public void StringArrayWithNulls()
             {
-                var expected = @"
-[
-    { 0 : """" },
-    { 1 : null },
-    { 2 : ""42"" }
+                var expected = @"[
+    """",
+    null,
+    ""42""
 ]";
 
                 printer.Assert.PrintEquals(expected, new[] { "", null, "42" });
@@ -163,21 +176,18 @@ namespace StatePrinter.Tests.IntegrationTests
             [Test]
             public void Dictionary_person_address()
             {
-                var expected = @"
-[
+                var expected = @"[
     {
-        ""key"" :
-        {
-            ""Age"" : 37,
-            ""FirstName"" : ""Klaus"",
-            ""LastName"" : ""Meyer""
-        }
-        ""value"" :
-        {
-            ""Street"" : ""Fairway Dr."",
-            ""StreetNumber"" : 50267,
-            ""Zip"" : ""CA 91601"",
-            ""Country"" : USA
+        ""key"": {
+            ""Age"": 37,
+            ""FirstName"": ""Klaus"",
+            ""LastName"": ""Meyer""
+        },
+        ""value"": {
+            ""Street"": ""Fairway Dr."",
+            ""StreetNumber"": 50267,
+            ""Zip"": ""CA 91601"",
+            ""Country"": USA
         }
     }
 ]";
@@ -207,8 +217,8 @@ namespace StatePrinter.Tests.IntegrationTests
             public void EmptyIntArray()
             {
 
-                var expected = @"<ROOT type='Int32[]'>
-<Enumeration></Enumeration>"; 
+                var expected = @"<Root type='Int32[]'>
+</Root>";
                 printer.Assert.PrintEquals(expected, new int[0]);
             }
 
@@ -218,36 +228,30 @@ namespace StatePrinter.Tests.IntegrationTests
             public void IntArray_oneline()
             {
                 printer.Configuration.SetNewlineDefinition(" ");
-                var expected = "<ROOT type='Int32[]'> <ROOT>     <Enumeration>     <key>0</key><value>1</value>     <key>1</key><value>2</value>     <key>2</key><value>3</value>     </Enumeration> </ROOT>";
-                printer.Assert.AreEqual(expected, printer.PrintObject(new[] { 1, 2, 3 }));
+                printer.Configuration.SetIndentIncrement("");
+                var expected = "<Root type='Int32[]'> <Element>1</Element> <Element>2</Element> <Element>3</Element> </Root>";
+                printer.Assert.PrintEquals(expected, new[] { 1, 2, 3 });
             }
 
             [Test]
             public void IntArray()
             {
-                var expected = @"<ROOT type='Int32[]'>
-<ROOT>
-    <Enumeration>
-    <key>0</key><value>1</value>
-    <key>1</key><value>2</value>
-    <key>2</key><value>3</value>
-    </Enumeration>
-</ROOT>";
+                var expected = @"<Root type='Int32[]'>
+    <Element>1</Element>
+    <Element>2</Element>
+    <Element>3</Element>
+</Root>";
                 printer.Assert.PrintEquals(expected, new int[] { 1, 2, 3 });
             }
 
             [Test]
             public void StringArrayWithNulls()
             {
-                var expected = @"<ROOT type='String[]'>
-<ROOT>
-    <Enumeration>
-    <key>0</key><value>""""</value>
-    <key>1</key><value>null</value>
-    <key>2</key><value>""42""</value>
-    </Enumeration>
-</ROOT>";
-
+                var expected = @"<Root type='String[]'>
+    <Element></Element>
+    <Element>null</Element>
+    <Element>42</Element>
+</Root>";
 
                 printer.Assert.PrintEquals(expected, new[] { "", null, "42" });
             }
@@ -259,25 +263,23 @@ namespace StatePrinter.Tests.IntegrationTests
             {
                 var d = MakeDictionary();
 
-                var expected = @"<ROOT type='Dictionary(Person, Address)'>
-    <Enumeration>
-    <ROOT type='KeyValuePair(Person, Address)'>
+                var expected = @"<Root type='Dictionary(Person, Address)'>
+    <Element type='KeyValuePair(Person, Address)'>
         <key type='Person'>
             <Age>37</Age>
-            <FirstName>""Klaus""</FirstName>
-            <LastName>""Meyer""</LastName>
+            <FirstName>Klaus</FirstName>
+            <LastName>Meyer</LastName>
         </key>
         <value type='Address'>
-            <Street>""Fairway Dr.""</Street>
+            <Street>Fairway Dr.</Street>
             <StreetNumber>50267</StreetNumber>
-            <Zip>""CA 91601""</Zip>
+            <Zip>CA 91601</Zip>
             <Country>USA</Country>
         </value>
-    </ROOT>
-    </Enumeration>
-</ROOT>";
+    </Element>
+</Root>";
 
-                printer.Assert.AreEqual(expected, printer.PrintObject(d));
+                printer.Assert.PrintEquals(expected, d);
             }
 
 

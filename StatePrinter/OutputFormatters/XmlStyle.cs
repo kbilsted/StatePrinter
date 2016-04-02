@@ -23,6 +23,7 @@ using System.Linq;
 
 using StatePrinter.Configurations;
 using StatePrinter.Introspection;
+using System.Security;
 
 namespace StatePrinter.OutputFormatters
 {
@@ -53,15 +54,11 @@ namespace StatePrinter.OutputFormatters
         {
             var sb = new IndentingStringBuilder(configuration);
 
-            Token previous = null;
             var endTags = new Stack<string>();
             int pos = 0;
-            for (int i = 0; i < tokens.Count; i++)
+            foreach (Token token in tokens)
             {
-                var token = tokens[i];
-                int skip = MakeTokenString(tokens, pos++, sb, endTags, previous);
-                previous = token;
-                i += skip;
+                MakeTokenString(token, sb, endTags);
             }
 
             if (endTags.Any())
@@ -71,78 +68,33 @@ namespace StatePrinter.OutputFormatters
             return sb.ToString();
         }
 
-        int  MakeTokenString(List<Token> tokens, int pos, IndentingStringBuilder sb, Stack<string> endTags, Token previous)
+        void MakeTokenString(Token token, IndentingStringBuilder sb, Stack<string> endTags)
         {
-            int skip = 0;
-            Token token = tokens[pos];
-            string tagName = GetTagName(token);
-
+            string tagName;
+            string keyAttr;
             switch (token.Tokenkind)
             {
                 case TokenType.StartScope:
+                case TokenType.StartList:
+                case TokenType.StartDict:
                     sb.Indent();
-                    endTags.Push(GetTagName(previous));
                     break;
 
                 case TokenType.EndScope:
+                case TokenType.EndList:
+                case TokenType.EndDict:
                     sb.DeIndent();
                     sb.AppendFormatLine("</{0}>", endTags.Pop());
                     break;
 
-                case TokenType.StartEnumeration:
-                    if (pos + 1 < tokens.Count)
-                    {
-                        var nextToken = tokens[pos + 1];
-
-                        if (nextToken.Tokenkind == TokenType.EndEnumeration)
-                        {
-                            sb.AppendFormatLine("<Enumeration></Enumeration>");
-                            skip++;
-                            break;
-                        }
-
-                        if (nextToken.Tokenkind == TokenType.SimpleFieldValue
-                            && nextToken.Field.SimpleKeyInArrayOrDictionary != null)
-                        {
-                            tagName = GetTagName(nextToken);
-                            endTags.Push(tagName);
-                            sb.AppendFormatLine("<{0}>", tagName);
-                            sb.Indent();
-                            sb.AppendFormatLine("<Enumeration>");
-                            break;
-                        }
-                    }
-                    
-                    endTags.Push(previous == null ? null : GetTagName(previous));
-                    sb.Indent();
-                    sb.AppendFormatLine("<Enumeration>");
-                    break;
-
-                case TokenType.EndEnumeration:
-                    sb.AppendFormatLine("</Enumeration>");
-                    sb.DeIndent();
-                    var endtag = endTags.Pop();
-                    if(endtag != null)
-                       sb.AppendFormatLine("</{0}>", endtag);
-                    break;
-
                 case TokenType.SimpleFieldValue:
-                    if (token.Field.SimpleKeyInArrayOrDictionary != null)
-                    {
-                        sb.AppendFormatLine(
-                            "<key>{0}</key><value>{1}</value>",
-                            token.Field.SimpleKeyInArrayOrDictionary,
-                            token.Value);
-                    }
-                    else
-                    {
-                        sb.AppendFormatLine("<{0}>{1}</{0}>", tagName, token.Value);
-                    }
+                    tagName = TagName(token, out keyAttr);
+                    sb.AppendFormatLine("<{0}{1}>{2}</{0}>", tagName, keyAttr, Unquote(token.Value));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
-                    var seenBeforeReference = string.Format(" ref='{0}'", token.ReferenceNo.Number);
-                    sb.AppendFormatLine("<{0}{1} />", tagName, seenBeforeReference);
+                    tagName = TagName(token, out keyAttr);
+                    sb.AppendFormatLine("<{0}{1} ref='{2}'/>", tagName, keyAttr, token.ReferenceNo.Number);
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
@@ -152,22 +104,47 @@ namespace StatePrinter.OutputFormatters
                     var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType)
                         .Replace('<', '(')
                         .Replace('>', ')');
-                    sb.AppendFormatLine("<{0} type='{1}'{2}>", tagName, fieldType, optionReferenceInfo);
+                    tagName = TagName(token, out keyAttr);
+                    endTags.Push(tagName);
+                    sb.AppendFormatLine("<{0}{1} type='{2}'{3}>", tagName, keyAttr, fieldType, optionReferenceInfo);
                     break;
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            return skip;
         }
 
-        private string GetTagName(Token token)
+        private string TagName(Token token, out string keyAttr)
         {
-            // fieldname is empty if the ROOT-element-name has not been supplied
-            if (token.Field == null || string.IsNullOrEmpty(token.Field.Name))
-                return "ROOT"; // Cannot be empyt like the other styles since all tags must have a name
-            return token.Field.Name;
+            string tag = null;
+            string key = null;
+            if (token.Field != null && token.Field.Key != null)
+            {
+                tag = "Element";
+                key = token.Field.Key;
+            }
+            else if (token.Field != null && token.Field.Index.HasValue)
+            {
+                tag = "Element";
+            }
+            else if (token.Field != null && !string.IsNullOrEmpty(token.Field.Name))
+            {
+                tag = token.Field.Name;
+            }
+            else if (string.IsNullOrEmpty(tag))
+            {
+                // Cannot be empty like with the other styles since all tags must have a name.
+                tag = "Root";
+            }
+
+            keyAttr = key == null ? "" : string.Format(" key='{0}'", SecurityElement.Escape(Unquote(key)));
+            return tag;
+        }
+
+        private string Unquote(string s)
+        {
+            return s.Length >= 2 && s.StartsWith("\"") && s.EndsWith("\"")
+                ? s.Substring(1, s.Length - 2) : s;
         }
     }
 }

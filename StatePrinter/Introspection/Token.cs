@@ -89,9 +89,12 @@ namespace StatePrinter.Introspection
 
         public override string ToString()
         {
-            var name =  Field == null ? "" : Field.Name;
-            var simpleKeyInArrayOrDictionary = Field == null ? "" : Field.SimpleKeyInArrayOrDictionary;
-            return string.Format("{0}: {1} {2} = {3}({4})", Tokenkind, FieldType, name, Value, simpleKeyInArrayOrDictionary);
+            if (Field == null)
+                return string.Format("{0}: {1} = {2}", Tokenkind, FieldType, Value);
+            string name = string.IsNullOrEmpty(Field.Name) ? "" : " " + Field.Name;
+            string key = Field.Index.HasValue ? Field.Index.Value.ToString() : Field.Key;
+            string subscript = key == null ? "" : "[" + key + "]";
+            return string.Format("{0}: {1}{2}{3} = {4}", Tokenkind, FieldType, name, subscript, Value);
         }
     }
 }

@@ -33,10 +33,12 @@ namespace StatePrinter.Tests.IntegrationTests
         class ArrayTestCurly
         {
             string expected = @"new Int32[,]()
-[0] = 1
-[1] = 2
-[2] = 3
-[3] = 4";
+{
+    [0] = 1
+    [1] = 2
+    [2] = 3
+    [3] = 4
+}";
 
             [Test]
             public void TwoDimArray()
@@ -65,12 +67,11 @@ namespace StatePrinter.Tests.IntegrationTests
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetOutputFormatter(new JsonStyle(printer.Configuration));
 
-                var expected = @"
-[
-    { 0 : 1 },
-    { 1 : 2 },
-    { 2 : 3 },
-    { 3 : 4 }
+                var expected = @"[
+    1,
+    2,
+    3,
+    4
 ]";
                 printer.Assert.PrintEquals(expected, twoDimArray);
             }
@@ -86,15 +87,12 @@ namespace StatePrinter.Tests.IntegrationTests
                 var printer = TestHelper.CreateTestPrinter();
                 printer.Configuration.SetOutputFormatter(new XmlStyle(printer.Configuration));
 
-                var expected = @"<ROOT type='Int32[,]'>
-<ROOT>
-    <Enumeration>
-    <key>0</key><value>1</value>
-    <key>1</key><value>2</value>
-    <key>2</key><value>3</value>
-    <key>3</key><value>4</value>
-    </Enumeration>
-</ROOT>";
+                var expected = @"<Root type='Int32[,]'>
+    <Element>1</Element>
+    <Element>2</Element>
+    <Element>3</Element>
+    <Element>4</Element>
+</Root>";
                 printer.Assert.PrintEquals(expected, twoDimArray);
             }
         }
