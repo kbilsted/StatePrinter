@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using StatePrinter.FieldHarvesters;
-using StatePrinter.OutputFormatters;
-using StatePrinter.TestAssistance;
-using StatePrinter.ValueConverters;
+using StatePrinting.FieldHarvesters;
+using StatePrinting.OutputFormatters;
+using StatePrinting.TestAssistance;
+using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Configurations
+namespace StatePrinting.Configurations
 {
     /// <summary>
     /// The configuration for the object printer.

@@ -18,13 +18,12 @@
 // under the License.
 
 using System;
+using StatePrinting.FieldHarvesters;
+using StatePrinting.OutputFormatters;
+using StatePrinting.TestAssistance;
+using StatePrinting.ValueConverters;
 
-using StatePrinter.FieldHarvesters;
-using StatePrinter.OutputFormatters;
-using StatePrinter.TestAssistance;
-using StatePrinter.ValueConverters;
-
-namespace StatePrinter.Configurations
+namespace StatePrinting.Configurations
 {
     /// <summary>
     /// Helper for configuration

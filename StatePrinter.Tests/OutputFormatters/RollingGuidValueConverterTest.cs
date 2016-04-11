@@ -19,9 +19,7 @@
 using System;
 
 using NUnit.Framework;
-
-using StatePrinter.Configurations;
-using StatePrinter.ValueConverters;
+using StatePrinting.ValueConverters;
 
 namespace StatePrinter.Tests.OutputFormatters
 {

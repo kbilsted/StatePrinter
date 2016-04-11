@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     /// <summary>
     /// Harvest all fields, public and private. 

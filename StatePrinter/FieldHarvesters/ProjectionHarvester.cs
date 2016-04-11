@@ -21,10 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using StatePrinting.Configurations;
 
-using StatePrinter.Configurations;
-
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     /// <summary>
     /// Harvest only selected fields from types configured by lambdas. 

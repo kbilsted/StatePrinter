@@ -23,8 +23,7 @@ using System.Linq;
 using System.Text;
 
 using NUnit.Framework;
-
-using StatePrinter.TestAssistance;
+using StatePrinting.TestAssistance;
 
 namespace StatePrinter.Tests.IntegrationTests
 {

@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     /// <summary>
     /// Harvest only public fields and properties from types.

@@ -18,8 +18,9 @@
 // under the License.
 
 using NUnit.Framework;
-using StatePrinter.Configurations;
-using StatePrinter.FieldHarvesters;
+using StatePrinting;
+using StatePrinting.Configurations;
+using StatePrinting.FieldHarvesters;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {

@@ -19,9 +19,9 @@
 using System.Globalization;
 
 using NUnit.Framework;
-
-using StatePrinter.TestAssistance;
-using StatePrinter.ValueConverters;
+using StatePrinting;
+using StatePrinting.TestAssistance;
+using StatePrinting.ValueConverters;
 
 namespace StatePrinter.Tests.ExamplesForDocumentation
 {

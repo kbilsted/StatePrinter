@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     /// <summary>
     /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.

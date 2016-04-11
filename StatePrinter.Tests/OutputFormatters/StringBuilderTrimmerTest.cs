@@ -21,8 +21,7 @@ using System;
 using System.Text;
 
 using NUnit.Framework;
-
-using StatePrinter.OutputFormatters;
+using StatePrinting.OutputFormatters;
 
 namespace StatePrinter.Tests.OutputFormatters
 {

@@ -18,9 +18,9 @@
 // under the License.
 
 using System;
-using StatePrinter.Configurations;
+using StatePrinting.Configurations;
 
-namespace StatePrinter.ValueConverters
+namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// Handles the printing of <see cref="DateTime"/> and <see cref="DateTimeOffset"/>

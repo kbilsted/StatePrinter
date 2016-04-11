@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StatePrinter.ValueConverters
+namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// Handles the printing of guids, where each guid is transformed into a very readable form by 

@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace StatePrinter.Introspection
+namespace StatePrinting.Introspection
 {
     /// <summary>
     /// Assume that types don't change at run-time. Cache harvested information.

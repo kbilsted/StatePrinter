@@ -17,11 +17,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
 using System.Text;
-using StatePrinter.Configurations;
+using StatePrinting.Configurations;
 
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     class IndentingStringBuilder
     {

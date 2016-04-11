@@ -20,7 +20,7 @@
 using System;
 using System.Globalization;
 using NUnit.Framework;
-using StatePrinter.Configurations;
+using StatePrinting;
 
 namespace StatePrinter.Tests.IntegrationTests
 {

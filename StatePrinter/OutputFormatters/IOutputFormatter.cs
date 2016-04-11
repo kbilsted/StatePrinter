@@ -18,9 +18,9 @@
 // under the License.
 
 using System.Collections.Generic;
-using StatePrinter.Introspection;
+using StatePrinting.Introspection;
 
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     public interface IOutputFormatter
     {

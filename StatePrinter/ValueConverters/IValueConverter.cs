@@ -19,7 +19,7 @@
 
 using System;
 
-namespace StatePrinter.ValueConverters
+namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// A handler that is able to convert a value of specific types to on a single line string.

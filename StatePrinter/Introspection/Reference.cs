@@ -19,7 +19,7 @@
 
 using System;
 
-namespace StatePrinter.Introspection
+namespace StatePrinting.Introspection
 {
     /// <summary>
     /// A numeric value denoting an already outputted object that is referred to by current object

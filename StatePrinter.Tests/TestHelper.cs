@@ -18,9 +18,9 @@
 // under the License.
 
 using System.Globalization;
-
-using StatePrinter.Configurations;
-using StatePrinter.TestAssistance;
+using StatePrinting;
+using StatePrinting.Configurations;
+using StatePrinting.TestAssistance;
 
 namespace StatePrinter.Tests
 {

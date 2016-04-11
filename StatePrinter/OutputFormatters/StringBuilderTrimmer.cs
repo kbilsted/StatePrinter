@@ -19,7 +19,7 @@
 
 using System.Text;
 
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     public class StringBuilderTrimmer
     {

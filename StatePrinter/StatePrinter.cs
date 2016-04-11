@@ -16,14 +16,14 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 using System;
+using StatePrinting.Configurations;
+using StatePrinting.FieldHarvesters;
+using StatePrinting.Introspection;
+using StatePrinting.TestAssistance;
 
-using StatePrinter.Configurations;
-using StatePrinter.FieldHarvesters;
-using StatePrinter.Introspection;
-using StatePrinter.TestAssistance;
-
-namespace StatePrinter
+namespace StatePrinting
 {
     /// <summary>
     /// A class able to dump an object graph to a string.
@@ -125,25 +125,6 @@ namespace StatePrinter
         ~Stateprinter()
         {
             harvestCache.Dispose();
-        }
-    }
-
-
-
-    /// <summary>
-    /// WARNING! This is a legacy stub and will be removed in future releases. Instead use the  <see cref="Stateprinter"/>
-    /// </summary>
-    [Obsolete]
-    public class StatePrinter : Stateprinter
-    {
-        public StatePrinter()
-            : base()
-        {
-        }
-
-        public StatePrinter(Configuration configuration)
-            : base(configuration)
-        {
         }
     }
 }

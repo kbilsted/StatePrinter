@@ -20,10 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StatePrinting.Introspection;
 
-using StatePrinter.Introspection;
-
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     public class UnusedReferencesTokenFilter
     {

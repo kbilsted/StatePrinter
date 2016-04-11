@@ -19,7 +19,7 @@
 
 using System;
 
-namespace StatePrinter.ValueConverters
+namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// Handles the printing of <see cref="string"/> 

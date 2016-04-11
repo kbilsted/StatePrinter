@@ -21,8 +21,9 @@ using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
-using StatePrinter.Configurations;
-using StatePrinter.OutputFormatters;
+using StatePrinting;
+using StatePrinting.Configurations;
+using StatePrinting.OutputFormatters;
 
 namespace StatePrinter.Tests.PerformanceTests
 {

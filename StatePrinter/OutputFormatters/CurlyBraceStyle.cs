@@ -19,11 +19,10 @@
 
 using System;
 using System.Collections.Generic;
+using StatePrinting.Configurations;
+using StatePrinting.Introspection;
 
-using StatePrinter.Configurations;
-using StatePrinter.Introspection;
-
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     /// <summary>
     /// Formatting the tokens to a curly-brace style representation.

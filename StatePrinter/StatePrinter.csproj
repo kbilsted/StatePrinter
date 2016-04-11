@@ -7,7 +7,7 @@
     <ProjectGuid>{10181C0E-31FF-48B3-A293-D9ED83D38C8D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StatePrinter</RootNamespace>
+    <RootNamespace>StatePrinting</RootNamespace>
     <AssemblyName>StatePrinter</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

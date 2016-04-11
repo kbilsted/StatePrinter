@@ -18,9 +18,9 @@
 // under the License.
 
 using System;
-using StatePrinter.OutputFormatters;
+using StatePrinting.OutputFormatters;
 
-namespace StatePrinter.Introspection
+namespace StatePrinting.Introspection
 {
     /// <summary>
     /// The result of introspection. 

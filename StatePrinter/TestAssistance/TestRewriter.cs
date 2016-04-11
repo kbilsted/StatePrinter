@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace StatePrinter.TestAssistance
+namespace StatePrinting.TestAssistance
 {
     
     public class UnitTestLocationInfo

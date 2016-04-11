@@ -17,7 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-namespace StatePrinter.Configurations
+namespace StatePrinting.Configurations
 {
     public class LegacyBehaviour
     {

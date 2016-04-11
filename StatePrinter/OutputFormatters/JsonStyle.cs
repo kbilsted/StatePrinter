@@ -20,10 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StatePrinter.Configurations;
-using StatePrinter.Introspection;
+using StatePrinting.Configurations;
+using StatePrinting.Introspection;
 
-namespace StatePrinter.OutputFormatters
+namespace StatePrinting.OutputFormatters
 {
     /// <summary>
     /// Formatting the tokens to a JSON style representation.

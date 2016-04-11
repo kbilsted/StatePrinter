@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StatePrinter.FieldHarvesters;
+using StatePrinting.FieldHarvesters;
 
-namespace StatePrinter.Introspection
+namespace StatePrinting.Introspection
 {
     /// <summary>
     /// For a given type we hold the relevant fields with regards to printing, and functors for retrieving the content of the fields. 

@@ -18,8 +18,7 @@
 // under the License.
 
 using NUnit.Framework;
-
-using StatePrinter.Introspection;
+using StatePrinting.Introspection;
 
 namespace StatePrinter.Tests.Introspection
 {

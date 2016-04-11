@@ -18,12 +18,12 @@
 // under the License.
 
 using System;
-
-using StatePrinter.TestAssistance;
 using NUnit.Framework;
 
-using Is = StatePrinter.TestAssistance.Is;
+using Is = StatePrinting.TestAssistance.Is;
 using StatePrinter.Tests.Mocks;
+using StatePrinting;
+using StatePrinting.TestAssistance;
 
 namespace StatePrinter.Tests.TestingAssistance
 {

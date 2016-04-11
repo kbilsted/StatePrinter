@@ -20,7 +20,7 @@
 using System;
 using System.Reflection;
 
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     /// <summary>
     /// For each type we print, we hold the reflected and the readable version of the fields

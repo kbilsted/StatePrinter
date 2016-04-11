@@ -19,7 +19,7 @@
 
 using System;
 
-namespace StatePrinter.TestAssistance
+namespace StatePrinting.TestAssistance
 {
     public class EnvironmentReader
     {

@@ -17,7 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using StatePrinter.TestAssistance;
+using StatePrinting.TestAssistance;
 
 namespace StatePrinter.Tests.Mocks
 {

@@ -20,8 +20,7 @@
 using System;
 
 using NUnit.Framework;
-
-using StatePrinter.TestAssistance;
+using StatePrinting.TestAssistance;
 
 namespace StatePrinter.Tests.TestingAssistance
 {

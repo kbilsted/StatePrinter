@@ -20,9 +20,9 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using StatePrinter.Configurations;
-using StatePrinter.FieldHarvesters;
-using StatePrinter.ValueConverters;
+using StatePrinting.Configurations;
+using StatePrinting.FieldHarvesters;
+using StatePrinting.ValueConverters;
 
 namespace StatePrinter.Tests.Configurations
 {

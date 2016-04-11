@@ -18,6 +18,7 @@
 // under the License.
 
 using NUnit.Framework;
+using StatePrinting;
 
 namespace StatePrinter.Tests.IntegrationTests
 {

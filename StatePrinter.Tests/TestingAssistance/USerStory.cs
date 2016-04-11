@@ -20,7 +20,7 @@
 
 using NUnit.Framework;
 
-using Is = StatePrinter.TestAssistance.Is;
+using Is = StatePrinting.TestAssistance.Is;
 
 namespace StatePrinter.Tests.TestingAssistance
 {

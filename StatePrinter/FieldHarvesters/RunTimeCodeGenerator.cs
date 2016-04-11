@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace StatePrinter.FieldHarvesters
+namespace StatePrinting.FieldHarvesters
 {
     public class RunTimeCodeGeneratorCache : IRunTimeCodeGenerator
     {

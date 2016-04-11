@@ -21,9 +21,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-
-using StatePrinter.OutputFormatters;
 using StatePrinter.Tests.Introspection;
+using StatePrinting;
+using StatePrinting.OutputFormatters;
 
 namespace StatePrinter.Tests.IntegrationTests
 {

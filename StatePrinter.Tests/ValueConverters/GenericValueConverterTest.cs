@@ -18,8 +18,7 @@
 // under the License.
 
 using NUnit.Framework;
-
-using StatePrinter.ValueConverters;
+using StatePrinting.ValueConverters;
 
 namespace StatePrinter.Tests.ValueConverters
 {

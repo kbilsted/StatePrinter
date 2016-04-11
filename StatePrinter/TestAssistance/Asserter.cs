@@ -18,10 +18,10 @@
 // under the License.
 
 using System;
-using StatePrinter.Configurations;
-using StatePrinter.FieldHarvesters;
+using StatePrinting.Configurations;
+using StatePrinting.FieldHarvesters;
 
-namespace StatePrinter.TestAssistance
+namespace StatePrinting.TestAssistance
 {
     /// <summary>
     /// How to call the testing framework the user is using

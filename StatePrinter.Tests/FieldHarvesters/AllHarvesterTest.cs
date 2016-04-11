@@ -19,8 +19,8 @@
 
 using System.Linq;
 using NUnit.Framework;
-using StatePrinter.FieldHarvesters;
 using StatePrinter.Tests.IntegrationTests;
+using StatePrinting.FieldHarvesters;
 
 namespace StatePrinter.Tests.FieldHarvesters
 {

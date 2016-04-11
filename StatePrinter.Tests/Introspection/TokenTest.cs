@@ -21,9 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using NUnit.Framework;
-
-using StatePrinter.Introspection;
-using StatePrinter.OutputFormatters;
+using StatePrinting.Introspection;
+using StatePrinting.OutputFormatters;
 
 namespace StatePrinter.Tests.Introspection
 {

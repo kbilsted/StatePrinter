@@ -16,9 +16,10 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 using System;
 
-namespace StatePrinter.ValueConverters
+namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// A general converter, taking a lambda as configuration

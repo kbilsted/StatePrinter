@@ -21,11 +21,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using StatePrinter.Configurations;
-using StatePrinter.FieldHarvesters;
-using StatePrinter.ValueConverters;
+using StatePrinting.Configurations;
+using StatePrinting.FieldHarvesters;
+using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Introspection
+namespace StatePrinting.Introspection
 {
     /// <summary>
     /// Is responsible for traversing an object graph and returning a stream of tokens
