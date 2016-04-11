@@ -32,8 +32,6 @@ namespace StatePrinting.Tests.IntegrationTests
         public void Instantiate()
         {
             Assert.Throws<ArgumentNullException>(() => new Stateprinter(null));
-            Assert.Throws<ArgumentNullException>(() => new StatePrinter(null));
-            
         }
     }
 

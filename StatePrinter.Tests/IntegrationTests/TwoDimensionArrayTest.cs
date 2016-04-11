@@ -48,7 +48,7 @@ namespace StatePrinting.Tests.IntegrationTests
             [Test]
             public void TwoDimArray_LegacyApi()
             {
-                var printer = new StatePrinter();
+                var printer = new Stateprinter();
                 printer.Configuration.LegacyBehaviour.TrimTrailingNewlines = false;
                 Assert.AreEqual(expected + "\r\n", printer.PrintObject(twoDimArray, ""));
             }
