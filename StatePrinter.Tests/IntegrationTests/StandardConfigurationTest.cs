@@ -19,10 +19,9 @@
 
 using System;
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.OutputFormatters;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
 
 

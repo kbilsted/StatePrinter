@@ -19,10 +19,9 @@
 
 
 using NUnit.Framework;
-
 using Is = StatePrinting.TestAssistance.Is;
 
-namespace StatePrinter.Tests.TestingAssistance
+namespace StatePrinting.Tests.TestingAssistance
 {
     [TestFixture]
     class Userstory_nonexplicit

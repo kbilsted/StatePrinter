@@ -16,12 +16,12 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Diagnostics;
-
 using NUnit.Framework;
 
-namespace StatePrinter.Tests.PerformanceTests
+namespace StatePrinting.Tests.PerformanceTests
 {
     [TestFixture]
     abstract class PerformanceTestsBase

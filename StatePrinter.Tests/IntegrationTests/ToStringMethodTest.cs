@@ -18,9 +18,8 @@
 // under the License.
 
 using NUnit.Framework;
-using StatePrinting;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     /// <summary>
     /// An example of using the state printer as a generic ToString() implementation.

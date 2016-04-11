@@ -19,13 +19,11 @@
 
 using System;
 using System.Linq;
-
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
 
-namespace StatePrinter.Tests.FieldHarvesters
+namespace StatePrinting.Tests.FieldHarvesters
 {
     /// <summary>
     /// Shows how the <see cref="ProjectionHarvester"/> can be utilized in unit tests

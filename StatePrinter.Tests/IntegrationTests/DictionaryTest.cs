@@ -17,15 +17,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using StatePrinter.Tests.Introspection;
-using StatePrinting;
 using StatePrinting.OutputFormatters;
+using StatePrinting.Tests.Introspection;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     [TestFixture]
     class DictionaryTest

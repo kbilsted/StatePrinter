@@ -19,7 +19,7 @@
 
 using StatePrinting.TestAssistance;
 
-namespace StatePrinter.Tests.Mocks
+namespace StatePrinting.Tests.Mocks
 {
     class AreEqualsMethodMock
     {

@@ -20,10 +20,9 @@
 
 using System;
 using NUnit.Framework;
+using StatePrinting.Tests.Mocks;
 
-using StatePrinter.Tests.Mocks;
-
-namespace StatePrinter.Tests.TestingAssistance
+namespace StatePrinting.Tests.TestingAssistance
 {
     class UserStory_Integration_with_underlying_testing_framework
     {

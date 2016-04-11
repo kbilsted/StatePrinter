@@ -19,13 +19,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
-
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     [TestFixture]
     class PropertiesTest

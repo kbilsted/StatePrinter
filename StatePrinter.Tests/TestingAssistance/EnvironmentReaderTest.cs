@@ -18,11 +18,10 @@
 // under the License.
 
 using System;
-
 using NUnit.Framework;
 using StatePrinting.TestAssistance;
 
-namespace StatePrinter.Tests.TestingAssistance
+namespace StatePrinting.Tests.TestingAssistance
 {
     [TestFixture]
     class EnvironmentReaderTest

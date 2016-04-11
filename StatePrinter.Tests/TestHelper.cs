@@ -18,11 +18,10 @@
 // under the License.
 
 using System.Globalization;
-using StatePrinting;
 using StatePrinting.Configurations;
 using StatePrinting.TestAssistance;
 
-namespace StatePrinter.Tests
+namespace StatePrinting.Tests
 {
     static class TestHelper
     {

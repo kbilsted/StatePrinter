@@ -18,14 +18,10 @@
 // under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using NUnit.Framework;
 using StatePrinting.TestAssistance;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     [TestFixture]
     class CallStackReflectorTest

@@ -16,14 +16,13 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-using System.Globalization;
 
+using System.Globalization;
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.TestAssistance;
 using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Tests.ExamplesForDocumentation
+namespace StatePrinting.Tests.ExamplesForDocumentation
 {
     [TestFixture]
     class ExampleOnSimpleAsserts

@@ -19,7 +19,7 @@
 
 using NUnit.Framework;
 
-namespace StatePrinter.Tests.TestingAssistance
+namespace StatePrinting.Tests.TestingAssistance
 {
     
     /// <summary>

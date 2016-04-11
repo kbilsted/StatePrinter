@@ -19,13 +19,11 @@
 
 using System;
 using System.Collections.Generic;
-
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.Configurations;
 using StatePrinting.OutputFormatters;
 
-namespace StatePrinter.Tests.PerformanceTests
+namespace StatePrinting.Tests.PerformanceTests
 {
     [TestFixture]
     [Explicit]

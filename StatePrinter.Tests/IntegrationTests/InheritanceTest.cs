@@ -19,7 +19,7 @@
 
 using NUnit.Framework;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     [TestFixture]
     class InheritanceTest

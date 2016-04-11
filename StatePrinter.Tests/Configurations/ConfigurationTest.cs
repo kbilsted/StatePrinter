@@ -18,13 +18,12 @@
 // under the License.
 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
 using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Tests.Configurations
+namespace StatePrinting.Tests.Configurations
 {
     [TestFixture]
     class ConfigurationTest

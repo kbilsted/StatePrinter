@@ -19,10 +19,10 @@
 
 using System.Linq;
 using NUnit.Framework;
-using StatePrinter.Tests.IntegrationTests;
 using StatePrinting.FieldHarvesters;
+using StatePrinting.Tests.IntegrationTests;
 
-namespace StatePrinter.Tests.FieldHarvesters
+namespace StatePrinting.Tests.FieldHarvesters
 {
     [TestFixture]
     class AllHarvesterTest

@@ -20,7 +20,7 @@
 using NUnit.Framework;
 using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Tests.ValueConverters
+namespace StatePrinting.Tests.ValueConverters
 {
     [TestFixture]
     class GenericValueConverterTest

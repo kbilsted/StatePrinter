@@ -20,7 +20,7 @@
 using NUnit.Framework;
 using StatePrinting.Introspection;
 
-namespace StatePrinter.Tests.Introspection
+namespace StatePrinting.Tests.Introspection
 {
     [TestFixture]
     class ReferenceTest

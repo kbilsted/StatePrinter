@@ -22,7 +22,7 @@ using NUnit.Framework;
 using StatePrinting.Introspection;
 using StatePrinting.OutputFormatters;
 
-namespace StatePrinter.Tests.OutputFormatters
+namespace StatePrinting.Tests.OutputFormatters
 {
     [TestFixture]
     class TokenFilterTest

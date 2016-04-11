@@ -20,12 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using NUnit.Framework;
-using StatePrinting;
 using StatePrinting.ValueConverters;
 
-namespace StatePrinter.Tests.PerformanceTests
+namespace StatePrinting.Tests.PerformanceTests
 {
 
     [TestFixture]

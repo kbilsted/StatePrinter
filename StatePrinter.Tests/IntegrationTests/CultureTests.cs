@@ -20,9 +20,8 @@
 using System;
 using System.Globalization;
 using NUnit.Framework;
-using StatePrinting;
 
-namespace StatePrinter.Tests.IntegrationTests
+namespace StatePrinting.Tests.IntegrationTests
 {
     [TestFixture]
     class CultureTests

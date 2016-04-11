@@ -20,7 +20,7 @@
 using NUnit.Framework;
 using StatePrinting.TestAssistance;
 
-namespace StatePrinter.Tests.FieldHarvesters
+namespace StatePrinting.Tests.FieldHarvesters
 {
     [TestFixture]
     public class TypeFilteringTests

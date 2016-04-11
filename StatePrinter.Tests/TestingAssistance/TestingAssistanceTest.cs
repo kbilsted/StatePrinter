@@ -19,13 +19,11 @@
 
 using System;
 using NUnit.Framework;
-
-using Is = StatePrinting.TestAssistance.Is;
-using StatePrinter.Tests.Mocks;
-using StatePrinting;
 using StatePrinting.TestAssistance;
+using StatePrinting.Tests.Mocks;
+using Is = StatePrinting.TestAssistance.Is;
 
-namespace StatePrinter.Tests.TestingAssistance
+namespace StatePrinting.Tests.TestingAssistance
 {
     [TestFixture]
     class TestingAssistanceTest
