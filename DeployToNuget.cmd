@@ -2,8 +2,8 @@ REM ON FIRST RUN, RUN THIS (change the key to whatever is found on your profile 
 REM .nuget\NuGet.exe setapikey e39ea-get-the-full-key-on-nuget.org
 
 call CreateNuget.cmd
-.nuget\NuGet.exe push nuget_packages\StatePrinter.2.*.*.symbols.nupkg
-.nuget\NuGet.exe push nuget_packages\StatePrinter.2.*.*.nupkg
+.nuget\NuGet.exe push nuget_packages\StatePrinter.3.*.*.symbols.nupkg
+.nuget\NuGet.exe push nuget_packages\StatePrinter.3.*.*.nupkg
 
 cd nuget_packages
 del /q *
