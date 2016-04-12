@@ -7,12 +7,12 @@
       An open source utility to turn object graphs into strings. Automate your ToString and unit tests asserts.
     </description>
     <releaseNotes>
-* Improved performance by 10% for curly and json outputformatters
-* #28 - General 50%-70% times speed up of execution speed due to run-time code generation of reflection
-* #31 - `RollingGuidValueConverter` - Unit testing data containing Guid's just became much easier
-* Bugfixed the Json and Xml outputformatters when outputting dictionary/enumerables as the root element.
-* Caching run-time generated getter methods.
-    </releaseNotes>
+		* Issue #38 fixed root name
+		* Issue #40 fixed output format for xml and json
+		* Issue #46, changed namespace from "Stateprinter" to "Stateprinting" in order for the project to be usable from VB#
+		* 10% speed up
+		* Changed the namespace from "StatePrinter" to "StatePrinting" in order to be CLS compliant (cross language support)
+	</releaseNotes>
     <tags>UnitTest ToString Serialization Approvals Test Testing ApprovalsTest</tags>
     <copyright>Copyright 2014-2016</copyright>
     <language>en-US</language>
