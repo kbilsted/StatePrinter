@@ -32,7 +32,7 @@ namespace StatePrinting.Tests.IntegrationTests
             var res = new CallStackReflector().TryGetLocation();
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(37, res.LineNumber);
+            Assert.AreEqual(32, res.LineNumber);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace StatePrinting.Tests.IntegrationTests
             x();
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(48, res.LineNumber);
+            Assert.AreEqual(43, res.LineNumber);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace StatePrinting.Tests.IntegrationTests
             Assert.DoesNotThrow(() => res = new CallStackReflector().TryGetLocation());
 
             Assert.IsTrue(res.Filepath.EndsWith("ReflectorTest.cs"));
-            Assert.AreEqual(60, res.LineNumber);
+            Assert.AreEqual(55, res.LineNumber);
         }
     }
 }

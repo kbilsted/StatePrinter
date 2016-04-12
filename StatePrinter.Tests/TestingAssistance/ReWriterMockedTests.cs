@@ -104,7 +104,7 @@ reported by the callstackreflector
         /// By running again against the same file, the line number has now increased to something larger than the input file
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "File does not have 122 lines. Only 47 lines.\r\nParameter name: content")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "File does not have 121 lines. Only 47 lines.\r\nParameter name: content")]
         public void Rewriter_calls_to_testframework_fileTooShort()
         {
             var printer = TestHelper.CreateTestPrinter();
