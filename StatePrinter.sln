@@ -16,6 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatePrinter.Tests", "State
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5DF8CA6E-4233-40D0-B3FF-F2FA145A351C}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
 		CHANGELOG.md = CHANGELOG.md
 		StatePrinter.nuspec = StatePrinter.nuspec
 	EndProjectSection

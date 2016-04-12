@@ -52,6 +52,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.1.0.0")]     // Change this upon breaking changes
-[assembly: AssemblyFileVersion("2.2.281.0")] // Bump this at every release
-[assembly: AssemblyInformationalVersion("2.2.281-rc")] // Only set on pre-releases. Customer public info (setting a version across multiple products each possibly with their own versioning)
+[assembly: AssemblyVersion("3.0.0.0")]     // Change this upon breaking changes
+[assembly: AssemblyFileVersion("3.0.293.0")] // Bump this at every release
+//[assembly: AssemblyInformationalVersion("2.2.281-rc")] // Only set on pre-releases. Customer public info (setting a version across multiple products each possibly with their own versioning)

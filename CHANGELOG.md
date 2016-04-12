@@ -4,6 +4,16 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
+
+## v3.0
+  * Issue #38 fixed root name
+  * Issue #40 fixed output format for xml and json
+  * Issue #46, changed namespace from "Stateprinter" to "Stateprinting" in order for the project to be usable from VB#
+  * 10% speed up
+  * Changed the namespace from "StatePrinter" to "StatePrinting" in order to be CLS compliant (cross language support)
+  
+
+
 ## v2.2.xxx-pr
 
 * #43 Bugfix `\` in expected data failed on unit test rewrite due to lack of escaping.
