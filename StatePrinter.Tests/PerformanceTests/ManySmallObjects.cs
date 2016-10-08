@@ -59,7 +59,7 @@ namespace StatePrinting.Tests.PerformanceTests
                   }
               });
             Console.WriteLine("  " + mills);
-        }
+		}
 
 
         /// <summary>
@@ -105,6 +105,21 @@ namespace StatePrinting.Tests.PerformanceTests
         /// 256000:  1590
         /// 512000:  3217
         /// 1024000:  6265
+        /// 
+        /// 
+        /// version 3.0.1
+        ///     1000:  Time:    149 length      58003
+        ///    2000:  Time:      5 length     116003
+        ///    4000:  Time:      9 length     232003
+        ///    8000:  Time:     20 length     464003
+        ///   16000:  Time:     40 length     928003
+        ///   32000:  Time:     93 length    1856003
+        ///   64000:  Time:    208 length    3712003
+        ///  128000:  Time:    408 length    7424003
+        ///  256000:  Time:    896 length   14848003
+        ///  512000:  Time:   1788 length   29696003
+        /// 1024000:  Time:   4009 length   59392003
+        /// 
         /// </summary>
         [Test]
         public void DumpManySmallObjects()
@@ -115,19 +130,19 @@ namespace StatePrinting.Tests.PerformanceTests
             }
         }
 
-        /// <summary>
-        /// Printing 1.000.000 objects.
-        /// curly: 6959 length:   62888908
-        /// json:  6578 length:   59000006
-        /// xml:   8036 length:   89000074
-        /// 
-        /// version 3.0.1
-        /// Printing 1.000.000 objects.
-        /// curly: 5144 length:   84888916
-        /// json:  4083 length:   59000003
-        /// xml:   4767 length:   93000035
-        /// </summary>
-        [Test]
+		/// <summary>
+		/// Printing 1.000.000 objects.
+		/// curly: 6959 length:   62888908
+		/// json:  6578 length:   59000006
+		/// xml:   8036 length:   89000074
+		/// 
+		/// version 3.0.1
+		/// Printing 1.000.000 objects.
+		/// curly: 4762 length:   84888916
+		/// json:  3581 length:   59000003
+		/// xml:   4767 length:   93000035
+		/// </summary>
+		[Test]
         public void TiminAllOutputFormattersAtNElements()
         {
             //var warmup 

@@ -132,7 +132,7 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.StartDict:
                     if (next == TokenType.EndScope || next == TokenType.EndDict)
                     {
-                        sb.AppendFormatLine("{{}}{0}", OptionalComma(tokens, pos + 1));
+                        sb.AppendLine(string.Concat("{}", OptionalComma(tokens, pos + 1)));
                         ++skip;
                     }
                     else
@@ -145,7 +145,7 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.EndScope:
                 case TokenType.EndDict:
                     sb.DeIndent();
-                    sb.AppendFormatLine("}}{0}", OptionalComma(tokens, pos));
+                    sb.AppendLine(string.Concat("}", OptionalComma(tokens, pos)));
                     break;
 
                 case TokenType.StartList:
@@ -199,15 +199,15 @@ namespace StatePrinting.OutputFormatters
             if (token.Field.Key != null)
             {
                 return IsQuoted(token.Field.Key)
-                    ? string.Format("{0}: {1}", token.Field.Key, value)
-                    : string.Format("\"{0}\": {1}", token.Field.Key, value);
+                    ? string.Concat(token.Field.Key, ": ", value)
+                    : string.Concat("\"", token.Field.Key, "\": ", value);
             }
 
             // Field.Name is empty if the ROOT-element-name has not been supplied.
             if (string.IsNullOrEmpty(token.Field.Name))
                 return value;
 
-            return string.Format("\"{0}\": {1}", token.Field.Name, value);
+            return string.Concat("\"", token.Field.Name, "\": ", value);
         }
 
         /// <summary>
