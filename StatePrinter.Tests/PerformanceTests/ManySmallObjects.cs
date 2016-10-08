@@ -35,6 +35,9 @@ namespace StatePrinting.Tests.PerformanceTests
         /// printing many times reveals the overhead of starting a print
         /// Version 2.20 - HPPavilion 7
         /// 3687
+        /// 
+        /// version 3.0.1
+        /// 57
         /// </summary>
         [Test]
         public void TestTheOverheadOfStartingUp()
@@ -117,6 +120,12 @@ namespace StatePrinting.Tests.PerformanceTests
         /// curly: 6959 length:   62888908
         /// json:  6578 length:   59000006
         /// xml:   8036 length:   89000074
+        /// 
+        /// version 3.0.1
+        /// Printing 1.000.000 objects.
+        /// curly: 5105 length:   84888916
+        /// json:  4074 length:   59000003
+        /// xml:   5280 length:   93000035
         /// </summary>
         [Test]
         public void TiminAllOutputFormattersAtNElements()

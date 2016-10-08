@@ -82,29 +82,29 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.EndList:
                 case TokenType.EndDict:
                     sb.DeIndent();
-                    sb.AppendFormatLine("</{0}>", endTags.Pop());
+                    sb.AppendLine(string.Concat("</", endTags.Pop(), ">"));
                     break;
 
                 case TokenType.SimpleFieldValue:
                     tagName = TagName(token, out keyAttr);
-                    sb.AppendFormatLine("<{0}{1}>{2}</{0}>", tagName, keyAttr, Unquote(token.Value));
+                    sb.AppendLine(string.Concat("<", tagName, keyAttr, ">", Unquote(token.Value), "</", tagName, ">"));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
                     tagName = TagName(token, out keyAttr);
-                    sb.AppendFormatLine("<{0}{1} ref='{2}'/>", tagName, keyAttr, token.ReferenceNo.Number);
+                    sb.AppendLine(string.Concat("<", tagName, keyAttr, " ref='", token.ReferenceNo.Number, "'/>"));
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
                     var optionReferenceInfo = token.ReferenceNo != null
-                      ? string.Format(" ref='{0}'", token.ReferenceNo.Number)
+                      ? string.Concat(" ref='", token.ReferenceNo.Number, "'")
                       : "";
                     var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType)
                         .Replace('<', '(')
                         .Replace('>', ')');
                     tagName = TagName(token, out keyAttr);
                     endTags.Push(tagName);
-                    sb.AppendFormatLine("<{0}{1} type='{2}'{3}>", tagName, keyAttr, fieldType, optionReferenceInfo);
+                    sb.AppendLine(string.Concat("<", tagName, keyAttr, " type='", fieldType, "'", optionReferenceInfo, ">"));
                     break;
 
                 default:

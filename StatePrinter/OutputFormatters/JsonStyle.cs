@@ -77,8 +77,8 @@ namespace StatePrinting.OutputFormatters
                             object key = token.Field.Key != null ? token.Field.Key :
                                          token.Field.Index.HasValue ? token.Field.Index.Value.ToString() :
                                          null;
-                            string subscript = key == null ? "" : "[" + key + "]";
-                            last = token.Field.Name + subscript;
+                            string subscript = key == null ? "" : string.Concat("[", key, "]");
+                            last = string.Concat(token.Field.Name, subscript);
                         }
 
                         if (token.ReferenceNo != null && !paths.ContainsKey(token.ReferenceNo))
@@ -151,7 +151,7 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.StartList:
                     if (next == TokenType.EndList)
                     {
-                        sb.AppendFormatLine("[]{0}", OptionalComma(tokens, pos + 1));
+                        sb.AppendLine(string.Concat("[]", OptionalComma(tokens, pos + 1)));
                         ++skip;
                     }
                     else
@@ -163,22 +163,21 @@ namespace StatePrinting.OutputFormatters
 
                 case TokenType.EndList:
                     sb.DeIndent();
-                    sb.AppendFormatLine("]{0}", OptionalComma(tokens, pos));
+                    sb.AppendLine(string.Concat("]", OptionalComma(tokens, pos)));
                     break;
 
                 case TokenType.SimpleFieldValue:
-                    sb.AppendFormatLine("{0}{1}", MakeFieldValue(token, token.Value),
-                                        OptionalComma(tokens, pos));
+                    sb.AppendLine(string.Concat(MakeFieldValue(token, token.Value), OptionalComma(tokens, pos)));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
-                    sb.AppendFormatLine("{0}{1}", MakeFieldValue(token, referencePaths[token.ReferenceNo]),
-                                        OptionalComma(tokens, pos));
+                    sb.AppendFormatLine(string.Concat(MakeFieldValue(token, referencePaths[token.ReferenceNo]),
+                                        OptionalComma(tokens, pos)));
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
                     string value = MakeFieldValue(token, "");
-                    sb.AppendFormat("{0}", value);
+                    sb.Append(value);
                     break;
 
                 default:

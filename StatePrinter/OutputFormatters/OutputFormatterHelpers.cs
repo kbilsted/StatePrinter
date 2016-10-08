@@ -39,7 +39,7 @@ namespace StatePrinting.OutputFormatters
             var genericName = type.GetGenericArguments().Select(x => MakeReadable(x)).ToArray();
             string generictypes = string.Join(", ", genericName);
 
-            return String.Format("{0}<{1}>", typename, generictypes);
+            return string.Concat(typename, "<", generictypes, ">");
         }
     }
 }

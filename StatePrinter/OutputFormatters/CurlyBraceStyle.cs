@@ -80,22 +80,22 @@ namespace StatePrinting.OutputFormatters
                     break;
 
                 case TokenType.SimpleFieldValue:
-                    sb.AppendFormatLine("{0}", MakeFieldValue(token, token.Value));
+                    sb.AppendLine(MakeFieldValue(token, token.Value));
                     break;
 
                 case TokenType.SeenBeforeWithReference:
-                    sb.AppendFormatLine("{0}", MakeFieldValue(token, "-> " + token.ReferenceNo.Number));
+                    sb.AppendLine(MakeFieldValue(token, "-> " + token.ReferenceNo.Number));
                     break;
 
                 case TokenType.FieldnameWithTypeAndReference:
                     var optionReferenceInfo = token.ReferenceNo == null
                       ? ""
-                      : string.Format(", ref: {0}", token.ReferenceNo.Number);
+                      : string.Concat(", ref: ", token.ReferenceNo.Number);
 
                     var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType);
 
-                    string value = string.Format("new {0}(){1}", fieldType, optionReferenceInfo);
-                    sb.AppendFormatLine("{0}", MakeFieldValue(token, value));
+                    string value = string.Concat("new ", fieldType, "()", optionReferenceInfo);
+                    sb.AppendLine(MakeFieldValue(token, value));
                     break;
 
                 default:
@@ -109,16 +109,16 @@ namespace StatePrinting.OutputFormatters
                 return value;
 
             if (token.Field.Index.HasValue)
-                return string.Format("[{0}] = {1}", token.Field.Index, value);
+                return string.Concat("[", token.Field.Index, "] = ", value);
 
             if (token.Field.Key != null)
-                return string.Format("[{0}] = {1}", token.Field.Key, value);
+                return string.Concat("[", token.Field.Key, "] = ", value);
 
             // Field.Name is empty if the ROOT-element-name has not been supplied.
             if (string.IsNullOrEmpty(token.Field.Name))
                 return value;
 
-            return string.Format("{0} = {1}", token.Field.Name, value);
+            return string.Concat(token.Field.Name, " = ", value);
         }
     }
 }
