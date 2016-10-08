@@ -123,9 +123,9 @@ namespace StatePrinting.Tests.PerformanceTests
         /// 
         /// version 3.0.1
         /// Printing 1.000.000 objects.
-        /// curly: 5105 length:   84888916
-        /// json:  4074 length:   59000003
-        /// xml:   5280 length:   93000035
+        /// curly: 5144 length:   84888916
+        /// json:  4083 length:   59000003
+        /// xml:   4767 length:   93000035
         /// </summary>
         [Test]
         public void TiminAllOutputFormattersAtNElements()

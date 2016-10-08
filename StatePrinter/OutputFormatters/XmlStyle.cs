@@ -99,9 +99,7 @@ namespace StatePrinting.OutputFormatters
                     var optionReferenceInfo = token.ReferenceNo != null
                       ? string.Concat(" ref='", token.ReferenceNo.Number, "'")
                       : "";
-                    var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType)
-                        .Replace('<', '(')
-                        .Replace('>', ')');
+                    var fieldType = OutputFormatterHelpers.MakeReadable(token.FieldType, "(", ")");
                     tagName = TagName(token, out keyAttr);
                     endTags.Push(tagName);
                     sb.AppendLine(string.Concat("<", tagName, keyAttr, " type='", fieldType, "'", optionReferenceInfo, ">"));

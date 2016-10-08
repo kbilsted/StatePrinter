@@ -27,7 +27,7 @@ namespace StatePrinting.OutputFormatters
         /// <summary>
         /// Convert a type into a human readable string
         /// </summary>
-        public static string MakeReadable(Type type)
+        public static string MakeReadable(Type type, string startTag = "<", string endTag = ">")
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -36,10 +36,10 @@ namespace StatePrinting.OutputFormatters
                 return type.Name;
 
             var typename = type.Name.Split('`')[0];
-            var genericName = type.GetGenericArguments().Select(x => MakeReadable(x)).ToArray();
+            var genericName = type.GetGenericArguments().Select(x => MakeReadable(x, startTag, endTag)).ToArray();
             string generictypes = string.Join(", ", genericName);
 
-            return string.Concat(typename, "<", generictypes, ">");
+            return string.Concat(typename, startTag, generictypes, endTag);
         }
     }
 }
