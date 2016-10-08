@@ -66,6 +66,23 @@ namespace StatePrinting.OutputFormatters
             mustIndent = true;
         }
 
+        public void Append(string text)
+        {
+            if (mustIndent)
+            {
+                sb.Append(indent);
+                mustIndent = false;
+            }
+            sb.Append(text);
+        }
+
+        public void AppendLine(string text)
+        {
+            Append(text);
+            sb.Append(NewLineDefinition);
+            mustIndent = true;
+        }
+
         public override string ToString()
         {
             return sb.ToString();
@@ -76,7 +93,6 @@ namespace StatePrinting.OutputFormatters
             int trim = new StringBuilderTrimmer(configuration.LegacyBehaviour.TrimTrailingNewlines).TrimLast(sb);
             if(trim > 0)
                 sb.Remove(sb.Length - trim, trim);
-        
         }
     }
 }

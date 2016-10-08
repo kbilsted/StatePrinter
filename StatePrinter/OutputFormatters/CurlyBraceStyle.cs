@@ -68,7 +68,7 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.StartScope:
                 case TokenType.StartList:
                 case TokenType.StartDict:
-                    sb.AppendFormatLine("{{");
+                    sb.AppendLine("{");
                     sb.Indent();
                     break;
 
@@ -76,7 +76,7 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.EndList:
                 case TokenType.EndDict:
                     sb.DeIndent();
-                    sb.AppendFormatLine("}}");
+                    sb.AppendLine("}");
                     break;
 
                 case TokenType.SimpleFieldValue:

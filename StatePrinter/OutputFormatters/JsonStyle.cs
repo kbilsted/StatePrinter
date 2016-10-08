@@ -135,7 +135,7 @@ namespace StatePrinting.OutputFormatters
                     }
                     else
                     {
-                        sb.AppendFormatLine("{{");
+                        sb.AppendLine("{");
                         sb.Indent();
                     }
                     break;
@@ -154,7 +154,7 @@ namespace StatePrinting.OutputFormatters
                     }
                     else
                     {
-                        sb.AppendFormatLine("[");
+                        sb.AppendLine("[");
                         sb.Indent();
                     }
                     break;
