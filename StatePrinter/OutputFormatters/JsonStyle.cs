@@ -221,15 +221,16 @@ namespace StatePrinting.OutputFormatters
             if (isLastToken)
                 return "";
 
-            var nextToken = tokens[nextPos].Tokenkind;
-            bool isNextScope = nextToken == TokenType.EndScope
-                               || nextToken == TokenType.StartList
-                               || nextToken == TokenType.StartDict
-                               || nextToken == TokenType.StartScope
-                               || nextToken == TokenType.EndList
-                               || nextToken == TokenType.EndDict;
-            if (isNextScope)
-                return "";
+            switch (tokens[nextPos].Tokenkind)
+            {
+                case TokenType.StartScope:
+                case TokenType.EndScope:
+                case TokenType.StartList:
+                case TokenType.EndList:
+                case TokenType.StartDict:
+                case TokenType.EndDict:
+                    return "";
+            }
 
             return ",";
         }
