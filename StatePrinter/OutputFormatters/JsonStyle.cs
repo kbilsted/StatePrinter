@@ -118,10 +118,12 @@ namespace StatePrinting.OutputFormatters
             return sb.ToString();
         }
 
+        static readonly TokenType? None = new TokenType?();
+
         int MakeStringFromToken(List<Token> tokens, int pos, Dictionary<Reference, string> referencePaths, IndentingStringBuilder sb)
         {
             var token = tokens[pos];
-            TokenType? next = pos + 1 < tokens.Count ? tokens[pos + 1].Tokenkind : new TokenType?();
+            TokenType? next = pos + 1 < tokens.Count ? tokens[pos + 1].Tokenkind : None;
             int skip = 0;
 
             switch (token.Tokenkind)
