@@ -35,10 +35,10 @@ namespace StatePrinting.Tests.TestingAssistance
                 Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, "false", EnvironmentVariableTarget.User);
 
                 var reader = new EnvironmentReader();
-                Assert.AreEqual(false, reader.UseTestAutoRewrite());
+                Assert.AreEqual(false, reader.GetEnvUseTestAutoRewrite());
 
                 Environment.SetEnvironmentVariable(EnvironmentReader.Usetestautorewrite, "true", EnvironmentVariableTarget.User);
-                Assert.AreEqual(true, reader.UseTestAutoRewrite());
+                Assert.AreEqual(true, reader.GetEnvUseTestAutoRewrite());
             }
             finally
             {

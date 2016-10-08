@@ -37,7 +37,7 @@ namespace StatePrinting.Tests.ExamplesForDocumentation
             printer.Configuration
                 .SetCulture(CultureInfo.CreateSpecificCulture("en-US"))
                 .Test.SetAreEqualsMethod(NUnit.Framework.Assert.AreEqual)
-                .Test.SetAutomaticTestRewrite(filename => new EnvironmentReader().UseTestAutoRewrite())
+                .Test.SetAutomaticTestRewrite(filename => new EnvironmentReader().GetEnvUseTestAutoRewrite())
                 .Test.SetAutomaticTestRewrite(filename => true)
                 .Add(new StringConverter(""));
 

@@ -25,7 +25,7 @@ namespace StatePrinting.TestAssistance
     {
         public const string Usetestautorewrite = "StatePrinter_UseTestAutoRewrite";
 
-        public bool UseTestAutoRewrite()
+        public bool GetEnvUseTestAutoRewrite()
         {
             string result = Environment.GetEnvironmentVariable(
                 Usetestautorewrite, 
