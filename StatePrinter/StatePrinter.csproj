@@ -61,6 +61,7 @@
     <Compile Include="Configurations\LegacyBehaviour.cs" />
     <Compile Include="Configurations\TestingBehaviour.cs" />
     <Compile Include="FieldHarvesters\AllFieldsAndPropertiesHarvester.cs" />
+    <Compile Include="FieldHarvesters\AnonymousFieldHarvester.cs" />
     <Compile Include="FieldHarvesters\IRunTimeCodeGenerator.cs" />
     <Compile Include="FieldHarvesters\PublicFieldsHarvester.cs" />
     <Compile Include="FieldHarvesters\RunTimeCodeGenerator.cs" />

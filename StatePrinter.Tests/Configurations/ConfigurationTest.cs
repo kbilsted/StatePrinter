@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
@@ -52,6 +53,9 @@ namespace StatePrinting.Tests.Configurations
             Assert.Throws<ArgumentNullException>(() => sut.Add((IFieldHarvester)null));
             Assert.Throws<ArgumentNullException>(() => sut.Add((IValueConverter)null));
 
+            Assert.Throws<ArgumentNullException>(() => sut.AddHandler(null, t => new List<SanitizedFieldInfo>()));
+            Assert.Throws<ArgumentNullException>(() => sut.AddHandler(t => true, null));
+            Assert.Throws<ArgumentNullException>(() => sut.AddHandler(null, null));
 
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod(null));
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAutomaticTestRewrite(null));
