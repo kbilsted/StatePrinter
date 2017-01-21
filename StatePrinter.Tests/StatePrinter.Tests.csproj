@@ -56,6 +56,7 @@
     <Compile Include="FieldHarvesters\ProjectionHarvesterByTypeTest.cs" />
     <Compile Include="FieldHarvesters\ProjectionHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\AllHarvesterTest.cs" />
+    <Compile Include="FieldHarvesters\AnonymousHarvesterTest.cs" />
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />
     <Compile Include="Introspection\ReferenceTest.cs" />
     <Compile Include="Mocks\Mocks.cs" />

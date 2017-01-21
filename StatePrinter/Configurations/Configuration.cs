@@ -166,7 +166,7 @@ namespace StatePrinting.Configurations
         }
 
         /// <summary>
-        /// Add a configuration. Adding will override the existing behaviour only when the
+        /// Add a handler. Adding will override the existing behaviour only when the
         /// added handler handles a type that is already handleable by the current configuration.
         /// </summary>
         public Configuration Add(IFieldHarvester handler)
@@ -175,6 +175,22 @@ namespace StatePrinting.Configurations
                 throw new ArgumentNullException("handler");
 
             fieldHarvesters.Push(handler);
+            return this;
+        }
+
+        /// <summary>
+        /// Add an anonymous handler implementation. Adding will override the existing behaviour only when the
+        /// added handler handles a type that is already handleable by the current configuration.
+        /// </summary>
+        public Configuration AddHandler(Func<Type, bool> canHandleTypeFunc, Func<Type, List<SanitizedFieldInfo>> getFieldsFunc)
+        {
+            if (canHandleTypeFunc== null)
+                throw new ArgumentNullException("canHandleTypeFunc");
+
+            if (getFieldsFunc == null)
+                throw new ArgumentNullException("getFieldsFunc");
+
+            fieldHarvesters.Push(new AnonymousHarvester(canHandleTypeFunc, getFieldsFunc));
             return this;
         }
 
