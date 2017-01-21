@@ -171,6 +171,8 @@ public bool CanHandleType(Type type)
 
 The full selection of field harvesters are found at https://github.com/kbilsted/StatePrinter/tree/master/StatePrinter/FieldHarvesters
 
+### 1.5.1 Anonymous configuration¨
+
 An anonymous harvester may be defined without implementing the interface using the `Configuration.AddHandler` method:
 
 ```C#
