@@ -32,7 +32,7 @@ namespace StatePrinting.OutputFormatters
     /// </summary>
     public class CurlyBraceStyle : IOutputFormatter
     {
-        Configuration configuration;
+        readonly Configuration configuration;
 
         public CurlyBraceStyle(Configuration configuration)
         {

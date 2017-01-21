@@ -82,12 +82,19 @@ namespace StatePrinting.OutputFormatters
                 case TokenType.EndList:
                 case TokenType.EndDict:
                     sb.DeIndent();
-                    sb.AppendLine(string.Concat("</", endTags.Pop(), ">"));
+                    sb.Append("</"); sb.Append(endTags.Pop()); sb.AppendLine(">");
                     break;
 
                 case TokenType.SimpleFieldValue:
                     tagName = TagName(token, out keyAttr);
-                    sb.AppendLine(string.Concat("<", tagName, keyAttr, ">", Unquote(token.Value), "</", tagName, ">"));
+                    sb.Append("<");
+                    sb.Append(tagName);
+                    sb.Append(keyAttr);
+                    sb.Append(">");
+                    sb.Append(Unquote(token.Value));
+                    sb.Append("</");
+                    sb.Append(tagName);
+                    sb.AppendLine(">");
                     break;
 
                 case TokenType.SeenBeforeWithReference:
@@ -133,7 +140,7 @@ namespace StatePrinting.OutputFormatters
                 tag = "Root";
             }
 
-            keyAttr = key == null ? "" : string.Format(" key='{0}'", SecurityElement.Escape(Unquote(key)));
+            keyAttr = key == null ? "" : string.Concat(" key='", SecurityElement.Escape(Unquote(key)), "'");
             return tag;
         }
 
