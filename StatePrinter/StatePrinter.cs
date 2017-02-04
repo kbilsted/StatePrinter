@@ -29,7 +29,7 @@ namespace StatePrinting
     /// A class able to dump an object graph to a string.
     /// class inheritance hierarchies as well as cyclic graphs are supported.
     /// 
-    /// Simply call the <see cref="PrintObject"/> with an object or object-graph to get a string representation.
+    /// Simply call the <see cref="PrintObject(object)"/> with an object or object-graph to get a string representation.
     /// 
     /// The printing process is thread safe.
     /// 
@@ -61,7 +61,7 @@ namespace StatePrinting
         }
 
         /// <summary>
-        /// Create an state printer using the <see cref="ConfigurationHelper.GetStandardConfiguration"/>
+        /// Create an state printer using the <see cref="ConfigurationHelper.GetStandardConfiguration(TestFrameworkAreEqualsMethod)"/>
         /// </summary>
         public Stateprinter() : this(ConfigurationHelper.GetStandardConfiguration())
         {

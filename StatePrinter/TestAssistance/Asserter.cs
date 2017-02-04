@@ -68,7 +68,7 @@ namespace StatePrinting.TestAssistance
         }
 
         /// <summary>
-        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="AreEqual"/> on the result.
         /// </summary>
         public void PrintEquals(string expected, object objectToPrint)
         {
@@ -93,7 +93,7 @@ namespace StatePrinting.TestAssistance
 
 
         /// <summary>
-        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
+        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="AreAlike"/> on the result.
         /// </summary>
         public void PrintAreAlike(string expected, object objectToPrint)
         {
