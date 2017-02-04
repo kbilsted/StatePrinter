@@ -132,9 +132,13 @@ namespace StatePrinting.Tests.TestingAssistance
             TestHelper.Assert().PrintAreAlike(expected, r);
         }
 
-
-
-
+        [Test]
+        public void Expected_variable_contains_brackets()
+        {
+            var r = sut.ReplaceExpected("Assert.AreEqual(\"[0]\", sut.Do());", 1, "[0]", "boo");
+            TestHelper.Assert().PrintAreAlike(@"""Assert.AreEqual(boo, sut.Do());""", r);
+        }
+        
         [Test]
         public void Only_last_expected_changes_normal_string()
         {

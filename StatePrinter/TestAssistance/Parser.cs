@@ -34,12 +34,12 @@ namespace StatePrinting.TestAssistance
             // The expected value to replace may either be represened as a string or a verbatim string. Thus we must look for both representations
             var reString = EscapeForString(originalExpected);
             var reVerbString = EscapeForVerbatimString(originalExpected);
-            Regex re= new Regex( "("
+            Regex re = new Regex("("
                 + reString
                 + "|"
                 + reVerbString
                 + ")", options);
-            
+
             var match = re.Match(content, index);
             if (!match.Success)
                 throw new ArgumentException("Did not find '" + originalExpected + "'");
@@ -66,7 +66,7 @@ namespace StatePrinting.TestAssistance
 
         string EscapeForVerbatimString(string s)
         {
-            return "@\"" 
+            return "@\""
                 + EscapeForRegEx(s).Replace("\"", "\"\"")
                 + "\"";
         }
@@ -79,7 +79,9 @@ namespace StatePrinting.TestAssistance
                 .Replace("(", "\\(")
                 .Replace(")", "\\)")
                 .Replace("|", "\\|")
-                .Replace("+", "\\+");
+                .Replace("+", "\\+")
+                .Replace("[", "\\[")
+                .Replace("]", "\\]");
         }
 
         /// <summary>
@@ -104,7 +106,7 @@ namespace StatePrinting.TestAssistance
             if (line == lineNo)
                 found = true;
 
-            if(found)
+            if (found)
                 return i;
 
             throw new ArgumentOutOfRangeException("content", "File does not have " + lineNo + " lines. Only " + line + " lines.");
