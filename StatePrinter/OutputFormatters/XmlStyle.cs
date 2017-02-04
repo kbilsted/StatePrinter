@@ -54,7 +54,6 @@ namespace StatePrinting.OutputFormatters
             var sb = new IndentingStringBuilder(configuration);
 
             var endTags = new Stack<string>();
-            int pos = 0;
             foreach (Token token in tokens)
             {
                 MakeTokenString(token, sb, endTags);
