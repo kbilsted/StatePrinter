@@ -54,7 +54,7 @@ namespace StatePrinting.Introspection
             cacheLock.EnterWriteLock();
             try
             {
-                harvestCache.Add(type, fields);
+                if (!harvestCache.ContainsKey(type)) harvestCache.Add(type, fields);
             }
             finally
             {
