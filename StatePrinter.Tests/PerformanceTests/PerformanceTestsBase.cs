@@ -24,7 +24,7 @@ using NUnit.Framework;
 namespace StatePrinting.Tests.PerformanceTests
 {
     [TestFixture]
-    abstract class PerformanceTestsBase
+    public abstract class PerformanceTestsBase
     {
         [SetUp]
         public void Setup()

@@ -27,7 +27,7 @@ namespace StatePrinting.Tests.PerformanceTests
 {
     [TestFixture]
     [Explicit]
-    class ManySmallObjects : PerformanceTestsBase
+    public class ManySmallObjects : PerformanceTestsBase
     {
         const int N = 1000000;
 
