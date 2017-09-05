@@ -51,7 +51,7 @@ namespace StatePrinting.FieldHarvesters
                 fields.Where(
                     x =>
                     ((FieldInfo)x.FieldInfo).IsPublic
-                    || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix));
+                    || x.FieldInfo.Name.EndsWith(HarvestHelper.BackingFieldSuffix, StringComparison.Ordinal));
 
             return res.ToList();
         }

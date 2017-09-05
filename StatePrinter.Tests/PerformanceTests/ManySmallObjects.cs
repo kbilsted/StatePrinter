@@ -91,10 +91,6 @@ namespace StatePrinting.Tests.PerformanceTests
         /// 
         /// 
         /// Version 2.2 - HPPavilion 7
-        /// 1000:  158
-        /// 2000:  8
-        /// 4000:  19
-        /// 8000:  50
         /// 16000:  86
         /// 32000:  175
         /// 64000:  371
@@ -102,6 +98,16 @@ namespace StatePrinting.Tests.PerformanceTests
         /// 256000:  1590
         /// 512000:  3217
         /// 1024000:  6265
+        /// 
+        /// 
+        /// version 3.0.1 - HPPavilion 7
+        /// 16000:        50
+        /// 32000:       112
+        /// 64000:       275
+        /// 128000:       551 
+        /// 256000:      1078 
+        /// 512000:      2010 
+        /// 1024000:      4507  
         /// </summary>
         [Test]
         public void DumpManySmallObjects()
@@ -114,9 +120,15 @@ namespace StatePrinting.Tests.PerformanceTests
 
         /// <summary>
         /// Printing 1.000.000 objects.
+        /// v2.xx
         /// curly: 6959 length:   62888908
         /// json:  6578 length:   59000006
         /// xml:   8036 length:   89000074
+        /// 
+        /// v3.0.1
+        /// curly: 6596 length:   82888914
+        /// json:  3749 length:   58000003
+        /// xml:   4859 length:   93000035
         /// </summary>
         [Test]
         public void TiminAllOutputFormattersAtNElements()

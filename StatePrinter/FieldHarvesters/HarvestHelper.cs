@@ -92,7 +92,7 @@ namespace StatePrinting.FieldHarvesters
         static bool NonBackingFieldFilter(MemberInfo x)
         {
             return x.MemberType == MemberTypes.Field
-              && !x.Name.EndsWith(BackingFieldSuffix);
+              && !x.Name.EndsWith(BackingFieldSuffix, StringComparison.Ordinal);
         }
 
         static bool IndexerFilter(MemberInfo x)
@@ -109,10 +109,10 @@ namespace StatePrinting.FieldHarvesters
         public bool IsHarvestable(Type type)
         {
             var typename = type.ToString();
-            if (typename.StartsWith("System.Reflection")
-                || typename.StartsWith("System.Runtime")
-                || typename.StartsWith("System.SignatureStruct")
-                || typename.StartsWith("System.Func"))
+            if (typename.StartsWith("System.Reflection", StringComparison.Ordinal)
+                || typename.StartsWith("System.Runtime", StringComparison.Ordinal)
+                || typename.StartsWith("System.SignatureStruct", StringComparison.Ordinal)
+                || typename.StartsWith("System.Func", StringComparison.Ordinal))
                 return false;
             return true;
         }
@@ -122,7 +122,7 @@ namespace StatePrinting.FieldHarvesters
         /// </summary>
         public string SanitizeFieldName(string fieldName)
         {
-            return fieldName.StartsWith("<")
+            return fieldName.StartsWith("<", StringComparison.Ordinal)
               ? fieldName.Substring(1).Replace(BackingFieldSuffix, "")
               : fieldName;
         }

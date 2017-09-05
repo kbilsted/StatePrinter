@@ -62,6 +62,7 @@ namespace StatePrinting.Tests.PerformanceTests
         /// <summary>
         /// Many small objects reveals the overhead of introspecting types.
         /// 
+        /// V.3.0.0
         //1000:  Time:    159 length     123003
         //2000:  Time:     18 length     246003
         //4000:  Time:     35 length     492003
@@ -85,9 +86,15 @@ namespace StatePrinting.Tests.PerformanceTests
 
         /// <summary>
         /// Printing 1.000.000 objects.
+        /// V3.0.0
         //curly: 17906 length:  195888912
         //json:  11433 length:  123000003
         //xml:   17106 length:  232000033
+        //
+        // v3.0.1
+        //curly: 18197 length:  195888912
+        //json:  11139 length:  123000003
+        //xml:   14419 length:  232000033
         /// </summary>
         [Test]
         public void TiminAllOutputFormattersAtNElements()

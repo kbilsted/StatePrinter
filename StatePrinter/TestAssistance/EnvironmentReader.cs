@@ -30,7 +30,7 @@ namespace StatePrinting.TestAssistance
             string result = Environment.GetEnvironmentVariable(
                 Usetestautorewrite, 
                 EnvironmentVariableTarget.User);
-            return "true".Equals(result);
+            return "true".Equals(result, StringComparison.Ordinal);
         }
     }
 }

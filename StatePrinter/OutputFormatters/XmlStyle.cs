@@ -141,7 +141,7 @@ namespace StatePrinting.OutputFormatters
 
         private string Unquote(string s)
         {
-            return s.Length >= 2 && s.StartsWith("\"") && s.EndsWith("\"")
+            return s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal)
                 ? s.Substring(1, s.Length - 2) : s;
         }
     }

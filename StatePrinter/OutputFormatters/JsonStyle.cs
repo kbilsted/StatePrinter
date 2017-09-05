@@ -198,15 +198,15 @@ namespace StatePrinting.OutputFormatters
             if (token.Field.Key != null)
             {
                 return IsQuoted(token.Field.Key)
-                    ? string.Format("{0}: {1}", token.Field.Key, value)
-                    : string.Format("\"{0}\": {1}", token.Field.Key, value);
+                    ? string.Concat(token.Field.Key, ": ", value)
+                    : string.Concat("\"", token.Field.Key, "\": ", value);
             }
 
             // Field.Name is empty if the ROOT-element-name has not been supplied.
             if (string.IsNullOrEmpty(token.Field.Name))
                 return value;
 
-            return string.Format("\"{0}\": {1}", token.Field.Name, value);
+            return string.Concat("\"", token.Field.Name, "\": ", value);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace StatePrinting.OutputFormatters
 
         bool IsQuoted(string s)
         {
-            return s.Length >= 2 && s.StartsWith("\"") && s.EndsWith("\"");
+            return s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal);
         }
     }
 }
