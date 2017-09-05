@@ -1,4 +1,4 @@
-﻿// Copyright 2014-2015 Kasper B. Graversen
+﻿// Copyright 2014-2017 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -53,5 +53,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("3.0.0.0")]     // Change this upon breaking changes
-[assembly: AssemblyFileVersion("3.0.293.0")] // Bump this at every release
+[assembly: AssemblyFileVersion("3.0.311.0")] // Bump this at every release
 //[assembly: AssemblyInformationalVersion("2.2.281-rc")] // Only set on pre-releases. Customer public info (setting a version across multiple products each possibly with their own versioning)

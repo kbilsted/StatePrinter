@@ -4,6 +4,11 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
+## 3.0.1
+  * Issue #48 Added `AnonymousFieldHarvester` for convenience
+  * Issue #49 bugfix parsing brackets
+  * Issue #51 bugfix thread problem
+  * Performance improvements between 5%-40% 
 
 ## v3.0
   * Issue #38 fixed root name

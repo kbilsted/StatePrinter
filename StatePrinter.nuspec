@@ -2,19 +2,18 @@
 <package>
   <metadata>
     <id>StatePrinter</id>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <description>
       An open source utility to turn object graphs into strings. Automate your ToString and unit tests asserts.
     </description>
     <releaseNotes>
-		* Issue #38 fixed root name
-		* Issue #40 fixed output format for xml and json
-		* Issue #46, changed namespace from "Stateprinter" to "Stateprinting" in order for the project to be usable from VB#
-		* 10% speed up
-		* Changed the namespace from "StatePrinter" to "StatePrinting" in order to be CLS compliant (cross language support)
-	</releaseNotes>
+  * Issue #48 Added `AnonymousFieldHarvester` for convenience
+  * Issue #49 bugfix parsing brackets
+  * Issue #51 bugfix thread problem
+  * Performance improvements between 5%-40% 
+  </releaseNotes>
     <tags>UnitTest ToString Serialization Approvals Test Testing ApprovalsTest</tags>
-    <copyright>Copyright 2014-2016</copyright>
+    <copyright>Copyright 2014-2017</copyright>
     <language>en-US</language>
     <authors>Kasper B. Graversen</authors>
     <projectUrl>https://github.com/kbilsted/StatePrinter</projectUrl>
