@@ -17,6 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using StatePrinting.OutputFormatters;
@@ -36,7 +37,12 @@ namespace StatePrinting.Tests.IntegrationTests
         {
             printer = TestHelper.CreateTestPrinter();
 
-            car = new Car(new SteeringWheel(new FoamGrip("Plastic"))) { Brand = "Toyota" };
+            car = new Car(new SteeringWheel(new FoamGrip("Plastic")))
+            {
+                Brand = "Toyota",
+                Wheels = new [] { new Wheel(), new Wheel(), new Wheel(), new Wheel() }, // testing populated collection
+                Passengers = new Passenger[0] // testing empty collection
+            };
 
             course = new Course();
             course.Members.Add(new Student("Stan", course));
@@ -45,7 +51,7 @@ namespace StatePrinting.Tests.IntegrationTests
         }
 
         [Test]
-        public void ThreeLinkedGraph()
+        public void ThreeLinkedGraph_curly()
         {
             var expected =
       @"new Car()
@@ -61,11 +67,75 @@ namespace StatePrinting.Tests.IntegrationTests
         Weight = 525
     }
     Brand = ""Toyota""
+    Wheels = new Wheel[]()
+    {
+        [0] = new Wheel()
+        {
+            Diameter = 0
+        }
+        [1] = new Wheel()
+        {
+            Diameter = 0
+        }
+        [2] = new Wheel()
+        {
+            Diameter = 0
+        }
+        [3] = new Wheel()
+        {
+            Diameter = 0
+        }
+    }
+    Passengers = new Passenger[]()
+    {
+    }
 }";
             printer.Assert.PrintEquals(expected, car);
         }
 
+        [Test]
+        public void ThreeLinkedGraph_strictCSharp()
+        {
+            printer.Configuration.OutputFormatter = new StrictCSharpStyle(printer.Configuration);
+            
+            var expected =
+                @"new Car()
+{
+    StereoAmplifiers = null,
+    steeringWheel = new SteeringWheel()
+    {
+        Size = 3,
+        Grip = new FoamGrip()
+        {
+            Material = ""Plastic"",
+        }
+        Weight = 525,
+    }
+    Brand = ""Toyota"",
+    Wheels = new Wheel[]
+    {
+        new Wheel()
+        {
+            Diameter = 0,
+        },
+        new Wheel()
+        {
+            Diameter = 0,
+        },
+        new Wheel()
+        {
+            Diameter = 0,
+        },
+        new Wheel()
+        {
+            Diameter = 0,
+        }
+    }
+}";
+            printer.Assert.PrintEquals(expected, car);
+        }
 
+        
         [Test]
         public void ThreeLinkedGraph_json()
         {
@@ -80,7 +150,22 @@ namespace StatePrinting.Tests.IntegrationTests
         },
         ""Weight"": 525
     },
-    ""Brand"": ""Toyota""
+    ""Brand"": ""Toyota"",
+    ""Wheels"": [
+        {
+            ""Diameter"": 0
+        },
+        {
+            ""Diameter"": 0
+        },
+        {
+            ""Diameter"": 0
+        },
+        {
+            ""Diameter"": 0
+        }
+    ],
+    ""Passengers"": []
 }";
 
             printer.Assert.PrintEquals(expected, car);
@@ -101,6 +186,22 @@ namespace StatePrinting.Tests.IntegrationTests
         <Weight>525</Weight>
     </steeringWheel>
     <Brand>Toyota</Brand>
+    <Wheels type='Wheel[]'>
+        <Element type='Wheel'>
+            <Diameter>0</Diameter>
+        </Element>
+        <Element type='Wheel'>
+            <Diameter>0</Diameter>
+        </Element>
+        <Element type='Wheel'>
+            <Diameter>0</Diameter>
+        </Element>
+        <Element type='Wheel'>
+            <Diameter>0</Diameter>
+        </Element>
+    </Wheels>
+    <Passengers type='Passenger[]'>
+    </Passengers>
 </Root>";
 
             printer.Assert.PrintEquals(expected, car);
@@ -129,7 +230,13 @@ namespace StatePrinting.Tests.IntegrationTests
             printer.Assert.PrintEquals(expected, course);
         }
 
-
+        [Test]
+        public void CyclicGraph_strictCSharp()
+        {
+            printer.Configuration.OutputFormatter = new StrictCSharpStyle(printer.Configuration);
+            Assert.Throws<NotSupportedException>(() => printer.PrintObject(course));
+        }
+        
         [Test]
         public void CyclicGraph_Json()
         {
@@ -307,16 +414,28 @@ namespace StatePrinting.Tests.IntegrationTests
         }
     }
 
+    internal class Passenger
+    {
+    }
+
     #region car
     class Car
     {
         protected int? StereoAmplifiers = null;
         private SteeringWheel steeringWheel;
         public string Brand { get; set; }
+        public Wheel[] Wheels { get; set; }
+        public Passenger[] Passengers { get; set; }
+
         public Car(SteeringWheel steeringWheel)
         {
             this.steeringWheel = steeringWheel;
         }
+    }
+
+    internal class Wheel
+    {
+        public decimal Diameter { get; set; }
     }
 
     internal class SteeringWheel
