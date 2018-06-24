@@ -27,10 +27,9 @@ using StatePrinting.Introspection;
 namespace StatePrinting.OutputFormatters
 {
     /// <summary>
-    /// Formatting the tokens to a curly-brace style representation.
+    /// Formatting the tokens to a compilable C# representation.
     /// 
-    /// In order to reduce clutter in the output, only reference that are referred to by later
-    /// outputted objects will have a referencenumber attached to them.
+    /// Circular refereces are not supported, as this would lead to infinte loops.
     /// </summary>
     public class StrictCSharpStyle : IOutputFormatter
     {
