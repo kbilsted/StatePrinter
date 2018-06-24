@@ -110,7 +110,7 @@ namespace StatePrinting.Tests.IntegrationTests
             Material = ""Plastic"",
         }
         Weight = 525,
-    }
+    },
     Brand = ""Toyota"",
     Wheels = new Wheel[]
     {
