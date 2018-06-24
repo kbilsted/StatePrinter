@@ -108,7 +108,7 @@ namespace StatePrinting.Tests.IntegrationTests
         Grip = new FoamGrip()
         {
             Material = ""Plastic"",
-        }
+        },
         Weight = 525,
     },
     Brand = ""Toyota"",
@@ -129,8 +129,8 @@ namespace StatePrinting.Tests.IntegrationTests
         new Wheel()
         {
             Diameter = 0,
-        }
-    }
+        },
+    },
 }";
             printer.Assert.PrintEquals(expected, car);
         }
