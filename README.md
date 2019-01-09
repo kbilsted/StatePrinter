@@ -69,7 +69,7 @@ Everyone is encouraged to help improve this project. Here are a few ways you can
 * [Suggest](https://github.com/kbilsted/StatePrinter/issues/new) or add new features
 
 
-*StatePrinter has been awarded a ReSharper group lincense, to share among all active contributers*.
+*StatePrinter has been awarded a ReSharper group license, to share among all active contributers*.
 
 
 
