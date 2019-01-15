@@ -17,20 +17,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
+using StatePrinting.Interfaces;
 
 namespace StatePrinting.ValueConverters
 {
     /// <summary>
     /// A handler that is able to convert a value of specific types to on a single line string.
     /// </summary>
-    public interface IValueConverter
+    public interface IValueConverter : ITypeHandler
     {
-        /// <summary>
-        /// Is the type covered by this handler.
-        /// </summary>
-        bool CanHandleType(Type type);
-
         /// <summary>
         /// Convert objects of handled types into a simple one-line representation.
         /// </summary>

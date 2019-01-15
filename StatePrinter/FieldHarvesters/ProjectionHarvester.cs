@@ -95,7 +95,7 @@ namespace StatePrinting.FieldHarvesters
             return false;
         }
 
-        bool IFieldHarvester.CanHandleType(Type type)
+        public bool CanHandleType(Type type)
         {
             if (SelectStrategy(type, excluders, Strategy.Excluder)) return true;
             if (SelectStrategy(type, includers, Strategy.Includer)) return true;

@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2019 Harry A. Bellamy
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -17,17 +17,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using StatePrinting.Interfaces;
 using System;
-using System.Collections.Generic;
 
-namespace StatePrinting.FieldHarvesters
+namespace StatePrinting.Interfaces
 {
-    /// <summary>
-    /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
-    /// </summary>
-    public interface IFieldHarvester : ITypeHandler
+    public interface ITypeHandler
     {
-        List<SanitizedFieldInfo> GetFields(Type type);
+        bool CanHandleType(Type type);
     }
 }

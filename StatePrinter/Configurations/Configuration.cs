@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using StatePrinting.FieldHarvesters;
+using StatePrinting.Lookup;
 using StatePrinting.OutputFormatters;
 using StatePrinting.TestAssistance;
 using StatePrinting.ValueConverters;
@@ -62,7 +63,6 @@ namespace StatePrinting.Configurations
 
             return this;
         }
-
 
         /// <summary>
         /// The culture to use when generating string output
@@ -122,7 +122,6 @@ namespace StatePrinting.Configurations
         /// Defines how the output is formatted.
         /// </summary>
         public IOutputFormatter OutputFormatter;
-
         
         public Configuration SetOutputFormatter(IOutputFormatter formatter)
         {
@@ -194,27 +193,25 @@ namespace StatePrinting.Configurations
             return this;
         }
 
-        readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>();
+        readonly TypeLookup<IValueConverter> converterLookup = new TypeLookup<IValueConverter>();
 
         /// <summary>
         /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
         /// </summary>
         public bool TryGetValueConverter(Type source, out IValueConverter result)
         {
-            if (!converterLookup.TryGetValue(source, out result))
-            {
-                result = valueConverters.FirstOrDefault(x => x.CanHandleType(source));
-                converterLookup.Add(source, result);
-            }
+            result = converterLookup.GetValue(source, valueConverters);
             return result != null;
         }
+
+        readonly TypeLookup<IFieldHarvester> fieldHarvesterLookup = new TypeLookup<IFieldHarvester>();
 
         /// <summary>
         /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
         /// </summary>
         public bool TryGetFieldHarvester(Type source, out IFieldHarvester result)
         {
-            result = fieldHarvesters.FirstOrDefault(x => x.CanHandleType(source));
+            result = fieldHarvesterLookup.GetValue(source, fieldHarvesters);
             return result != null;
         }
 

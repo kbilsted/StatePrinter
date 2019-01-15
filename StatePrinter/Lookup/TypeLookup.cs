@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2019 Harry A. Bellamy
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,14 +20,29 @@
 using StatePrinting.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace StatePrinting.FieldHarvesters
+namespace StatePrinting.Lookup
 {
-    /// <summary>
-    /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
-    /// </summary>
-    public interface IFieldHarvester : ITypeHandler
+    public class TypeLookup<T> where T : ITypeHandler
     {
-        List<SanitizedFieldInfo> GetFields(Type type);
+        #region Fields
+
+        private readonly Dictionary<Type, T> lookup = new Dictionary<Type, T>();
+
+        #endregion
+
+        public T GetValue(Type type, IEnumerable<T> typeHandlers)
+        {
+            T result;
+
+            if (!lookup.TryGetValue(type, out result))
+            {
+                result = typeHandlers.FirstOrDefault(x => x.CanHandleType(type));
+                lookup.Add(type, result);
+            }
+
+            return result;
+        }
     }
 }
