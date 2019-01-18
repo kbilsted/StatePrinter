@@ -17,16 +17,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
+using StatePrinting.FieldHarvesters;
+using StatePrinting.OutputFormatters;
+using StatePrinting.TestAssistance;
+using StatePrinting.ValueConverters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using StatePrinting.FieldHarvesters;
-using StatePrinting.Lookup;
-using StatePrinting.OutputFormatters;
-using StatePrinting.TestAssistance;
-using StatePrinting.ValueConverters;
 
 namespace StatePrinting.Configurations
 {
@@ -193,25 +192,35 @@ namespace StatePrinting.Configurations
             return this;
         }
 
-        readonly TypeLookup<IValueConverter> converterLookup = new TypeLookup<IValueConverter>();
+        readonly Dictionary<Type, IValueConverter> converterLookup = new Dictionary<Type, IValueConverter>();
 
         /// <summary>
         /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
         /// </summary>
         public bool TryGetValueConverter(Type source, out IValueConverter result)
         {
-            result = converterLookup.GetValue(source, valueConverters);
+            if (!converterLookup.TryGetValue(source, out result))
+            {
+                result = valueConverters.FirstOrDefault(x => x.CanHandleType(source));
+                converterLookup.Add(source, result);
+            }
+
             return result != null;
         }
 
-        readonly TypeLookup<IFieldHarvester> fieldHarvesterLookup = new TypeLookup<IFieldHarvester>();
+        readonly Dictionary<Type, IFieldHarvester> fieldHarvesterLookup = new Dictionary<Type, IFieldHarvester>();
 
         /// <summary>
         /// Find a handler for the type. Handlers are examined in the reverse order of adding and the first match is returned.
         /// </summary>
         public bool TryGetFieldHarvester(Type source, out IFieldHarvester result)
         {
-            result = fieldHarvesterLookup.GetValue(source, fieldHarvesters);
+            if (!fieldHarvesterLookup.TryGetValue(source, out result))
+            {
+                result = fieldHarvesters.FirstOrDefault(x => x.CanHandleType(source));
+                fieldHarvesterLookup.Add(source, result);
+            }
+
             return result != null;
         }
 

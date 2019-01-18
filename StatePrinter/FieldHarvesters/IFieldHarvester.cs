@@ -17,7 +17,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using StatePrinting.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -26,8 +25,9 @@ namespace StatePrinting.FieldHarvesters
     /// <summary>
     /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
     /// </summary>
-    public interface IFieldHarvester : ITypeHandler
+    public interface IFieldHarvester
     {
+        bool CanHandleType(Type type);
         List<SanitizedFieldInfo> GetFields(Type type);
     }
 }
