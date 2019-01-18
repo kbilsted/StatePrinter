@@ -160,6 +160,7 @@ namespace StatePrinting.Configurations
                 throw new ArgumentNullException("handler");
 
             valueConverters.Push(handler);
+            converterLookup.Clear();
             return this;
         }
 
@@ -173,6 +174,7 @@ namespace StatePrinting.Configurations
                 throw new ArgumentNullException("handler");
 
             fieldHarvesters.Push(handler);
+            fieldHarvesterLookup.Clear();
             return this;
         }
 
@@ -189,6 +191,7 @@ namespace StatePrinting.Configurations
                 throw new ArgumentNullException("getFieldsFunc");
 
             fieldHarvesters.Push(new AnonymousHarvester(canHandleTypeFunc, getFieldsFunc));
+            fieldHarvesterLookup.Clear();
             return this;
         }
 
