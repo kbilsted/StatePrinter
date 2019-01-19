@@ -14,7 +14,7 @@ build:
 
 
 after_test: 
-    - packages\OpenCover.4.5.3522\OpenCover.Console.exe -register:user -filter:"+[StatePrinter]*" -target:"packages\NUnit.Runners.2.6.4\tools\nunit-console.exe" -targetargs:"StatePrinter.Tests\bin\debug\StatePrinter.Tests.dll /domain:single /noshadow" -output:"coverage.xml"
+    - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[StatePrinter]*" -target:"packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" -targetargs:"StatePrinter.Tests\bin\debug\StatePrinter.Tests.dll /domain:single" -output:"coverage.xml"
 
     - packages\coveralls.io.1.1.86\tools\coveralls.net.exe --opencover "coverage.xml"
     
