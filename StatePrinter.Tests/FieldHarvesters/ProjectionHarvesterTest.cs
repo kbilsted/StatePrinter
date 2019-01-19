@@ -138,21 +138,21 @@ namespace StatePrinting.Tests.FieldHarvesters
             }
 
             [Test]
-            [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Type A has already been configured as an excluder.")]
             public void AddFilter_OnAlreadyExclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Exclude<A>(x => x.X);
-                harvester.AddFilter<A>(x => null);
+                var ex = Assert.Throws<ArgumentException>(()=>harvester.AddFilter<A>(x => null));
+                Assert.AreEqual("Type A has already been configured as an excluder.", ex.Message);
             }
 
             [Test]
-            [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Type A has already been configured as an includer.")]
             public void AddFilter_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Include<A>(x => x.X);
-                harvester.AddFilter<A>(x => null);
+                var ex = Assert.Throws<ArgumentException>(() => harvester.AddFilter<A>(x => null));
+                Assert.AreEqual("Type A has already been configured as an includer.", ex.Message);
             }
         }
 
@@ -174,12 +174,11 @@ namespace StatePrinting.Tests.FieldHarvesters
             }
 
             [Test]
-            [ExpectedException(typeof(ArgumentException),
-                ExpectedMessage = "Field 'Year' is declared on type 'DateTime' not on argument: 'A'")]
             public void AddExclude_FieldOnDifferentType_Fail()
             {
                 var harvester = new ProjectionHarvester();
-                harvester.Exclude<A>(x => x.X.Year);
+                var ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => x.X.Year));
+                Assert.AreEqual("Field 'Year' is declared on type 'DateTime' not on argument: 'A'", ex.Message);
             }
 
 
@@ -221,23 +220,21 @@ namespace StatePrinting.Tests.FieldHarvesters
 
 
             [Test]
-            [ExpectedException(typeof(ArgumentException),
-                ExpectedMessage = "Type A has already been configured as a filter.")]
             public void Exclude_OnAlreadyFilter_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.AddFilter<A>(x => null);
-                harvester.Exclude<A>(x => x.X);
+                var ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => x.X));
+                Assert.AreEqual("Type A has already been configured as a filter.", ex.Message);
             }
 
             [Test]
-            [ExpectedException(typeof(ArgumentException),
-                ExpectedMessage = "Type A has already been configured as an includer.")]
             public void Exclude_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Include<A>(x => x.X);
-                harvester.Exclude<A>(x => x.X);
+                var ex = Assert.Throws<ArgumentException>(() => harvester.Exclude<A>(x => x.X));
+                Assert.AreEqual("Type A has already been configured as an includer.", ex.Message);
             }
         }
 
@@ -261,13 +258,12 @@ namespace StatePrinting.Tests.FieldHarvesters
             }
 
             [Test]
-            [ExpectedException(typeof(ArgumentException),
-                ExpectedMessage = "Type A has already been configured as an excluder.")]
             public void Include_OnAlreadyInclude_Fail()
             {
                 var harvester = new ProjectionHarvester();
                 harvester.Exclude<A>(x => x.X);
-                harvester.Include<A>(x => x.X);
+                var ex = Assert.Throws<ArgumentException>(() => harvester.Include<A>(x => x.X));
+                Assert.AreEqual("Type A has already been configured as an excluder.", ex.Message);
             }
 
             interface IF

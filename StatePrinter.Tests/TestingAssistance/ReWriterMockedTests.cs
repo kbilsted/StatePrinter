@@ -24,7 +24,7 @@ using StatePrinting.Tests.Mocks;
 
 namespace StatePrinting.Tests.TestingAssistance
 {
-    class UserStory_Integration_with_underlying_testing_framework
+    public class UserStory_Integration_with_underlying_testing_framework
     {
         [Test]
         public void Rewriter_calls_to_testframework_autorewriting()
@@ -100,11 +100,11 @@ reported by the callstackreflector
 5
 ";
 
+
         /// <summary>
         /// By running again against the same file, the line number has now increased to something larger than the input file
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), ExpectedMessage = "File does not have 121 lines. Only 47 lines.\r\nParameter name: content")]
         public void Rewriter_calls_to_testframework_fileTooShort()
         {
             var printer = TestHelper.CreateTestPrinter();
@@ -118,7 +118,8 @@ reported by the callstackreflector
 
             string expected = @"expect";
 
-            printer.Assert.AreAlike(expected, "actul");
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => printer.Assert.AreAlike(expected, "actul"));
+            Assert.AreEqual("File does not have 121 lines. Only 47 lines.\r\nParameter name: content", ex.Message);
         }
     }
 }
