@@ -1,6 +1,6 @@
 <StyleCopSettings Version="105">
   <GlobalSettings>
-    <StringProperty Name="MergeSettingsFiles">Parent</StringProperty>
-    <BooleanProperty Name="ViolationsAsErrors">True</BooleanProperty>
+    <StringProperty Name="LinkedSettingsFile"></StringProperty>
+    <StringProperty Name="MergeSettingsFiles">Linked</StringProperty>
   </GlobalSettings>
 </StyleCopSettings>

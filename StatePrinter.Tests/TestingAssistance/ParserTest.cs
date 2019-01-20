@@ -19,16 +19,16 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using StatePrinting.TestAssistance;
 
 namespace StatePrinting.Tests.TestingAssistance
 {
-    [TestFixture]
-    class ParserTest
+    public class ParserTest
     {
         Parser sut;
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup()
         {
             sut = new Parser();

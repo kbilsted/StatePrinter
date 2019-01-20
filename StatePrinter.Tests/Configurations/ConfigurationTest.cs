@@ -20,8 +20,10 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
+using StatePrinting.TestAssistance;
 using StatePrinting.ValueConverters;
 
 namespace StatePrinting.Tests.Configurations
@@ -57,7 +59,7 @@ namespace StatePrinting.Tests.Configurations
             Assert.Throws<ArgumentNullException>(() => sut.AddHandler(t => true, null));
             Assert.Throws<ArgumentNullException>(() => sut.AddHandler(null, null));
 
-            Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod(null));
+            Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod((TestFrameworkAreEqualsMethod) null));
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAutomaticTestRewrite(null));
         }
     }

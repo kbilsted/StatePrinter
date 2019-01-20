@@ -18,6 +18,7 @@
 // under the License.
 
 using System;
+using System.Data.SqlClient;
 using StatePrinting.TestAssistance;
 
 namespace StatePrinting.Configurations
@@ -40,6 +41,17 @@ namespace StatePrinting.Configurations
             if (areEqualsMethod == null)
                 throw new ArgumentNullException("areEqualsMethod");
             AreEqualsMethod = areEqualsMethod;
+
+            return configuration;
+        }
+
+        private static readonly object[] NoArg = new object[0];
+
+        public Configuration SetAreEqualsMethod(Action<string,string,string,object[]> nunitAreEqualsMethod)
+        {
+            if (nunitAreEqualsMethod == null)
+                throw new ArgumentNullException("nunitAreEqualsMethod");
+            AreEqualsMethod = new TestFrameworkAreEqualsMethod((actual, expected, message) => nunitAreEqualsMethod(actual,expected,message,NoArg));
 
             return configuration;
         }
