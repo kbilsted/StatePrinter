@@ -47,6 +47,11 @@ namespace StatePrinting.Configurations
 
         private static readonly object[] NoArg = new object[0];
 
+        /// <summary>
+        /// Configure how to call AreEquals in the unit testing framework of your choice. 
+        /// Only set this field if you are using the <see cref="Stateprinter.Assert"/> functionality.
+        /// This overload is for easy integration with NUnit 3.x Asert.AreEqual
+        /// </summary>
         public Configuration SetAreEqualsMethod(Action<string,string,string,object[]> nunitAreEqualsMethod)
         {
             if (nunitAreEqualsMethod == null)

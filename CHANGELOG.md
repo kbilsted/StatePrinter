@@ -4,7 +4,11 @@
 
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
-## 3.0.1
+## V4.0 (unreleased)
+  * Requires .NET Framework 4.6.1
+  * Added `TestingBehaviour.SetAreEqualsMethod()` for easier integration with NUnit v3.x
+
+## 3.0.1 (last version for .NET framework 3.5)
   * Issue #48 Added `AnonymousFieldHarvester` for convenience
   * Issue #49 bugfix parsing brackets
   * Issue #51 bugfix thread problem
