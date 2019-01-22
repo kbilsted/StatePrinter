@@ -50,7 +50,6 @@ namespace StatePrinting.Tests.Configurations
             Assert.Throws<ArgumentNullException>(() => sut.SetIndentIncrement(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetNewlineDefinition(null));
             Assert.Throws<ArgumentNullException>(() => sut.SetOutputFormatter(null));
-            Assert.Throws<ArgumentNullException>(() => sut.SetAreEqualsMethod(null));
 
             Assert.Throws<ArgumentNullException>(() => sut.Add((IFieldHarvester)null));
             Assert.Throws<ArgumentNullException>(() => sut.Add((IValueConverter)null));

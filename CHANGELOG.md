@@ -7,6 +7,7 @@ Full documentation on usage and motivating examples at https://github.com/kbilst
 ## V4.0 (unreleased)
   * Requires .NET Framework 4.6.1
   * Added `TestingBehaviour.SetAreEqualsMethod()` for easier integration with NUnit v3.x
+  * Removed all obsolete functionality.
 
 ## 3.0.1 (last version for .NET framework 3.5)
   * Issue #48 Added `AnonymousFieldHarvester` for convenience

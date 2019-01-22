@@ -40,27 +40,14 @@ namespace StatePrinting.Tests.FieldHarvesters
             public string Name;
         }
 
-
         class B : A
         {
             public int Age;
         }
 
-
         class C
         {
             public DateTime X;
-        }
-
-        [Test]
-        public void Obsolete_TestFluintInterface_exclude()
-        {
-            var cfg = TestHelper.CreateTestConfiguration();
-            cfg.Projectionharvester().Exclude<A>(x => x.X, x => x.Y);
-            var printer = new Stateprinter(cfg);
-
-            var state = printer.PrintObject(new A { X = DateTime.Now, Name = "Charly" });
-            Assert.AreEqual(@"new A() { Name = ""Charly"" }", state);
         }
 
         [Test]

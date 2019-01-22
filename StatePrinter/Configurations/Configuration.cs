@@ -228,35 +228,6 @@ namespace StatePrinting.Configurations
             get { return projection ?? (projection = new ProjectionHarvester(this)); }
         }
 
-        /// <summary>
-        /// Instead use <see cref="Project"/>
-        /// </summary>
-        [Obsolete("Use the Project property instead")]
-        public ProjectionHarvester Projectionharvester()
-        {
-            return Project;
-        }
-
-        /// <summary>
-        /// Instead use <see cref="TestingBehaviour.SetAreEqualsMethod"/> ie. "printer.Configuration.Test.SetAreEqualsMethod()".
-        /// </summary>
-        [Obsolete("Use the Configuration.Test.SetAreEqualsMethod instead")]
-        public Configuration SetAreEqualsMethod(TestFrameworkAreEqualsMethod areEqualsMethod)
-        {
-            return Test.SetAreEqualsMethod(areEqualsMethod);
-        }
-
-        /// <summary>
-        /// Evaluate the function for each failing test. <para></para>
-        /// Your function can rely on anything such as an environment variable or a file on the file system. <para></para> 
-        /// If you only want to do this evaluation once pr. test suite execution you should wrap your function in a Lazy&lt;&gt;
-        /// </summary>
-        [Obsolete("Use the Configuration.Test.SetAutomaticTestRewrite instead")]
-        public Configuration SetAutomaticTestRewrite(TestingBehaviour.TestRewriteIndicator indicator)
-        {
-            return Test.SetAutomaticTestRewrite(indicator);
-        }
-
         public Func<FileRepository> FactoryFileRepository = () => new FileRepository();
     }
 }

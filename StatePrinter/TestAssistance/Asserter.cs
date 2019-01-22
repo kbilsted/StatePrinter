@@ -91,39 +91,12 @@ namespace StatePrinting.TestAssistance
             AreEqual(stringUtils.UnifyNewLines(expected), stringUtils.UnifyNewLines(actual));
         }
 
-
         /// <summary>
         /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="AreAlike"/> on the result.
         /// </summary>
         public void PrintAreAlike(string expected, object objectToPrint)
         {
             AreAlike(expected, printer.PrintObject(objectToPrint));
-        }
-
-        /// <summary>
-        /// Assert that two strings are the "same" ignoring differences in line ending characters \r, \n. 
-        /// For all practical purposes, this method rectifies some of the many problems with source files stored in 
-        /// different methods on diffrent operating systems.
-        /// <para>
-        /// This method calls <see cref="AreEqual"/> after first unifiying the line endings. "\r" and "\r\n" are changed into "\n"
-        /// </para>
-        /// <para>
-        /// Upon a failure, a suggested string for correcting the test is printed.
-        /// </para>
-        /// </summary>
-        [Obsolete("Instead use AreAlike(). The IsSame() has a special meaning unit testing frameworks that we do not follow. E.g. NUnit: http://www.nunit.org/index.php?p=identityAsserts&r=2.6.3 and XUnit: https://github.com/xunit/xunit/blob/master/src/xunit.assert/Asserts/IdentityAsserts.cs  . Hence its name is confusing.")]
-        public void IsSame(string expected, string actual)
-        {
-            AreAlike(expected, actual);
-        }
-
-        /// <summary>
-        /// Shortcut method for printing <param name="objectToPrint"></param> using the stateprinter and call <see cref="IsSame"/> on the result.
-        /// </summary>
-        [Obsolete("Instead use PrintAreAlike(). The IsSame() has a special meaning unit testing frameworks that we do not follow. E.g. NUnit: http://www.nunit.org/index.php?p=identityAsserts&r=2.6.3 and XUnit: https://github.com/xunit/xunit/blob/master/src/xunit.assert/Asserts/IdentityAsserts.cs  . Hence its name is confusing.")]
-        public void PrintIsSame(string expected, object objectToPrint)
-        {
-            IsSame(expected, printer.PrintObject(objectToPrint));
         }
 
         /// <summary>

@@ -27,19 +27,6 @@ namespace StatePrinting.Tests.TestingAssistance
     class Userstory_nonexplicit
     {
         [Test]
-        public void IsSame_differentNewlines()
-        {
-            TestHelper.Assert().IsSame("a\n", "a\r\n");
-            TestHelper.Assert().IsSame("a\r\n", "a\n");
-            TestHelper.Assert().IsSame("a\r", "a\n");
-            TestHelper.Assert().IsSame("a\r", "a\r\n");
-
-            TestHelper.Assert().PrintIsSame("\"a\r\"", "a\r\n");
-            TestHelper.Assert().PrintIsSame("\"a\r\"", "a\r");
-            TestHelper.Assert().PrintEquals("\"a\r\"", "a\r");
-        }
-
-        [Test]
         public void AreAlike_differentNewlines()
         {
             TestHelper.Assert().AreAlike("a\n", "a\r\n");
@@ -69,12 +56,10 @@ namespace StatePrinting.Tests.TestingAssistance
             TestHelper.Assert().That("a", Is.EqualTo("b"));
         }
 
-
         [Test]
         public void AreEquals_with()
         {
             TestHelper.Assert().AreEqual("a", "\"b\"");
         }
-
     }
 }
