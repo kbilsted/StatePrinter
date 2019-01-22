@@ -98,18 +98,14 @@
     <Compile Include="ValueConverters\GenericValueConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Settings.StyleCop" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\StatePrinter\StatePrinter.csproj">
       <Project>{10181C0E-31FF-48B3-A293-D9ED83D38C8D}</Project>
       <Name>StatePrinter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
