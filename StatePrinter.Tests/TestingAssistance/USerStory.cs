@@ -40,7 +40,7 @@ namespace StatePrinting.Tests.TestingAssistance
         }
     }
 
-    [Ignore("Run these in order to see how Nunit integrates with the testing assistance")]
+    [Explicit("Run these in order to see how Nunit integrates with the testing assistance")]
     [TestFixture]
     class Userstory
     {
