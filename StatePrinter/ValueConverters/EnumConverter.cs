@@ -33,7 +33,7 @@ namespace StatePrinting.ValueConverters
 
         public string Convert(object source)
         {
-            return System.Enum.GetName(source.GetType(), source);
+            return source.ToString();
         }
     }
 }
