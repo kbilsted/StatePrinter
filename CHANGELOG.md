@@ -5,7 +5,7 @@
 Full documentation on usage and motivating examples at https://github.com/kbilsted/StatePrinter/tree/master/doc
 
 ## V4.0 (unreleased)
-  * Requires .NET Framework 4.6.1
+  * Requires .NET Framework 4.7.2
   * Added `TestingBehaviour.SetAreEqualsMethod()` for easier integration with NUnit v3.x
   * Removed all obsolete functionality.
 

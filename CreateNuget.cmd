@@ -1,7 +1,7 @@
 if not exist .\nuget_packages mkdir nuget_packages
 if not exist .\distro mkdir distro
 xcopy StatePrinter\*.cs distro\src\ /Y /Q /E
-xcopy StatePrinter\bin\Debug\*.dll  distro\lib\net35\ /Q
+xcopy StatePrinter\bin\Debug\*.dll  distro\lib\net472\ /Q
 xcopy StatePrinter.nuspec           distro\ /Q
 cd distro
 
