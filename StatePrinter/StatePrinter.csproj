@@ -83,6 +83,7 @@
     <Compile Include="OutputFormatters\FastestPossibleStyle.cs" />
     <Compile Include="OutputFormatters\IndentingStringBuilder.cs" />
     <Compile Include="OutputFormatters\JsonStyle.cs" />
+    <Compile Include="OutputFormatters\StrictCSharpStyle.cs" />
     <Compile Include="OutputFormatters\StringBuilderTrimmer.cs" />
     <Compile Include="OutputFormatters\UnusedReferencesTokenFilter.cs" />
     <Compile Include="OutputFormatters\XmlStyle.cs" />
