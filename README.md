@@ -11,6 +11,15 @@
 
 [![Join the chat at https://gitter.im/kbilsted/StatePrinter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kbilsted/StatePrinter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+
+**THIS PROJECT IS BEING SUPERSEDED BY *ReassureTest*! GO TO https://github.com/kbilsted/ReassureTest.Net**
+
+
+
+<br>
+<br>
+<br>
+
 # What is Stateprinter
 A simple framework for **automating** aspects of implementing `ToString()`-methods, unit testing, and debugging. Speed is achieved through **run-time code generation** and caching.
 
@@ -109,6 +118,12 @@ Requires .NET 3.5 or newer.
 
 ## License
 Stateprinter is under the Apache License 2.0, meaning that you can freely use this in other open source or commercial products. If you use it for commercial products please have the courtesy to leave me an email with a 'thank you'. 
+
+
+
+
+**THIS PROJECT IS BEING SUPERSEDED BY *ReassureTest*! GO TO https://github.com/kbilsted/ReassureTest.Net**
+
 
 
 
