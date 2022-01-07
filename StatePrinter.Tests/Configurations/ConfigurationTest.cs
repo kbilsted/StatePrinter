@@ -60,7 +60,7 @@ namespace StatePrinting.Tests.Configurations
             var orderer = new ComparableOrderer();
             config.Add(orderer);
 
-            Assert.IsTrue(config.TryGetEnumerableOrderer(typeof(decimal), out var h));
+            Assert.IsTrue(config.TryGetEnumerableOrderer(typeof(IEnumerable<decimal>), out var h));
             Assert.AreEqual(h, orderer);
         }
 
