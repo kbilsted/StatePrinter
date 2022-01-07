@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using StatePrinting.Orderers;
 using StatePrinting.Configurations;
 using StatePrinting.FieldHarvesters;
 using StatePrinting.TestAssistance;
@@ -32,7 +33,7 @@ namespace StatePrinting.Tests.Configurations
     class ConfigurationTest
     {
         [Test]
-        public void TryFind()
+        public void TryGetValueConverter()
         {
             var config = new Configuration();
             config.Add(new StandardTypesConverter(null));
@@ -40,6 +41,27 @@ namespace StatePrinting.Tests.Configurations
             IValueConverter h;
             Assert.IsTrue(config.TryGetValueConverter(typeof(decimal), out h));
             Assert.IsTrue(h is StandardTypesConverter);
+        }
+
+        [Test]
+        public void TryGetFieldHarvester()
+        {
+            var config = new Configuration();
+            config.AddHandler(type => type == typeof(decimal), type => new List<SanitizedFieldInfo>());
+
+            Assert.IsTrue(config.TryGetFieldHarvester(typeof(decimal), out var h));
+            Assert.IsTrue(h is AnonymousHarvester);
+        }
+
+        [Test]
+        public void TryGetEnumerableOrderer()
+        {
+            var config = new Configuration();
+            var orderer = new ComparableOrderer();
+            config.Add(orderer);
+
+            Assert.IsTrue(config.TryGetEnumerableOrderer(typeof(IEnumerable<decimal>), out var h));
+            Assert.AreEqual(h, orderer);
         }
 
         [Test]
@@ -53,10 +75,15 @@ namespace StatePrinting.Tests.Configurations
 
             Assert.Throws<ArgumentNullException>(() => sut.Add((IFieldHarvester)null));
             Assert.Throws<ArgumentNullException>(() => sut.Add((IValueConverter)null));
+            Assert.Throws<ArgumentNullException>(() => sut.Add((IEnumerableOrderer)null));
 
             Assert.Throws<ArgumentNullException>(() => sut.AddHandler(null, t => new List<SanitizedFieldInfo>()));
             Assert.Throws<ArgumentNullException>(() => sut.AddHandler(t => true, null));
             Assert.Throws<ArgumentNullException>(() => sut.AddHandler(null, null));
+
+            Assert.Throws<ArgumentNullException>(() => sut.AddOrderer(null, x => x));
+            Assert.Throws<ArgumentNullException>(() => sut.AddOrderer(x => true, null));
+            Assert.Throws<ArgumentNullException>(() => sut.AddOrderer(null, null));
 
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAreEqualsMethod((TestFrameworkAreEqualsMethod) null));
             Assert.Throws<ArgumentNullException>(() => sut.Test.SetAutomaticTestRewrite(null));

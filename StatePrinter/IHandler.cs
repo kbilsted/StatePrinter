@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,16 +19,13 @@
 
 using System;
 
-namespace StatePrinting.ValueConverters
+namespace StatePrinting
 {
-    /// <summary>
-    /// A handler that is able to convert a value of specific types to on a single line string.
-    /// </summary>
-    public interface IValueConverter : IHandler
+    public interface IHandler
     {
         /// <summary>
-        /// Convert objects of handled types into a simple one-line representation.
+        /// Is the type covered by this handler.
         /// </summary>
-        string Convert(object source);
+        bool CanHandleType(Type type);
     }
 }

@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -17,18 +17,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-using System;
+using System.Collections;
 
-namespace StatePrinting.ValueConverters
+namespace StatePrinting.Orderers
 {
     /// <summary>
-    /// A handler that is able to convert a value of specific types to on a single line string.
+    /// A handler that can apply an ordering to a specific IEnumerable
     /// </summary>
-    public interface IValueConverter : IHandler
+    public interface IEnumerableOrderer : IHandler
     {
-        /// <summary>
-        /// Convert objects of handled types into a simple one-line representation.
-        /// </summary>
-        string Convert(object source);
+        IEnumerable Order(IEnumerable source);
     }
 }

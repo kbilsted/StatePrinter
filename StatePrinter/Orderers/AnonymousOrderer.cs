@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -18,17 +18,32 @@
 // under the License.
 
 using System;
+using System.Collections;
 
-namespace StatePrinting.ValueConverters
+namespace StatePrinting.Orderers
 {
     /// <summary>
-    /// A handler that is able to convert a value of specific types to on a single line string.
+    /// Applies an ordering to the specified types using the specified function.
     /// </summary>
-    public interface IValueConverter : IHandler
+    class AnonymousOrderer : IEnumerableOrderer
     {
-        /// <summary>
-        /// Convert objects of handled types into a simple one-line representation.
-        /// </summary>
-        string Convert(object source);
+        private readonly Func<Type, bool> canHandleTypeFunc;
+        private readonly Func<IEnumerable, IEnumerable> orderFunc;
+
+        public AnonymousOrderer(Func<Type, bool> canHandleTypeFunc, Func<IEnumerable, IEnumerable> orderFunc)
+        {
+            this.canHandleTypeFunc = canHandleTypeFunc;
+            this.orderFunc = orderFunc;
+        }
+
+        public bool CanHandleType(Type type)
+        {
+            return canHandleTypeFunc(type);
+        }
+
+        public IEnumerable Order(IEnumerable source)
+        {
+            return orderFunc(source);
+        }
     }
 }

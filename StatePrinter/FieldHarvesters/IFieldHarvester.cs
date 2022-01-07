@@ -25,10 +25,8 @@ namespace StatePrinting.FieldHarvesters
     /// <summary>
     /// A fieldharvester is a configuration part that given a type is able to harvest all fields on it.
     /// </summary>
-    public interface IFieldHarvester
+    public interface IFieldHarvester : IHandler
     {
-        bool CanHandleType(Type type);
-
         List<SanitizedFieldInfo> GetFields(Type type);
     }
 }
