@@ -22,10 +22,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using StatePrinting.Orderers;
 using StatePrinting.FieldHarvesters;
 using StatePrinting.OutputFormatters;
 using StatePrinting.TestAssistance;
 using StatePrinting.ValueConverters;
+using System.Collections;
 
 namespace StatePrinting.Configurations
 {
@@ -152,6 +154,16 @@ namespace StatePrinting.Configurations
             get { return new ReadOnlyCollection<IFieldHarvester>(fieldHarvesters.ToArray()); }
         }
 
+        readonly Stack<IEnumerableOrderer> enumerableOrderers = new Stack<IEnumerableOrderer>();
+
+        /// <summary>
+        /// Gets a view of the orderers
+        /// </summary>
+        public ReadOnlyCollection<IEnumerableOrderer> EnumerableOrderers
+        {
+            get { return new ReadOnlyCollection<IEnumerableOrderer>(enumerableOrderers.ToArray()); }
+        }
+
         /// <summary>
         /// Add a configuration. Adding will override the existing behaviour only when the
         /// added handler handles a type that is already handleable by the current configuration.
@@ -179,18 +191,47 @@ namespace StatePrinting.Configurations
         }
 
         /// <summary>
+        /// Add an orderer. Adding will override the existing behaviour only when the 
+        /// added orderer handles a type that is already handleable by the current configuration.
+        /// </summary>
+        public Configuration Add(IEnumerableOrderer orderer)
+        {
+            if (orderer == null)
+                throw new ArgumentNullException(nameof(orderer));
+
+            enumerableOrderers.Push(orderer);
+            return this;
+        }
+
+        /// <summary>
         /// Add an anonymous handler implementation. Adding will override the existing behaviour only when the
         /// added handler handles a type that is already handleable by the current configuration.
         /// </summary>
         public Configuration AddHandler(Func<Type, bool> canHandleTypeFunc, Func<Type, List<SanitizedFieldInfo>> getFieldsFunc)
         {
-            if (canHandleTypeFunc== null)
+            if (canHandleTypeFunc == null)
                 throw new ArgumentNullException("canHandleTypeFunc");
 
             if (getFieldsFunc == null)
                 throw new ArgumentNullException("getFieldsFunc");
 
             fieldHarvesters.Push(new AnonymousHarvester(canHandleTypeFunc, getFieldsFunc));
+            return this;
+        }
+
+        /// <summary>
+        /// Add an anonymous orderer implementation. Adding will override the existing behaviour only when the
+        /// added orderer handles a type that is already handleable by the current configuration.
+        /// </summary>
+        public Configuration AddOrderer(Func<Type, bool> canHandleTypeFunc, Func<IEnumerable, IEnumerable> orderFunc)
+        {
+            if (canHandleTypeFunc == null)
+                throw new ArgumentNullException(nameof(canHandleTypeFunc));
+
+            if (orderFunc == null)
+                throw new ArgumentNullException(nameof(orderFunc));
+
+            enumerableOrderers.Push(new AnonymousOrderer(canHandleTypeFunc, orderFunc));
             return this;
         }
 
@@ -201,12 +242,7 @@ namespace StatePrinting.Configurations
         /// </summary>
         public bool TryGetValueConverter(Type source, out IValueConverter result)
         {
-            if (!converterLookup.TryGetValue(source, out result))
-            {
-                result = valueConverters.FirstOrDefault(x => x.CanHandleType(source));
-                converterLookup.Add(source, result);
-            }
-            return result != null;
+            return TryGetHandler(source, valueConverters, out result, converterLookup);
         }
 
         /// <summary>
@@ -214,8 +250,17 @@ namespace StatePrinting.Configurations
         /// </summary>
         public bool TryGetFieldHarvester(Type source, out IFieldHarvester result)
         {
-            result = fieldHarvesters.FirstOrDefault(x => x.CanHandleType(source));
-            return result != null;
+            return TryGetHandler(source, fieldHarvesters, out result);
+        }
+
+        readonly Dictionary<Type, IEnumerableOrderer> ordererLookup = new Dictionary<Type, IEnumerableOrderer>();
+
+        /// <summary>
+        /// Find an orderer for the type. Orderers are examined in the reverse order of adding and the first match is returned.
+        /// </summary>
+        public bool TryGetEnumerableOrderer(Type source, out IEnumerableOrderer result)
+        {
+            return TryGetHandler(source, enumerableOrderers, out result, ordererLookup);
         }
 
         ProjectionHarvester projection;
@@ -229,5 +274,17 @@ namespace StatePrinting.Configurations
         }
 
         public Func<FileRepository> FactoryFileRepository = () => new FileRepository();
+
+        private static bool TryGetHandler<T>(Type source, Stack<T> handlers, out T result, Dictionary<Type, T> cache = null)
+            where T : IHandler
+        {
+            if (cache == null || !cache.TryGetValue(source, out result))
+            {
+                result = handlers.FirstOrDefault(x => x.CanHandleType(source));
+                if (cache != null) cache.Add(source, result);
+            }
+
+            return result != null;
+        }
     }
 }

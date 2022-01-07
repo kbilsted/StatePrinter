@@ -80,7 +80,7 @@ namespace StatePrinting.Introspection
             if (IntrospectDictionaryWithSimpleKey(source as IDictionary, field, sourceType))
                 return;
 
-            if (IntrospectIEnumerable(source, field))
+            if (IntrospectIEnumerable(source, field, sourceType))
                 return;
 
             IntrospectComplexType(source, field, sourceType);
@@ -180,7 +180,12 @@ namespace StatePrinting.Introspection
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
             tokens.Add(StartDict);
 
-            var keys = source.Keys;
+            IEnumerable keys = source.Keys;
+            if (configuration.TryGetEnumerableOrderer(keys.GetType(), out var orderer))
+            {
+                keys = orderer.Order(keys);
+            }
+
             foreach (var key in keys)
             {
                 var valueValue = source[key];
@@ -193,7 +198,7 @@ namespace StatePrinting.Introspection
             return true;
         }
 
-        private bool IntrospectIEnumerable(object source, Field field)
+        private bool IntrospectIEnumerable(object source, Field field, Type sourceType)
         {
             var enumerable = source as IEnumerable;
             if (enumerable == null)
@@ -204,6 +209,11 @@ namespace StatePrinting.Introspection
 
             tokens.Add(new Token(TokenType.FieldnameWithTypeAndReference, field, null, optionReferenceInfo, source.GetType()));
             tokens.Add(StartList);
+
+            if (configuration.TryGetEnumerableOrderer(sourceType, out var orderer))
+            {
+                enumerable = orderer.Order(enumerable);
+            }
 
             int i = 0;
             foreach (var x in enumerable)

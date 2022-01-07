@@ -58,6 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Orderers\AnonymousOrderer.cs" />
+    <Compile Include="Orderers\ComparableOrderer.cs" />
+    <Compile Include="Orderers\IEnumerableOrderer.cs" />
+    <Compile Include="Orderers\OrdererHelpers.cs" />
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationHelper.cs" />
     <Compile Include="Configurations\LegacyBehaviour.cs" />
@@ -74,6 +78,7 @@
     <Compile Include="FieldHarvesters\HarvestHelper.cs" />
     <Compile Include="FieldHarvesters\IFieldHarvester.cs" />
     <Compile Include="FieldHarvesters\PublicFieldsAndPropertiesHarvester .cs" />
+    <Compile Include="IHandler.cs" />
     <Compile Include="Introspection\HarvestInfoCache.cs" />
     <Compile Include="Introspection\IntroSpector.cs" />
     <Compile Include="Introspection\Reference.cs" />

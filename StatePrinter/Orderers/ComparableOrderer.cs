@@ -1,4 +1,4 @@
-// Copyright 2014 Kasper B. Graversen
+﻿// Copyright 2014 Kasper B. Graversen
 // 
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -18,17 +18,31 @@
 // under the License.
 
 using System;
+using System.Collections;
+using System.Linq;
 
-namespace StatePrinting.ValueConverters
+namespace StatePrinting.Orderers
 {
     /// <summary>
-    /// A handler that is able to convert a value of specific types to on a single line string.
+    /// Orders any <see cref="System.Collections.Generic.IEnumerable{T}"/> containing elements
+    /// implementing <see cref="IComparable"/> into ascending order.
     /// </summary>
-    public interface IValueConverter : IHandler
+    public class ComparableOrderer : IEnumerableOrderer
     {
-        /// <summary>
-        /// Convert objects of handled types into a simple one-line representation.
-        /// </summary>
-        string Convert(object source);
+        public bool CanHandleType(Type type)
+        {
+            return OrdererHelpers.ImplementsIEnumerableOf<IComparable>(type);
+        }
+
+        public IEnumerable Order(IEnumerable source)
+        {
+            var comparableElements = source.OfType<IComparable>();
+            if (comparableElements.Any())
+            {
+                return comparableElements.OrderBy(x => x);
+            }
+
+            return source;
+        }
     }
 }

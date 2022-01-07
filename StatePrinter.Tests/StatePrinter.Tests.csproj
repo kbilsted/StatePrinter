@@ -68,6 +68,8 @@
     <Compile Include="FieldHarvesters\ToStringAwareHarvesterTest.cs" />
     <Compile Include="Introspection\ReferenceTest.cs" />
     <Compile Include="Mocks\Mocks.cs" />
+    <Compile Include="Orderers\AnonymousOrdererTest.cs" />
+    <Compile Include="Orderers\ComparableOrdererTest.cs" />
     <Compile Include="OutputFormatters\RollingGuidValueConverterTest.cs" />
     <Compile Include="PerformanceTests\ManySmallCollections.cs" />
     <Compile Include="PerformanceTests\PerformanceTestsBase.cs" />
